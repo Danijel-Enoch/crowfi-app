@@ -48,7 +48,7 @@ export const mainnetTokens = {
 }
 export const testnetTokens = {
   wbnb: new Token(TESTNET, '0xf9a7A2b01Bf758776703677719F8aCf018600070', 18, 'WBNB', 'Wrapped BNB', 'https://www.binance.com/'),
-  cake: new Token(TESTNET, '0x12C6f5dEcaAda351D39E911E8f71e8e99F6D71D9', 0, 'SPY', 'PancakeSwap Token', 'https://pancakeswap.finance/'),
+  cake: new Token(TESTNET, '0x12C6f5dEcaAda351D39E911E8f71e8e99F6D71D9', 0, 'CAKE', 'PancakeSwap Token', 'https://pancakeswap.finance/'),
   spy: new Token(TESTNET, '0x6F25144001Ce324E745c3FF25a646A292883feD5', 0, 'SPY', 'SmartyPay Token', 'https://smartypay.io'),
   busd: new Token(TESTNET, '0x2aFD1d7DADEfb7fE31364A4f57f704c1558C8Edc', 18, 'BUSD', 'Binance USD', 'https://www.paxos.com/busd/'),
   msc: new Token(TESTNET, '0xb3ae8E5bccebD6F7002C3bF1D5713477B16f8791', 18, 'MSC', 'MyShitCoin', ''),
