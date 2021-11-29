@@ -11,7 +11,7 @@ const farms: SerializedFarmConfig[] = [
     pid: 0,
     lpSymbol: 'BUSD-SPY',
     lpAddresses: {
-      97: '0xc36e31e6489AD518C836b39F1598f5E421CC7741',
+      97: '0xe9412a9809FadBbaCd8D1bd024E6280f05Bd2437',
       56: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
     },
     token: serializedTokens.busd,
@@ -21,7 +21,7 @@ const farms: SerializedFarmConfig[] = [
     pid: 1,
     lpSymbol: 'SPY-BNB LP',
     lpAddresses: {
-      97: '0xb50eb4017228820444009a631E1eF8Ff4C9694Ca',
+      97: '0xe890519b297700BB69a62F18AaA50cAc201A300C',
       56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
     },
     token: serializedTokens.spy,
@@ -31,7 +31,7 @@ const farms: SerializedFarmConfig[] = [
     pid: 2,
     lpSymbol: 'SPY-MSC LP',
     lpAddresses: {
-      97: '0x5c029488F79E11b4D818C2871C474D8f21905599',
+      97: '0xeF4485D7242B1D400A4CCb1304cc278cA4096914',
       56: '',
     },
     token: serializedTokens.spy,
@@ -41,7 +41,7 @@ const farms: SerializedFarmConfig[] = [
     pid: 3,
     lpSymbol: 'BUSD-BNB LP',
     lpAddresses: {
-      97: '0xCe243775e7ec6Dac5702F60a597Ce06344fC60F0',
+      97: '0xfe5E0e5c744f4805a538357FD622AC07b551C7a4',
       56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
     },
     token: serializedTokens.busd,
