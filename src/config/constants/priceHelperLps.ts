@@ -13,7 +13,7 @@ const priceHelperLps: SerializedFarmConfig[] = [
     pid: null,
     lpSymbol: 'BUSD-BNB LP',
     lpAddresses: {
-      97: '0x2afd1d7dadefb7fe31364a4f57f704c1558c8edc',
+      97: '0xCe243775e7ec6Dac5702F60a597Ce06344fC60F0',
       56: '0x7b3ae32eE8C532016f3E31C8941D937c59e055B9',
     },
     token: tokens.busd,
