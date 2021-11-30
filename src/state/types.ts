@@ -46,6 +46,8 @@ export interface SerializedFarm extends SerializedFarmConfig {
   lpTotalSupply?: SerializedBigNumber
   tokenPriceVsQuote?: SerializedBigNumber
   poolWeight?: SerializedBigNumber
+  harvestInterval?: SerializedBigNumber
+  spyPerBlock?: SerializedBigNumber
   userData?: SerializedFarmUserData
 }
 
@@ -57,6 +59,8 @@ export interface DeserializedFarm extends DeserializedFarmConfig {
   lpTotalSupply?: BigNumber
   tokenPriceVsQuote?: BigNumber
   poolWeight?: BigNumber
+  harvestInterval?: BigNumber
+  spyPerBlock?: BigNumber
   userData?: DeserializedFarmUserData
 }
 

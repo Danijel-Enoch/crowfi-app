@@ -40,6 +40,8 @@ const deserializeFarm = (farm: SerializedFarm): DeserializedFarm => {
     lpTotalSupply: farm.lpTotalSupply ? new BigNumber(farm.lpTotalSupply) : BIG_ZERO,
     tokenPriceVsQuote: farm.tokenPriceVsQuote ? new BigNumber(farm.tokenPriceVsQuote) : BIG_ZERO,
     poolWeight: farm.poolWeight ? new BigNumber(farm.poolWeight) : BIG_ZERO,
+    harvestInterval: farm.harvestInterval ? new BigNumber(farm.harvestInterval) : BIG_ZERO,
+    spyPerBlock: farm.spyPerBlock ? new BigNumber(farm.spyPerBlock) : BIG_ZERO,
   }
 }
 

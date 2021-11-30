@@ -5,6 +5,7 @@ import { Flex, IconButton, useModal, CalculateIcon } from '@pancakeswap/uikit'
 import RoiCalculatorModal from 'components/RoiCalculatorModal'
 import { useTranslation } from 'contexts/Localization'
 import { useFarmUser, useLpTokenPrice } from 'state/farms/hooks'
+import { getApy } from 'utils/apr'
 
 const ApyLabelContainer = styled(Flex)`
   cursor: pointer;
@@ -21,6 +22,7 @@ export interface ApyButtonProps {
   lpLabel?: string
   multiplier: string
   cakePrice?: BigNumber
+  harvestInterval?: BigNumber
   apr?: number
   displayApr?: string
   addLiquidityUrl?: string
@@ -32,6 +34,7 @@ const ApyButton: React.FC<ApyButtonProps> = ({
   lpLabel,
   lpSymbol,
   cakePrice,
+  harvestInterval,
   apr,
   multiplier,
   displayApr,
@@ -62,7 +65,7 @@ const ApyButton: React.FC<ApyButtonProps> = ({
 
   return (
     <ApyLabelContainer alignItems="center" onClick={handleClickButton}>
-      {displayApr}%
+      {(getApy(apr, 86400 / harvestInterval.toNumber(), 1) * 100).toLocaleString('en-US', {maximumFractionDigits: 2})}%
       {variant === 'text-and-button' && (
         <IconButton variant="text" scale="sm" ml="4px">
           <CalculateIcon width="18px" />

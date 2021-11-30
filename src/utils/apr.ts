@@ -32,11 +32,12 @@ export const getPoolApr = (
  */
 export const getFarmApr = (
   poolWeight: BigNumber,
+  spyPerBlock: BigNumber,
   cakePriceUsd: BigNumber,
   poolLiquidityUsd: BigNumber,
   farmAddress: string,
 ): { cakeRewardsApr: number; lpRewardsApr: number } => {
-  const yearlyCakeRewardAllocation = poolWeight ? poolWeight.times(CAKE_PER_YEAR) : new BigNumber(NaN)
+  const yearlyCakeRewardAllocation = poolWeight ? poolWeight.times(spyPerBlock).times(BLOCKS_PER_YEAR) : new BigNumber(NaN)
   const cakeRewardsApr = yearlyCakeRewardAllocation.times(cakePriceUsd).div(poolLiquidityUsd).times(100)
   let cakeRewardsAprAsNumber = null
   if (!cakeRewardsApr.isNaN() && cakeRewardsApr.isFinite()) {
@@ -44,6 +45,34 @@ export const getFarmApr = (
   }
   const lpRewardsApr = lpAprs[farmAddress?.toLocaleLowerCase()] ?? 0
   return { cakeRewardsApr: cakeRewardsAprAsNumber, lpRewardsApr }
+}
+
+/**
+ * Given APR returns APY
+ * @param apr APR as percentage
+ * @param compoundFrequency how many compounds per day
+ * @param days if other than 365 adjusts (A)PY for period less than a year
+ * @param performanceFee performance fee as percentage
+ * @returns APY as decimal
+ */
+ export const getApy = (apr: number, compoundFrequency = 2, days = 365, performanceFee = 0) => {
+   console.log('frequency', apr, compoundFrequency)
+   
+  const daysAsDecimalOfYear = days / 365
+  const aprAsDecimal = apr / 100
+  const timesCompounded = 365 * compoundFrequency
+  let apyAsDecimal = (apr / 100) * daysAsDecimalOfYear
+  if (timesCompounded > 0) {
+    apyAsDecimal = (1 + aprAsDecimal / timesCompounded) ** (timesCompounded * daysAsDecimalOfYear) - 1
+  }
+
+  console.log('test',(1 + aprAsDecimal / timesCompounded));
+  if (performanceFee) {
+    const performanceFeeAsDecimal = performanceFee / 100
+    const takenAsPerformanceFee = apyAsDecimal * performanceFeeAsDecimal
+    apyAsDecimal -= takenAsPerformanceFee
+  }
+  return apyAsDecimal
 }
 
 export default null

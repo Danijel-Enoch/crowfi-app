@@ -49,6 +49,7 @@ const useGetTopFarmsByApr = (isIntersecting: boolean) => {
         const totalLiquidity = farm.lpTotalInQuoteToken.times(farm.quoteTokenPriceBusd)
         const { cakeRewardsApr, lpRewardsApr } = getFarmApr(
           farm.poolWeight,
+          farm.spyPerBlock,
           cakePriceBusd,
           totalLiquidity,
           farm.lpAddresses[parseInt(process.env.REACT_APP_CHAIN_ID, 10)],

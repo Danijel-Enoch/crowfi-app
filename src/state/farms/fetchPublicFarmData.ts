@@ -13,6 +13,8 @@ type PublicFarmData = {
   tokenPriceVsQuote: SerializedBigNumber
   poolWeight: SerializedBigNumber
   multiplier: string
+  spyPerBlock: SerializedBigNumber
+  harvestInterval: SerializedBigNumber
 }
 
 const fetchFarm = async (farm: SerializedFarm): Promise<PublicFarmData> => {
@@ -71,7 +73,7 @@ const fetchFarm = async (farm: SerializedFarm): Promise<PublicFarmData> => {
   const lpTotalInQuoteToken = quoteTokenAmountMc.times(new BigNumber(2))
 
   // Only make masterchef calls if farm has pid
-  const [info, totalAllocPoint] =
+  const [info, totalAllocPoint, spyPerBlock] =
     pid || pid === 0
       ? await multicall(masterchefABI, [
           {
@@ -83,12 +85,18 @@ const fetchFarm = async (farm: SerializedFarm): Promise<PublicFarmData> => {
             address: getMasterChefAddress(),
             name: 'totalAllocPoint',
           },
+          {
+            address: getMasterChefAddress(),
+            name: 'spyPerBlock',
+          },
         ])
       : [null, null]
 
   const allocPoint = info ? new BigNumber(info.allocPoint?._hex) : BIG_ZERO
-  const poolWeight = totalAllocPoint ? allocPoint.div(new BigNumber(totalAllocPoint)) : BIG_ZERO
-
+  const poolWeight = totalAllocPoint ? allocPoint.div(new BigNumber(totalAllocPoint)) : 
+  BIG_ZERO
+  const harvestInterval = info ? new BigNumber(info.harvestInterval?._hex) : BIG_ZERO
+  const spyPerBlockBN = spyPerBlock ? new BigNumber(spyPerBlock) : BIG_ZERO
   return {
     tokenAmountTotal: tokenAmountTotal.toJSON(),
     lpTotalSupply: new BigNumber(lpTotalSupply).toJSON(),
@@ -96,6 +104,8 @@ const fetchFarm = async (farm: SerializedFarm): Promise<PublicFarmData> => {
     tokenPriceVsQuote: quoteTokenAmountTotal.div(tokenAmountTotal).toJSON(),
     poolWeight: poolWeight.toJSON(),
     multiplier: `${allocPoint.div(100).toString()}X`,
+    harvestInterval: harvestInterval.toJSON(),
+    spyPerBlock: spyPerBlockBN.toJSON()
   }
 }
 
