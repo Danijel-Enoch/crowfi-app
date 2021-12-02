@@ -1,13 +1,14 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { Link } from 'react-router-dom'
-import { Flex, Heading, Button } from '@pancakeswap/uikit'
+import { Flex, Heading } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import useTheme from 'hooks/useTheme'
 import { SlideSvgDark, SlideSvgLight } from './SlideSvg'
 import CompositeImage, { getSrcSet, CompositeImageProps } from './CompositeImage'
+import ReferralLink from './ReferralLink'
+import TotalReferralCount from './TotalReferralCount'
 
 const flyingAnim = () => keyframes`
   from {
@@ -107,16 +108,22 @@ const Hero = () => {
       >
         <Flex flex="1" flexDirection="column">
           <Heading scale="xxl" color="secondary" mb="24px">
-            {t('The moon is made of pancakes.')}
+            {t('Smarty Pay Referral Program')}
           </Heading>
           <Heading scale="md" mb="24px">
-            {t('Trade, earn, and win crypto on the most popular decentralized platform in the galaxy.')}
+            {t('Share the referral link below to invite your friends and earn 5% of your friends earnings FOREVER!')}
           </Heading>
           <Flex>
-            {!account && <ConnectWalletButton mr="8px" />}
-            <Link to="/swap">
-              <Button variant={!account ? 'secondary' : 'primary'}>{t('Trade Now')}</Button>
-            </Link>
+            {account ? (
+                <div>
+                  <ReferralLink /> 
+                  <TotalReferralCount />
+                </div>
+              ) : (
+                <div>
+                  <ConnectWalletButton mr="8px" />
+                </div>
+              )}
           </Flex>
         </Flex>
         <Flex
@@ -130,7 +137,7 @@ const Hero = () => {
             <img src={`${imagePath}${imageSrc}.png`} srcSet={getSrcSet(imagePath, imageSrc)} alt={t('Lunar bunny')} />
           </BunnyWrapper>
           <StarsWrapper>
-            <CompositeImage {...starsImage} />
+            {/* <CompositeImage {...starsImage} /> */}
           </StarsWrapper>
         </Flex>
       </Flex>

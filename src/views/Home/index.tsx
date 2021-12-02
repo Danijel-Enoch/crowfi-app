@@ -15,6 +15,9 @@ import Footer from './components/Footer'
 import CakeDataRow from './components/CakeDataRow'
 import { WedgeTopLeft, InnerWedgeWrapper, OuterWedgeWrapper, WedgeTopRight } from './components/WedgeSvgs'
 import UserBanner from './components/UserBanner'
+import ReferralLink from './components/ReferralLink'
+
+
 
 const StyledHeroSection = styled(PageSection)`
   padding-top: 16px;
@@ -50,23 +53,23 @@ const Home: React.FC = () => {
     <>
       <PageMeta />
       <StyledHeroSection
-        innerProps={{ style: { margin: '0', width: '100%' } }}
-        background={
-          theme.isDark
-            ? 'radial-gradient(103.12% 50% at 50% 50%, #21193A 0%, #191326 100%)'
-            : 'linear-gradient(139.73deg, #E6FDFF 0%, #F3EFFF 100%)'
-        }
+        // innerProps={{ style: { margin: '0', width: '100%' } }}
+        // background={
+        //   theme.isDark
+        //     ? 'radial-gradient(103.12% 50% at 50% 50%, #21193A 0%, #191326 100%)'
+        //     : 'linear-gradient(139.73deg, #E6FDFF 0%, #F3EFFF 100%)'
+        // }
         index={2}
-        hasCurvedDivider={false}
+        // hasCurvedDivider={false}
       >
-        {account && (
+        {/* {account && (
           <UserBannerWrapper>
             <UserBanner />
           </UserBannerWrapper>
-        )}
+        )} */}
         <Hero />
       </StyledHeroSection>
-      <PageSection
+      {/* <PageSection
         innerProps={{ style: { margin: '0', width: '100%' } }}
         background={
           theme.isDark
@@ -133,7 +136,7 @@ const Home: React.FC = () => {
         hasCurvedDivider={false}
       >
         <Footer />
-      </PageSection>
+      </PageSection> */}
     </>
   )
 }
