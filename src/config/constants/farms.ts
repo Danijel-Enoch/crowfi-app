@@ -27,26 +27,26 @@ const farms: SerializedFarmConfig[] = [
     token: serializedTokens.spy,
     quoteToken: serializedTokens.wbnb,
   },
-  {
-    pid: 3,
-    lpSymbol: 'BUSD-BNB LP',
-    lpAddresses: {
-      97: '0xCe243775e7ec6Dac5702F60a597Ce06344fC60F0',
-      56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
-    },
-    token: serializedTokens.busd,
-    quoteToken: serializedTokens.wbnb,
-  },
-  {
-    pid: 2,
-    lpSymbol: 'SPY-MSC LP',
-    lpAddresses: {
-      97: '0xeF4485D7242B1D400A4CCb1304cc278cA4096914',
-      56: '',
-    },
-    token: serializedTokens.spy,
-    quoteToken: serializedTokens.msc,
-  },
+  // {
+  //   pid: 3,
+  //   lpSymbol: 'BUSD-BNB LP',
+  //   lpAddresses: {
+  //     97: '0xCe243775e7ec6Dac5702F60a597Ce06344fC60F0',
+  //     56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
+  //   },
+  //   token: serializedTokens.busd,
+  //   quoteToken: serializedTokens.wbnb,
+  // },
+  // {
+  //   pid: 2,
+  //   lpSymbol: 'SPY-MSC LP',
+  //   lpAddresses: {
+  //     97: '0xeF4485D7242B1D400A4CCb1304cc278cA4096914',
+  //     56: '',
+  //   },
+  //   token: serializedTokens.spy,
+  //   quoteToken: serializedTokens.msc,
+  // },
 ]
 
 export default farms
