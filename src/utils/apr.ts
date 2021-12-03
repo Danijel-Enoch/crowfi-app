@@ -56,7 +56,6 @@ export const getFarmApr = (
  * @returns APY as decimal
  */
  export const getApy = (apr: number, compoundFrequency = 2, days = 365, performanceFee = 0) => {
-   console.log('frequency', apr, compoundFrequency)
    
   const daysAsDecimalOfYear = days / 365
   const aprAsDecimal = apr / 100
@@ -66,7 +65,6 @@ export const getFarmApr = (
     apyAsDecimal = (1 + aprAsDecimal / timesCompounded) ** (timesCompounded * daysAsDecimalOfYear) - 1
   }
 
-  console.log('test',(1 + aprAsDecimal / timesCompounded));
   if (performanceFee) {
     const performanceFeeAsDecimal = performanceFee / 100
     const takenAsPerformanceFee = apyAsDecimal * performanceFeeAsDecimal
