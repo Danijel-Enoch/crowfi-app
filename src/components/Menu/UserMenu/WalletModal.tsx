@@ -59,15 +59,15 @@ const WalletModal: React.FC<WalletModalProps> = ({ initialView = WalletView.WALL
           <CloseIcon width="24px" color="text" />
         </IconButton>
       </ModalHeader>
-      <Tabs>
+      {/* <Tabs>
         <ButtonMenu scale="sm" variant="subtle" onItemClick={handleClick} activeIndex={view} fullWidth>
           <ButtonMenuItem>{t('Wallet')}</ButtonMenuItem>
           <ButtonMenuItem>{t('Transactions')}</ButtonMenuItem>
         </ButtonMenu>
-      </Tabs>
+      </Tabs> */}
       <ModalBody p="24px" maxWidth="400px" width="100%">
         {view === WalletView.WALLET_INFO && <WalletInfo hasLowBnbBalance={hasLowBnbBalance} onDismiss={onDismiss} />}
-        {view === WalletView.TRANSACTIONS && <WalletTransactions />}
+        {/* {view === WalletView.TRANSACTIONS && <WalletTransactions />} */}
       </ModalBody>
     </ModalContainer>
   )

@@ -12,12 +12,15 @@ import history from 'routerHistory'
 import useAuth from 'hooks/useAuth'
 import { useProfile } from 'state/profile/hooks'
 import ConnectWalletButton from 'components/ConnectWalletButton'
-import { FetchStatus, useGetBnbBalance } from 'hooks/useTokenBalance'
+import useTokenBalance, { FetchStatus, useGetBnbBalance } from 'hooks/useTokenBalance'
 import { useTranslation } from 'contexts/Localization'
 import { nftsBaseUrl } from 'views/Nft/market/constants'
 import WalletModal, { WalletView, LOW_BNB_BALANCE } from './WalletModal'
 import ProfileUserMenuItem from './ProfileUserMenutItem'
 import WalletUserMenuItem from './WalletUserMenuItem'
+import { getFullDisplayBalance, formatBigNumber } from '../../../utils/formatBalance'
+import tokens from '../../../config/constants/tokens'
+
 
 const UserMenu = () => {
   const { t } = useTranslation()
@@ -30,15 +33,17 @@ const UserMenu = () => {
   const hasProfile = isInitialized && !!profile
   const avatarSrc = profile?.nft?.image?.thumbnail
   const hasLowBnbBalance = fetchStatus === FetchStatus.SUCCESS && balance.lte(LOW_BNB_BALANCE)
+  const { balance: spyBalance, fetchStatus: spyFetchStatus } = useTokenBalance(tokens.spy.address)
 
   if (!account) {
     return <ConnectWalletButton scale="sm" />
   }
 
   return (
-    <UIKitUserMenu account={account} avatarSrc={avatarSrc}>
-      {/* <WalletUserMenuItem hasLowBnbBalance={hasLowBnbBalance} onPresentWalletModal={onPresentWalletModal} />
-      <UserMenuItem as="button" onClick={onPresentTransactionModal}>
+    // <UIKitUserMenu account={account} avatarSrc={avatarSrc}>
+    <UIKitUserMenu text={getFullDisplayBalance(spyBalance, 0, 0)} avatarSrc={avatarSrc}>
+      <WalletUserMenuItem hasLowBnbBalance={hasLowBnbBalance} onPresentWalletModal={onPresentWalletModal} />
+      {/* <UserMenuItem as="button" onClick={onPresentTransactionModal}>
         {t('Transactions')}
       </UserMenuItem>
       <UserMenuDivider />
