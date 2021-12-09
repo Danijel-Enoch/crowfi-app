@@ -89,6 +89,8 @@ const fetchFarmsPrices = async (farms: SerializedFarm[]) => {
   const bnbBusdFarm = farms.find((farm) => farm.pid === 3)
   let bnbPriceBusd = bnbBusdFarm && bnbBusdFarm.tokenPriceVsQuote ? BIG_ONE.div(bnbBusdFarm.tokenPriceVsQuote) : BIG_ZERO
 
+  console.log('price', bnbPriceBusd)
+
   if (bnbPriceBusd.eq(BIG_ZERO)) {
     bnbPriceBusd = await getBNBPriceUSD()
   }
