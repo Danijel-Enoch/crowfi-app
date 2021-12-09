@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Token } from '@pancakeswap/sdk'
+import { String } from 'lodash'
 
 export type TranslatableText =
   | string
@@ -217,4 +218,37 @@ export interface ConnectedBidder {
   account: string
   isWhitelisted: boolean
   bidderData?: Bidder
+}
+
+export enum PrivateSaleType {
+  seedsale = 'seedSale',
+  privatesale = 'privateSale',
+  preSale = 'presSale',
+}
+
+export interface PrivateSaleBaseProps {
+  type: PrivateSaleType
+  manager: Address,
+  price: number
+  name: string
+}
+export interface SerializedPrivateSaleConfig extends PrivateSaleBaseProps {
+  tempToken: SerializedToken
+  quoteToken: SerializedToken
+  startDate?: number
+  endDate?: number
+  claimStartDate?: number
+  claimEndDate?: number
+  claimDays?: number[]
+  claimPercents?: number[]
+}
+export interface DeserializedPrivateSaleConfig extends PrivateSaleBaseProps {
+  tempToken: Token
+  quoteToken: Token
+  startDate?: Date
+  endDate?: Date
+  claimStartDate?: Date
+  claimEndDate?: Date
+  claimDays?: number[]
+  claimPercents?: number[]
 }

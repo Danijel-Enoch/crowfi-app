@@ -12,6 +12,8 @@ import {
   Team,
   TranslatableText,
   DeserializedFarmConfig,
+  SerializedPrivateSaleConfig,
+  DeserializedPrivateSaleConfig
 } from 'config/constants/types'
 import { NftToken, State as NftMarketState } from './nftMarket/types'
 
@@ -23,6 +25,40 @@ export interface BigNumberToJson {
 }
 
 export type SerializedBigNumber = string
+
+interface SerializedPrivateSaleUserData {
+  quoteAllowance: string
+  tempAllowance: string
+  purchasedBalance: string
+  claimedBalance: string
+  claimableBalance: string
+}
+
+export interface DeserializedPrivateSaleUserData {
+  quoteAllowance: BigNumber
+  tempAllowance: BigNumber
+  purchasedBalance: BigNumber
+  claimedBalance: BigNumber
+  claimableBalance: BigNumber
+}
+
+export interface SerializedPrivateSale extends SerializedPrivateSaleConfig {
+  userData?: SerializedPrivateSaleUserData
+
+  startBlock?: SerializedBigNumber
+  endBlock?: SerializedBigNumber
+  claimStartBlock?: SerializedBigNumber
+  claimEndBlock?: SerializedBigNumber
+}
+
+export interface DeserializedPrivateSale extends DeserializedPrivateSaleConfig {
+  userData?: DeserializedPrivateSaleUserData
+
+  startBlock?: BigNumber
+  endBlock?: BigNumber
+  claimStartBlock?: BigNumber
+  claimEndBlock?: BigNumber
+}
 
 interface SerializedFarmUserData {
   allowance: string
@@ -109,6 +145,20 @@ export interface Profile {
 }
 
 // Slices states
+
+
+
+export interface SerializedPrivateSalesState {
+  data: SerializedPrivateSale[]
+  loadArchivedData: boolean
+  userDataLoaded: boolean
+}
+
+export interface DeserializedPrivateSalesState {
+  data: DeserializedPrivateSale[]
+  loadArchivedData: boolean
+  userDataLoaded: boolean
+}
 
 export interface SerializedFarmsState {
   data: SerializedFarm[]
@@ -579,6 +629,7 @@ export interface State {
   achievements: AchievementState
   block: BlockState
   farms: SerializedFarmsState
+  privatesales: SerializedPrivateSalesState
   pools: PoolsState
   predictions: PredictionsState
   profile: ProfileState

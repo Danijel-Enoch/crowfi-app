@@ -1,0 +1,132 @@
+import React, { useState, useEffect } from 'react'
+import BigNumber from 'bignumber.js'
+import styled from 'styled-components'
+import { Card, Flex, Text, Skeleton, Heading } from '@pancakeswap/uikit'
+import { DeserializedPrivateSale } from 'state/types'
+import { getBalanceAmount, getBalanceNumber } from 'utils/formatBalance'
+import { useTranslation } from 'contexts/Localization'
+import PrivateSaleBuyCard from './PrivateSaleBuyCard'
+import PrivateSaleClaimCard from './PrivateSaleClaimCard'
+
+
+const StyledWrapper= styled(Flex)`
+`
+const SectionWrapper = styled(Flex)`
+  padding: 20px 10px;
+  ${({ theme }) => theme.mediaQueries.md} {
+    padding: 20px 40px;
+  }
+`
+
+interface PrivateSaleRowProps {
+  sale: DeserializedPrivateSale
+  account?: string
+}
+
+enum SaleStatus {
+  NOT_STARTED,
+  ACTIVE,
+  ENDED,
+  CLAIMING,
+  EXPIRED
+}
+
+const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account }) => {
+  const { t } = useTranslation()
+  const [status, setStatus] = useState(SaleStatus.NOT_STARTED)
+
+  useEffect(() => {
+    const now = new Date().getTime()
+    let status_ = SaleStatus.NOT_STARTED
+    if (sale.claimEndDate?.getTime() < now) {
+      status_ = SaleStatus.EXPIRED
+    } else if (sale.claimStartDate?.getTime() <= now) {
+      status_ = SaleStatus.CLAIMING
+    } else if (sale.endDate?.getTime() < now) {
+      status_ = SaleStatus.ENDED
+    } else if (sale.startDate?.getTime() < now) {
+      status_ = SaleStatus.ACTIVE
+    }
+    setStatus(status_)
+  }, [sale])
+
+  return (
+      <StyledWrapper flexDirection={['column', 'column', 'column', 'row']}>
+        <SectionWrapper flexDirection="column" style={{flex:1}} justifyContent="center">
+          <Heading scale="lg" color="primary" mb="24px">
+          {sale.name}
+          </Heading>
+          <Text fontSize="16px">
+            {t('Join the CrowFi Private Sales and get tokens at a cheaper price.')}
+          </Text>
+          { 
+            status === SaleStatus.NOT_STARTED ?  
+            (
+              <Text fontSize="16px">
+                {t('It starts on')}&nbsp;{sale.startDate?.toDateString()}, listing price ${sale.price}
+              </Text>
+            )
+            : status === SaleStatus.ACTIVE ?  
+            (
+              <Text fontSize="16px">
+                {t('It ends on')}&nbsp;{sale.endDate?.toDateString()}, listing price ${sale.price}
+              </Text>
+            )
+            : status === SaleStatus.ENDED ?  
+            (
+              <Text fontSize="16px">
+                {t('All sold and claim will be start on')}&nbsp;{sale.claimStartDate?.toDateString()}
+              </Text>
+            )
+            : status === SaleStatus.CLAIMING ?  
+            (
+              <Text fontSize="16px">
+                {t('Claim will be end on ')}&nbsp;{sale.claimEndDate?.toDateString()}
+              </Text>
+            )
+            : 
+            (
+              <Text fontSize="16px">
+                {t('All sold and claim ended. If you did not claim your tokens, contact us with your wallet address')}
+              </Text>
+            )
+          }
+
+          { status !== SaleStatus.NOT_STARTED && sale.userData?.purchasedBalance.eq(0) && (
+            <Text fontSize="14px" color="secondary">
+            {t('No tokens purchased.')}
+            </Text>
+          )}
+          { status !== SaleStatus.NOT_STARTED && sale.userData?.purchasedBalance.gt(0) && (
+            <Text fontSize="14px" color="secondary">
+              {t('You purchased %amount% CROW for this sale', {amount: getBalanceNumber(sale.userData?.purchasedBalance)})}
+            </Text>
+          )}
+          { status !== SaleStatus.NOT_STARTED && sale.userData?.claimedBalance.gt(0) && (
+            <Text fontSize="14px" color="secondary">
+              {t('You claimed %amount% CROW for this sale', {amount: getBalanceNumber(sale.userData?.claimedBalance)})}
+            </Text>
+          )}
+          { status !== SaleStatus.NOT_STARTED && sale.userData?.claimableBalance.gt(0) && (
+            <Text fontSize="14px" color="secondary">
+              {t('You can claim %amount% CROW now', {amount: getBalanceNumber(sale.userData?.claimableBalance)})}
+            </Text>
+          )}
+        </SectionWrapper>
+        <SectionWrapper justifyContent="center" alignItems="center">
+          {/* <PrivateSaleBuyCard sale={sale} /> */}
+          { (status === SaleStatus.CLAIMING || status === SaleStatus.ENDED) && (
+            <PrivateSaleClaimCard account={account} sale={sale} enabled={status === SaleStatus.CLAIMING}/>
+          )}
+          { (status === SaleStatus.ACTIVE  || status === SaleStatus.NOT_STARTED) && (
+            <PrivateSaleBuyCard account={account} sale={sale} enabled={status === SaleStatus.ACTIVE} />
+          )}
+          
+        </SectionWrapper>
+        
+
+      </StyledWrapper>
+  )
+}
+
+export default PrivateSaleRow

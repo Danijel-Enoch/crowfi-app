@@ -3,6 +3,7 @@ import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import {
   getBep20Contract,
   getCakeContract,
+  getUSDCContract,
   getBunnyFactoryContract,
   getBunnySpecialContract,
   getPancakeRabbitContract,
@@ -30,6 +31,7 @@ import {
   getNftSaleContract,
   getPancakeSquadContract,
   getErc721CollectionContract,
+  getPrivateSaleContract,
 } from 'utils/contractHelpers'
 import { getMulticallAddress } from 'utils/addressHelpers'
 
@@ -75,6 +77,16 @@ export const useERC721 = (address: string) => {
 export const useCake = () => {
   const { library } = useActiveWeb3React()
   return useMemo(() => getCakeContract(library.getSigner()), [library])
+}
+
+export const useUSDC = () => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getUSDCContract(library.getSigner()), [library])
+}
+
+export const usePrivateSaleManager = (address) => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getPrivateSaleContract(address, library.getSigner()), [address, library])
 }
 
 export const useBunnyFactory = () => {
