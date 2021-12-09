@@ -15,6 +15,7 @@ import {
   Box,
   AutoRenewIcon,
 } from '@pancakeswap/uikit'
+import {ETHER} from '@pancakeswap/sdk'
 import { ethers } from 'ethers'
 import { parseUnits } from 'ethers/lib/utils'
 import { useWeb3React } from '@web3-react/core'
@@ -170,7 +171,7 @@ const SetPositionCard: React.FC<SetPositionCardProps> = ({ position, togglePosit
     } else if (inputAmount.gt(0) && inputAmount.lt(minBetAmount)) {
       setErrorMessage({
         key: 'A minimum amount of %num% %token% is required',
-        data: { num: formatBigNumber(minBetAmount), token: 'BNB' },
+        data: { num: formatBigNumber(minBetAmount), token: ETHER.symbol },
       })
     } else {
       setErrorMessage(null)

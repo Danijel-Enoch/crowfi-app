@@ -25,10 +25,11 @@ export function deserializeToken(serializedToken: SerializedToken): Token {
 }
 
 export enum GAS_PRICE {
-  default = '5',
+  default = '5000',
   fast = '6',
   instant = '7',
   testnet = '10',
+  cronos = '5000'
 }
 
 export const GAS_PRICE_GWEI = {
@@ -36,4 +37,5 @@ export const GAS_PRICE_GWEI = {
   fast: parseUnits(GAS_PRICE.fast, 'gwei').toString(),
   instant: parseUnits(GAS_PRICE.instant, 'gwei').toString(),
   testnet: parseUnits(GAS_PRICE.testnet, 'gwei').toString(),
+  cronos: parseUnits(GAS_PRICE.cronos, 'gwei').toString(),
 }

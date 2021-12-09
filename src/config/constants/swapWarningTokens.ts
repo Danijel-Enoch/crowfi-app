@@ -8,8 +8,8 @@ interface WarningTokenList {
 }
 
 const SwapWarningTokens = <WarningTokenList>{
-  safemoon,
-  bondly,
+  // safemoon,
+  // bondly,
 }
 
 export default SwapWarningTokens

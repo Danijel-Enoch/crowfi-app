@@ -108,7 +108,7 @@ const Hero = () => {
       >
         <Flex flex="1" flexDirection="column">
           <Heading scale="xxl" color="secondary" mb="24px">
-            {t('Smarty Pay Referral Program')}
+            {t('CrowFi Referral Program')}
           </Heading>
           <Heading scale="md" mb="24px">
             {t('Share the referral link below to invite your friends and earn 5% of your friends earnings FOREVER!')}

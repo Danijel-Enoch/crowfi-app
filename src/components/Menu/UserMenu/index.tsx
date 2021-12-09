@@ -33,7 +33,7 @@ const UserMenu = () => {
   const hasProfile = isInitialized && !!profile
   const avatarSrc = profile?.nft?.image?.thumbnail
   const hasLowBnbBalance = fetchStatus === FetchStatus.SUCCESS && balance.lte(LOW_BNB_BALANCE)
-  const { balance: spyBalance, fetchStatus: spyFetchStatus } = useTokenBalance(tokens.spy.address)
+  const { balance: crowBalance, fetchStatus: spyFetchStatus } = useTokenBalance(tokens.crow.address)
 
   if (!account) {
     return <ConnectWalletButton scale="sm" />
@@ -41,7 +41,7 @@ const UserMenu = () => {
 
   return (
     // <UIKitUserMenu account={account} avatarSrc={avatarSrc}>
-    <UIKitUserMenu text={getFullDisplayBalance(spyBalance, 0, 0)} avatarSrc={avatarSrc}>
+    <UIKitUserMenu text={getFullDisplayBalance(crowBalance, 18, 3)} avatarSrc={avatarSrc}>
       <WalletUserMenuItem hasLowBnbBalance={hasLowBnbBalance} onPresentWalletModal={onPresentWalletModal} />
       {/* <UserMenuItem as="button" onClick={onPresentTransactionModal}>
         {t('Transactions')}

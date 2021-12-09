@@ -67,7 +67,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false }: PositionCar
           pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
         ]
       : [undefined, undefined]
-
+  console.log('minimal tokens', token0Deposited?.toSignificant(6), token1Deposited?.toSignificant(6));
   return (
     <>
       {userPoolBalance && JSBI.greaterThan(userPoolBalance.raw, JSBI.BigInt(0)) ? (
@@ -170,6 +170,8 @@ export default function FullPositionCard({ pair, ...props }: PositionCardProps) 
           pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
         ]
       : [undefined, undefined]
+  console.log('user balance', userPoolBalance.toSignificant(6))
+  console.log('tokens', pair.token0);
 
   return (
     <Card style={{ borderRadius: '12px' }} {...props}>

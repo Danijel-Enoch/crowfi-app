@@ -2,9 +2,9 @@ import { ContextApi } from 'contexts/Localization/types'
 import { PageMeta } from './types'
 
 export const DEFAULT_META: PageMeta = {
-  title: 'SmartyPay',
+  title: 'Crow Finance',
   description:
-    'The most popular AMM on BSC by user count! Earn CAKE through yield farming or win it in the Lottery, then stake it in Syrup Pools to earn more tokens! Initial Farm Offerings (new token launch model pioneered by PancakeSwap), NFTs, and more, on a platform you can trust.',
+    'CrowFi - Crow Finance is a One-Stop-DeFi-Shop! The ultimate Cross-Chain DEX of the Cronos Network. We provide you with tools to invest, trade & earn with ease.',
   image: 'https://pancakeswap.finance/images/hero.png',
 }
 
@@ -33,106 +33,106 @@ export const getCustomMeta = (path: string, t: ContextApi['t']): PageMeta => {
   switch (basePath) {
     case '/':
       return {
-        title: `${t('Referral')} | ${t('SmartyPay')}`,
+        title: `${t('Home')} | ${t('CrowFi')}`,
       }
     case '/swap':
       return {
-        title: `${t('Exchange')} | ${t('SmartyPay')}`,
+        title: `${t('Exchange')} | ${t('CrowFi')}`,
       }
     case '/add':
       return {
-        title: `${t('Add Liquidity')} | ${t('SmartyPay')}`,
+        title: `${t('Add Liquidity')} | ${t('CrowFi')}`,
       }
     case '/remove':
       return {
-        title: `${t('Remove Liquidity')} | ${t('SmartyPay')}`,
+        title: `${t('Remove Liquidity')} | ${t('CrowFi')}`,
       }
     case '/liquidity':
       return {
-        title: `${t('Liquidity')} | ${t('SmartyPay')}`,
+        title: `${t('Liquidity')} | ${t('CrowFi')}`,
       }
     case '/find':
       return {
-        title: `${t('Import Pool')} | ${t('SmartyPay')}`,
+        title: `${t('Import Pool')} | ${t('CrowFi')}`,
       }
     case '/competition':
       return {
-        title: `${t('Trading Battle')} | ${t('SmartyPay')}`,
+        title: `${t('Trading Battle')} | ${t('CrowFi')}`,
       }
     case '/prediction':
       return {
-        title: `${t('Prediction')} | ${t('SmartyPay')}`,
+        title: `${t('Prediction')} | ${t('CrowFi')}`,
       }
     case '/prediction/leaderboard':
       return {
-        title: `${t('Leaderboard')} | ${t('SmartyPay')}`,
+        title: `${t('Leaderboard')} | ${t('CrowFi')}`,
       }
     case '/farms':
       return {
-        title: `${t('Farms')} | ${t('SmartyPay')}`,
+        title: `${t('Farms')} | ${t('CrowFi')}`,
       }
     case '/farms/auction':
       return {
-        title: `${t('Farm Auctions')} | ${t('SmartyPay')}`,
+        title: `${t('Farm Auctions')} | ${t('CrowFi')}`,
       }
     case '/pools':
       return {
-        title: `${t('Pools')} | ${t('SmartyPay')}`,
+        title: `${t('Pools')} | ${t('CrowFi')}`,
       }
     case '/lottery':
       return {
-        title: `${t('Lottery')} | ${t('SmartyPay')}`,
+        title: `${t('Lottery')} | ${t('CrowFi')}`,
       }
     case '/ifo':
       return {
-        title: `${t('Initial Farm Offering')} | ${t('SmartyPay')}`,
+        title: `${t('Initial Farm Offering')} | ${t('CrowFi')}`,
       }
     case '/teams':
       return {
-        title: `${t('Leaderboard')} | ${t('SmartyPay')}`,
+        title: `${t('Leaderboard')} | ${t('CrowFi')}`,
       }
     case '/voting':
       return {
-        title: `${t('Voting')} | ${t('SmartyPay')}`,
+        title: `${t('Voting')} | ${t('CrowFi')}`,
       }
     case '/voting/proposal':
       return {
-        title: `${t('Proposals')} | ${t('SmartyPay')}`,
+        title: `${t('Proposals')} | ${t('CrowFi')}`,
       }
     case '/voting/proposal/create':
       return {
-        title: `${t('Make a Proposal')} | ${t('SmartyPay')}`,
+        title: `${t('Make a Proposal')} | ${t('CrowFi')}`,
       }
     case '/info':
       return {
-        title: `${t('Overview')} | ${t('SmartyPay Info & Analytics')}`,
+        title: `${t('Overview')} | ${t('CrowFi Info & Analytics')}`,
         description: 'View statistics for Pancakeswap exchanges.',
       }
     case '/info/pools':
       return {
-        title: `${t('Pools')} | ${t('SmartyPay Info & Analytics')}`,
+        title: `${t('Pools')} | ${t('CrowFi Info & Analytics')}`,
         description: 'View statistics for Pancakeswap exchanges.',
       }
     case '/info/tokens':
       return {
-        title: `${t('Tokens')} | ${t('SmartyPay Info & Analytics')}`,
+        title: `${t('Tokens')} | ${t('CrowFi Info & Analytics')}`,
         description: 'View statistics for Pancakeswap exchanges.',
       }
     case '/nfts':
       return {
-        title: `${t('Overview')} | ${t('SmartyPay')}`,
+        title: `${t('Overview')} | ${t('CrowFi')}`,
       }
     case '/nfts/collections':
       return {
-        title: `${t('Collections')} | ${t('SmartyPay')}`,
+        title: `${t('Collections')} | ${t('CrowFi')}`,
       }
     case '/nfts/profile':
       return {
-        title: `${t('Your Profile')} | ${t('SmartyPay')}`,
+        title: `${t('Your Profile')} | ${t('CrowFi')}`,
       }
     case '/pancake-squad':
       return {
-        title: `${t('Pancake Squad')} | ${t('SmartyPay')}`,
+        title: `${t('Pancake Squad')} | ${t('CrowFi')}`,
       }
     default:
       return null

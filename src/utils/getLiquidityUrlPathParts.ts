@@ -1,6 +1,7 @@
 // Constructing the two forward-slash-separated parts of the 'Add Liquidity' URL
 // Each part of the url represents a different side of the LP pair.
 import tokens from 'config/constants/tokens'
+import { ETHER } from '@pancakeswap/sdk'
 
 const getLiquidityUrlPathParts = ({
   quoteTokenAddress,
@@ -10,8 +11,8 @@ const getLiquidityUrlPathParts = ({
   tokenAddress: string
 }): string => {
   const wBnbAddress = tokens.wbnb.address
-  const firstPart = !quoteTokenAddress || quoteTokenAddress === wBnbAddress ? 'BNB' : quoteTokenAddress
-  const secondPart = !tokenAddress || tokenAddress === wBnbAddress ? 'BNB' : tokenAddress
+  const firstPart = !quoteTokenAddress || quoteTokenAddress === wBnbAddress ? ETHER.symbol : quoteTokenAddress
+  const secondPart = !tokenAddress || tokenAddress === wBnbAddress ? ETHER.symbol : tokenAddress
   return `${firstPart}/${secondPart}`
 }
 

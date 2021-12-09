@@ -1,5 +1,6 @@
 import React from 'react'
 import { useWeb3React } from '@web3-react/core'
+import {ETHER} from '@pancakeswap/sdk'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import { Flex, Text, Button, ButtonMenu, ButtonMenuItem, Message, Link } from '@pancakeswap/uikit'
 import { FetchStatus } from 'hooks/useTokenBalance'
@@ -135,7 +136,7 @@ const ReviewStage: React.FC<ReviewStageProps> = ({
           href={`${BASE_URL}/swap?outputCurrency=BNB`}
           variant="secondary"
         >
-          {t('Get %symbol1% or %symbol2%', { symbol1: 'BNB', symbol2: 'WBNB' })}
+          {t('Get %symbol1% or %symbol2%', { symbol1: ETHER.symbol, symbol2: ETHER.symbol })}
         </Button>
       </Flex>
     </>

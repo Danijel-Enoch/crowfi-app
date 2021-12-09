@@ -19,7 +19,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({ hasLowBnbBalance, onDismiss }) 
   const { t } = useTranslation()
   const { account } = useWeb3React()
   const { balance, fetchStatus } = useGetBnbBalance()
-  const { balance: spyBalance, fetchStatus: spyFetchStatus } = useTokenBalance(tokens.spy.address)
+  const { balance: crowBalance, fetchStatus: crowFetchStatus } = useTokenBalance(tokens.crow.address)
   const { logout } = useAuth()
 
   const handleLogout = () => {
@@ -51,14 +51,14 @@ const WalletInfo: React.FC<WalletInfoProps> = ({ hasLowBnbBalance, onDismiss }) 
       </Flex>
       <Flex alignItems="center" justifyContent="space-between" mb="24px">
         <Text color="textSubtle">{t('SPY Balance')}</Text>
-        {spyFetchStatus !== FetchStatus.SUCCESS ? (
+        {crowFetchStatus !== FetchStatus.SUCCESS ? (
           <Skeleton height="22px" width="60px" />
         ) : (
-          <Text>{getFullDisplayBalance(spyBalance, 0, 0)}</Text>
+          <Text>{getFullDisplayBalance(crowBalance, 18, 3)}</Text>
         )}
       </Flex>
       <Flex alignItems="center" justifyContent="end" mb="24px">
-        <LinkExternal href={getBscScanLink(account, 'address')}>{t('View on BscScan')}</LinkExternal>
+        <LinkExternal href={getBscScanLink(account, 'address')}>{t('View on Explorer')}</LinkExternal>
       </Flex>
       <Button variant="secondary" width="100%" onClick={handleLogout}>
         {t('Disconnect Wallet')}

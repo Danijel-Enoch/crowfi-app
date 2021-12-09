@@ -3,6 +3,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Trade, TokenAmount, CurrencyAmount, ETHER } from '@pancakeswap/sdk'
 import { useCallback, useMemo } from 'react'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useGasPrice } from 'state/user/hooks'
 import { ROUTER_ADDRESS } from '../config/constants'
 import useTokenAllowance from './useTokenAllowance'
 import { Field } from '../state/swap/actions'
@@ -48,6 +49,8 @@ export function useApproveCallback(
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
 
+  const gasPrice = useGasPrice()
+
   const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
       console.error('approve was called unnecessarily')
@@ -88,6 +91,7 @@ export function useApproveCallback(
       [spender, useExact ? amountToApprove.raw.toString() : MaxUint256],
       {
         gasLimit: calculateGasMargin(estimatedGas),
+        gasPrice
       },
     )
       .then((response: TransactionResponse) => {
@@ -100,7 +104,7 @@ export function useApproveCallback(
         console.error('Failed to approve token', error)
         throw error
       })
-  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction, callWithGasPrice])
+  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction, callWithGasPrice, gasPrice])
 
   return [approvalState, approve]
 }

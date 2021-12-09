@@ -1,7 +1,7 @@
 import { ChainId, JSBI, Percent, Token } from '@pancakeswap/sdk'
-import { mainnetTokens, testnetTokens } from './tokens'
+import { mainnetTokens, testnetTokens,cronosTestTokens } from './tokens'
 
-export const ROUTER_ADDRESS = '0xA36090E981c05b41C88a8d36aF90012235b4e4Eb'
+export const ROUTER_ADDRESS = '0x732Ce8e258482d9A7d9eBaA8d3B8A7C51072d0AF'
 
 // a list of tokens by chain
 type ChainTokenList = {
@@ -21,6 +21,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     mainnetTokens.usdc,
   ],
   [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, testnetTokens.busd],
+  [ChainId.CRONOSTESTNET]: [cronosTestTokens.wcro, cronosTestTokens.crow, cronosTestTokens.usdc]
 }
 
 /**
@@ -44,12 +45,14 @@ export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: To
 export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.MAINNET]: [mainnetTokens.busd, mainnetTokens.cake, mainnetTokens.btcb],
   [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, testnetTokens.busd],
+  [ChainId.CRONOSTESTNET]: [cronosTestTokens.wcro, cronosTestTokens.crow, cronosTestTokens.usdc]
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.MAINNET]: [mainnetTokens.wbnb, mainnetTokens.dai, mainnetTokens.busd, mainnetTokens.usdt],
   [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, testnetTokens.busd],
+  [ChainId.CRONOSTESTNET]: [cronosTestTokens.wcro, cronosTestTokens.crow, cronosTestTokens.usdc]
 }
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {

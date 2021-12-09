@@ -2,7 +2,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract SpyToken",
+        "internalType": "contract IERC20",
         "name": "_spy",
         "type": "address"
       },
@@ -68,6 +68,31 @@
       }
     ],
     "name": "EmergencyWithdraw",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "previousAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "EmissionRateUpdated",
     "type": "event"
   },
   {
@@ -211,7 +236,7 @@
         "type": "uint256"
       },
       {
-        "internalType": "contract IBEP20",
+        "internalType": "contract IERC20",
         "name": "_lpToken",
         "type": "address"
       },
@@ -224,6 +249,19 @@
     "name": "add",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "baseAllocPoint",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -287,19 +325,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getMiningOwner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -354,32 +379,6 @@
     "name": "massUpdatePools",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_pid",
-        "type": "uint256"
-      }
-    ],
-    "name": "migrate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "migrator",
-    "outputs": [
-      {
-        "internalType": "contract IMigratorChef",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -443,7 +442,7 @@
     "name": "poolInfo",
     "outputs": [
       {
-        "internalType": "contract IBEP20",
+        "internalType": "contract IERC20",
         "name": "lpToken",
         "type": "address"
       },
@@ -559,11 +558,11 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_harvestInterval",
+        "name": "baseAllocPoint_",
         "type": "uint256"
       }
     ],
-    "name": "setHarvestInterval",
+    "name": "setBaseAllocPoint",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -571,12 +570,12 @@
   {
     "inputs": [
       {
-        "internalType": "contract IMigratorChef",
-        "name": "_migrator",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "_harvestInterval",
+        "type": "uint256"
       }
     ],
-    "name": "setMigrator",
+    "name": "setHarvestInterval",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -605,19 +604,6 @@
     "name": "setSpyReferral",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "spy",
-    "outputs": [
-      {
-        "internalType": "contract SpyToken",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -694,6 +680,19 @@
       }
     ],
     "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_spyPerBlock",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateEmissionRate",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

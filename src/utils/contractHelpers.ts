@@ -103,7 +103,7 @@ export const getCakeContract = (signer?: ethers.Signer | ethers.providers.Provid
   return getContract(cakeAbi, tokens.cake.address, signer)
 }
 export const getUSDCContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
-  return getContract(bep20Abi, tokens.cake.address, signer)
+  return getContract(bep20Abi, tokens.usdc.address, signer)
 }
 export const getPrivateSaleContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
   return getContract(privateSaleAbi, address, signer)

@@ -29,11 +29,15 @@
       "last 1 safari version"
     ]
   },
+  "engines": {
+    "npm": "6.14.15",
+    "node": "14.18.0"
+  },
   "dependencies": {
     "@binance-chain/bsc-connector": "^1.0.0",
     "@ethersproject/experimental": "^5.0.1",
-    "@pancakeswap/sdk": "^2.4.0",
-    "@pancakeswap/uikit": "^0.55.0",
+    "@pancakeswap/sdk": "../pancake-swap-sdk",
+    "@pancakeswap/uikit": "../pancake-toolkit/packages/pancake-uikit",
     "@reduxjs/toolkit": "^1.5.0",
     "@types/multicodec": "^1.0.0",
     "@types/node": "^13.13.5",
