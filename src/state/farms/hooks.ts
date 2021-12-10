@@ -41,7 +41,7 @@ const deserializeFarm = (farm: SerializedFarm): DeserializedFarm => {
     tokenPriceVsQuote: farm.tokenPriceVsQuote ? new BigNumber(farm.tokenPriceVsQuote) : BIG_ZERO,
     poolWeight: farm.poolWeight ? new BigNumber(farm.poolWeight) : BIG_ZERO,
     harvestInterval: farm.harvestInterval ? new BigNumber(farm.harvestInterval) : BIG_ZERO,
-    spyPerBlock: farm.spyPerBlock ? new BigNumber(farm.spyPerBlock) : BIG_ZERO,
+    crowPerBlock: farm.crowPerBlock ? new BigNumber(farm.crowPerBlock) : BIG_ZERO,
   }
 }
 
@@ -84,7 +84,7 @@ export const usePollCoreFarmData = () => {
   const { fastRefresh } = useRefresh()
 
   useEffect(() => {
-    dispatch(fetchFarmsPublicDataAsync([1, 3]))
+    dispatch(fetchFarmsPublicDataAsync([2, 3]))
   }, [dispatch, fastRefresh])
 }
 

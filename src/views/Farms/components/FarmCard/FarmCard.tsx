@@ -56,7 +56,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
       : ''
 
   const lpLabel = farm.lpSymbol && farm.lpSymbol.toUpperCase().replace('PANCAKE', '')
-  const earnLabel = farm.dual ? farm.dual.earnLabel : t('SPY + Fees')
+  const earnLabel = farm.dual ? farm.dual.earnLabel : t('CROW + Fees')
 
   const liquidityUrlPathParts = getLiquidityUrlPathParts({
     quoteTokenAddress: farm.quoteToken.address,
@@ -83,7 +83,6 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
               {farm.apr ? (
                 <ApyButton
                   variant="text-and-button"
-                  harvestInterval={farm.harvestInterval}
                   pid={farm.pid}
                   lpSymbol={farm.lpSymbol}
                   multiplier={farm.multiplier}

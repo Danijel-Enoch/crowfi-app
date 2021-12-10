@@ -10,7 +10,7 @@ import { BIG_ONE, BIG_ZERO } from 'utils/bigNumber'
  */
 export const filterFarmsByQuoteToken = (
   farms: SerializedFarm[],
-  preferredQuoteTokens: string[] = ['BUSD', 'WBNB'],
+  preferredQuoteTokens: string[] = ['USDC', 'WCRO'],
 ): SerializedFarm => {
   const preferredFarm = farms.find((farm) => {
     return preferredQuoteTokens.some((quoteToken) => {

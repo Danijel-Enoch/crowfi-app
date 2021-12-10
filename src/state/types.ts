@@ -83,7 +83,7 @@ export interface SerializedFarm extends SerializedFarmConfig {
   tokenPriceVsQuote?: SerializedBigNumber
   poolWeight?: SerializedBigNumber
   harvestInterval?: SerializedBigNumber
-  spyPerBlock?: SerializedBigNumber
+  crowPerBlock?: SerializedBigNumber
   userData?: SerializedFarmUserData
 }
 
@@ -96,7 +96,7 @@ export interface DeserializedFarm extends DeserializedFarmConfig {
   tokenPriceVsQuote?: BigNumber
   poolWeight?: BigNumber
   harvestInterval?: BigNumber
-  spyPerBlock?: BigNumber
+  crowPerBlock?: BigNumber
   userData?: DeserializedFarmUserData
 }
 

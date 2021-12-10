@@ -9,7 +9,7 @@ const farms: SerializedFarmConfig[] = [
    */
    {
     pid: 1,
-    lpSymbol: 'USDC-CROW',
+    lpSymbol: 'USDC-CROW LP',
     lpAddresses: {
       97: '0xe9412a9809FadBbaCd8D1bd024E6280f05Bd2437',
       56: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',

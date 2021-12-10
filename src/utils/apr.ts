@@ -32,12 +32,12 @@ export const getPoolApr = (
  */
 export const getFarmApr = (
   poolWeight: BigNumber,
-  spyPerBlock: BigNumber,
+  crowPerBlock: BigNumber,
   cakePriceUsd: BigNumber,
   poolLiquidityUsd: BigNumber,
   farmAddress: string,
 ): { cakeRewardsApr: number; lpRewardsApr: number } => {
-  const yearlyCakeRewardAllocation = poolWeight ? poolWeight.times(spyPerBlock).times(BLOCKS_PER_YEAR) : new BigNumber(NaN)
+  const yearlyCakeRewardAllocation = poolWeight ? poolWeight.times(crowPerBlock).times(BLOCKS_PER_YEAR) : new BigNumber(NaN)
   const cakeRewardsApr = yearlyCakeRewardAllocation.times(cakePriceUsd).div(poolLiquidityUsd).times(100)
   let cakeRewardsAprAsNumber = null
   if (!cakeRewardsApr.isNaN() && cakeRewardsApr.isFinite()) {

@@ -76,7 +76,7 @@ export const cronosTestTokens = {
   ),
   wcro: new Token(
     CRONOSTESTNET,
-    '0xDd7FBd7e655DE4B8eccb2B3254F6B69B569F0A9a',
+    '0xdd7fbd7e655de4b8eccb2b3254f6b69b569f0a9a',
     18,
     'WCRO',
     'Wrapped CRO',
@@ -90,6 +90,7 @@ export const cronosTestTokens = {
     'Crow Token',
     'https://crowfi.app',
   ),
+  pcrow: new Token(CRONOSTESTNET, '0xf7F778D7dbbEff45128B467070620C5e018ea58d', 18, 'PCROW', 'Crow Presale Token', 'https://crowfi.app/'),
   busd: new Token(
     CRONOSTESTNET,
     '0x6A21673bB781C00ae176c640fb8AC8cab1019b60',
@@ -100,12 +101,14 @@ export const cronosTestTokens = {
   ),
   usdc: new Token(
     CRONOSTESTNET,
-    '0xDba521aD7B3d84c417a224f2830B9399d7180076',
+    '0xdba521ad7b3d84c417a224f2830b9399d7180076',
     6,
     'USDC',
     'USD Coin',
     'https://www.centre.io/usdc',
   ),
+  crow1: new Token(CRONOSTESTNET, '0xe4e4750Ec8ff4C2E489F40906f7412dEf221cc82', 0, 'CROW!', 'CROW Token1', 'https://crowfi.com'),
+  crow2: new Token(CRONOSTESTNET, '0xe4e4750Ec8ff4C2E489F40906f7412dEf221cc82', 0, 'CROW2', 'CROW Token2', 'https://crowfi.com'),
   msc: new Token(CRONOSTESTNET, '0xb3ae8E5bccebD6F7002C3bF1D5713477B16f8791', 18, 'MSC', 'MyShitCoin', ''),
   spy: new Token(CRONOSTESTNET, '0x6F25144001Ce324E745c3FF25a646A292883feD5', 0, 'SPY', 'SmartyPay Token', 'https://smartypay.io'),
 }
