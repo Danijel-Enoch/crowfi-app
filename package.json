@@ -1,7 +1,7 @@
 {
   "name": "crowfi-frontend",
   "version": "0.1.0",
-  "homepage": "http://coderighter2.github.io/crowfi-app",
+  "homepage": "http://crowfi.app/",
   "private": true,
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
