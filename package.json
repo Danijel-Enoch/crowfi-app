@@ -1,7 +1,7 @@
 {
-  "name": "spy-farming",
+  "name": "crowfi-frontend",
   "version": "0.1.0",
-  "homepage": "http://app.spy-token.io/",
+  "homepage": "http://coderighter2.github.io/crowfi-frontend",
   "private": true,
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
@@ -15,7 +15,9 @@
     "format:check": "prettier --check '**/*.{js,jsx,ts,tsx}'",
     "format:write": "prettier --write '**/*.{js,jsx,ts,tsx}'",
     "updateLPsAPR": "NODE_PATH=./src ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/updateLPsAPR.ts",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "browserslist": {
     "production": [
