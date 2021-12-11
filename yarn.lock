@@ -3463,8 +3463,9 @@
     eslint-plugin-react "^7.21.5"
     eslint-plugin-react-hooks "^4.0.0"
 
-"@pancakeswap/sdk@../pancake-swap-sdk":
+"@pancakeswap/sdk@https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?crowfi_test":
   version "2.4.0"
+  resolved "https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?crowfi_test#dc32ccb5d24d7069bb868a6075b4c1eff3c409ed"
   dependencies:
     "@pancakeswap-libs/pancake-swap-core" "^0.1.0"
     big.js "^5.2.2"
@@ -3474,8 +3475,9 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pancakeswap/uikit@../pancake-toolkit/packages/pancake-uikit":
+"@pancakeswap/uikit@https://gitpkg.now.sh/coderighter2/pancake-toolkit/packages/pancake-uikit?29ceaae37458ac5e20461c47616a9d1b7baeabd0":
   version "0.58.0"
+  resolved "https://gitpkg.now.sh/coderighter2/pancake-toolkit/packages/pancake-uikit?29ceaae37458ac5e20461c47616a9d1b7baeabd0#8448b97bbfbf649dd13d1bd6c90954ad14d14d99"
   dependencies:
     "@popperjs/core" "^2.9.2"
     "@types/lodash" "^4.14.168"
