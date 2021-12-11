@@ -32,10 +32,6 @@
       "last 1 safari version"
     ]
   },
-  "engines": {
-    "npm": "6.14.15",
-    "node": "14.18.0"
-  },
   "dependencies": {
     "@binance-chain/bsc-connector": "^1.0.0",
     "@ethersproject/experimental": "^5.0.1",
