@@ -12,22 +12,22 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     showItemsOnMobile: false,
     items: [
       {
-        label: t('Exchange'),
+        label: t('Token Exchange'),
         href: '/swap',
       },
       {
-        label: t('Liquidity'),
+        label: t('Liquidity Pairs'),
         href: '/liquidity',
       },
     ],
   },
   {
-    label: t('Farms'),
+    label: t('Nests'),
     href: '/farms',
     icon: 'Earn',
     items: [
       {
-        label: t('Farms'),
+        label: t('Nests'),
         href: '/farms',
       },
       // {
@@ -42,7 +42,7 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     icon: 'Earn',
     items: [
       {
-        label: t('privatesales'),
+        label: t('Private Sales'),
         href: '/privatesales',
       },
     ],

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import BigNumber from 'bignumber.js'
+import moment from 'moment'
+import 'moment-timezone'
 import styled from 'styled-components'
 import { Card, Flex, Text, Skeleton, Heading } from '@pancakeswap/uikit'
 import { DeserializedPrivateSale } from 'state/types'
@@ -7,7 +9,6 @@ import { getBalanceAmount, getBalanceNumber } from 'utils/formatBalance'
 import { useTranslation } from 'contexts/Localization'
 import PrivateSaleBuyCard from './PrivateSaleBuyCard'
 import PrivateSaleClaimCard from './PrivateSaleClaimCard'
-
 
 const StyledWrapper= styled(Flex)`
 `
@@ -57,31 +58,41 @@ const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account }) => {
           {sale.name}
           </Heading>
           <Text fontSize="16px">
-            {t('Join the CrowFi Private Sales and get tokens at a cheaper price.')}
+            {t(sale.desc, {date : sale.startDate?.toDateString()})}
           </Text>
           { 
             status === SaleStatus.NOT_STARTED ?  
             (
-              <Text fontSize="16px">
-                {t('It starts on')}&nbsp;{sale.startDate?.toDateString()}, listing price ${sale.price}
-              </Text>
+              <>
+                <Text fontSize="16px">
+                  {t('Beginning on')}&nbsp; {sale.startDate ? moment.utc(sale.startDate).format('ddd MMM Do, h A z') : ''}
+                </Text>
+                <Text fontSize="16px">
+                  Price per token ${sale.price}
+                </Text>
+              </>
             )
             : status === SaleStatus.ACTIVE ?  
             (
-              <Text fontSize="16px">
-                {t('It ends on')}&nbsp;{sale.endDate?.toDateString()}, listing price ${sale.price}
-              </Text>
+              <>
+                <Text fontSize="16px">
+                  {t('It ends on')}&nbsp;{sale.endDate ? moment.utc(sale.endDate).format('ddd MMM Do, h A z') : ''}
+                </Text>
+                <Text fontSize="16px">
+                  Price per token ${sale.price}
+                </Text>
+              </>
             )
             : status === SaleStatus.ENDED ?  
             (
               <Text fontSize="16px">
-                {t('All sold and claim will be start on')}&nbsp;{sale.claimStartDate?.toDateString()}
+                {t('All sold and claim will be start on')}&nbsp;{sale.claimStartDate ? moment.utc(sale.claimStartDate).format('ddd MMM Do, h A z') : ''}
               </Text>
             )
             : status === SaleStatus.CLAIMING ?  
             (
               <Text fontSize="16px">
-                {t('Claim will be end on ')}&nbsp;{sale.claimEndDate?.toDateString()}
+                {t('Claim will be end on ')}&nbsp;{sale.claimEndDate ? moment.utc(sale.claimEndDate).format('ddd MMM Do, h A z') : ''}
               </Text>
             )
             : 

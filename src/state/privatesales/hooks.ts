@@ -23,7 +23,7 @@ const deserializePrivateSaleUserData = (sale: SerializedPrivateSale): Deserializ
 }
 
 const deserializePrivateSale = (privatesale: SerializedPrivateSale): DeserializedPrivateSale => {
-  const { type, manager, price, name, startDate, endDate, claimStartDate, claimEndDate, claimDays, claimPercents } = privatesale
+  const { type, manager, price, name, desc, startDate, endDate, claimStartDate, claimEndDate, claimDays, claimPercents } = privatesale
 
   return {
     type,
@@ -32,6 +32,7 @@ const deserializePrivateSale = (privatesale: SerializedPrivateSale): Deserialize
     quoteToken: deserializeToken(privatesale.quoteToken),
     price,
     name,
+    desc,
     startDate: startDate? new Date(startDate * 1000) : undefined,
     endDate: endDate? new Date(endDate * 1000) : undefined,
     claimStartDate: claimStartDate ? new Date(claimStartDate * 1000) : undefined,
