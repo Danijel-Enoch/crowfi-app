@@ -70,6 +70,15 @@ const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account }) => {
                 <Text fontSize="16px">
                   Price per token ${sale.price}
                 </Text>
+
+                {
+                  sale.whitelistEnabled && !sale.userData?.whitelisted &&
+                  (
+                    <Text fontSize="16px" color="warn">
+                      ( You are not white-listed )
+                    </Text>
+                  )
+                }
               </>
             )
             : status === SaleStatus.ACTIVE ?  
@@ -78,9 +87,18 @@ const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account }) => {
                 <Text fontSize="16px">
                   {t('It ends on')}&nbsp;{sale.endDate ? moment.utc(sale.endDate).format('ddd MMM Do, h A z') : ''}
                 </Text>
-                <Text fontSize="16px">
+                <Text fontSize="16px" color="warn">
                   Price per token ${sale.price}
                 </Text>
+
+                {
+                  sale.whitelistEnabled && !sale.userData?.whitelisted &&
+                  (
+                    <Text fontSize="16px">
+                      ( You are not white-listed )
+                    </Text>
+                  )
+                }
               </>
             )
             : status === SaleStatus.ENDED ?  
@@ -130,7 +148,7 @@ const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account }) => {
             <PrivateSaleClaimCard account={account} sale={sale} enabled={status === SaleStatus.CLAIMING}/>
           )}
           { (status === SaleStatus.ACTIVE  || status === SaleStatus.NOT_STARTED) && (
-            <PrivateSaleBuyCard account={account} sale={sale} enabled={status === SaleStatus.ACTIVE} />
+            <PrivateSaleBuyCard account={account} sale={sale} enabled={status === SaleStatus.ACTIVE && (!sale.whitelistEnabled || sale.userData?.whitelisted)} />
           )}
           
         </SectionWrapper>

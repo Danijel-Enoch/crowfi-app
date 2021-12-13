@@ -32,6 +32,7 @@ interface SerializedPrivateSaleUserData {
   purchasedBalance: string
   claimedBalance: string
   claimableBalance: string
+  whitelisted: boolean
 }
 
 export interface DeserializedPrivateSaleUserData {
@@ -40,6 +41,7 @@ export interface DeserializedPrivateSaleUserData {
   purchasedBalance: BigNumber
   claimedBalance: BigNumber
   claimableBalance: BigNumber
+  whitelisted: boolean
 }
 
 export interface SerializedPrivateSale extends SerializedPrivateSaleConfig {
@@ -49,6 +51,7 @@ export interface SerializedPrivateSale extends SerializedPrivateSaleConfig {
   endBlock?: SerializedBigNumber
   claimStartBlock?: SerializedBigNumber
   claimEndBlock?: SerializedBigNumber
+  whitelistEnabled: boolean
 }
 
 export interface DeserializedPrivateSale extends DeserializedPrivateSaleConfig {
@@ -58,6 +61,7 @@ export interface DeserializedPrivateSale extends DeserializedPrivateSaleConfig {
   endBlock?: BigNumber
   claimStartBlock?: BigNumber
   claimEndBlock?: BigNumber
+  whitelistEnabled: boolean
 }
 
 interface SerializedFarmUserData {

@@ -234,6 +234,7 @@ export interface PrivateSaleBaseProps {
   price: number
   name: string
   desc: string
+  whitelistEnabled: boolean
 }
 export interface SerializedPrivateSaleConfig extends PrivateSaleBaseProps {
   tempToken: SerializedToken
