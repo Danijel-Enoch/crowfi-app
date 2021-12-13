@@ -12,7 +12,7 @@ const privatesales: SerializedPrivateSaleConfig[] = [
             97: '0xFB45aF3Fe47334e8c3c1F6EaA8e9a1E17Df30f11',
             56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
             338: '0xd343aE7540B92fE01688c37C8CCa19eaDcc32F76',
-            25: '0x493A548fE6266B964b75dB3027adb1DF70fDf71F',
+            25: '0xd5906BD352e04758e61E5c71EEc5ee1eEAA0Ef29',
         },
         tempToken: serializedTokens.pcrow,
         quoteToken: serializedTokens.usdc,
@@ -27,7 +27,7 @@ const privatesales: SerializedPrivateSaleConfig[] = [
             97: '0x3b6d2c589a778FA053d1a4730895009d67BAa8DC',
             56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
             338: '0x80E3989a551253a9dB4d0720436e17f342F1c512',
-            25: '0x967a3E1C4deA0888636A25967e47A8eC654a204d',
+            25: '0x9d2093b8c6Fe98475A6E831CF8cC04Eb45e89bFd',
         },
         tempToken: serializedTokens.pcrow,
         quoteToken: serializedTokens.usdc,
@@ -42,11 +42,11 @@ const privatesales: SerializedPrivateSaleConfig[] = [
             97: '0x83Fe700A857d41DEA8FE340295Ce1c5e01350225',
             56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
             338: '0xdEd4fb33637Cf5330e09a71ac410993651dcC65F',
-            25: '0xDba521aD7B3d84c417a224f2830B9399d7180076',
+            25: '0x23435F3454E240B8af58ddc3e210388C5574e3a0',
         },
         tempToken: serializedTokens.pcrow,
         quoteToken: serializedTokens.usdc,
-        whitelistEnabled: true
+        whitelistEnabled: false
     }
 ]
 

@@ -18,7 +18,7 @@ type PublicPrivateSaleData = {
   claimEndDate: number,
   claimDays:number[],
   claimPercents:number[],
-  whitelistEnabled: true
+  whitelistEnabled: boolean
 }
 
 const fetchPrivateSale = async (sale: SerializedPrivateSale): Promise<PublicPrivateSaleData> => {
@@ -79,7 +79,7 @@ const fetchPrivateSale = async (sale: SerializedPrivateSale): Promise<PublicPriv
     claimEndDate: new BigNumber(claimEndTime).toNumber(),
     claimDays,
     claimPercents,
-    whitelistEnabled
+    whitelistEnabled: whitelistEnabled[0]
   }
 }
 
