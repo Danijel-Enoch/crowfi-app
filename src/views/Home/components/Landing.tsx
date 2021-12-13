@@ -86,7 +86,7 @@ const Landing = () => {
               {t('We are Crow Finance')}
             </Heading>
             <Text textAlign="center" color="primary" fontSize="24px" mb="36px" >
-              {t('Built on the Cronos Network. Stake & Swap from your wallet Launch app')}
+              {t('Built on the Cronos Network. Stake & Swap from your wallet')}
             </Text>
             <Link to="/swap">
               <Button >{t('Launch App')}</Button>
@@ -109,7 +109,7 @@ const Landing = () => {
                   {t('Our Vision')}
                 </Heading>
                 <Text fontSize="24px" textAlign="center">
-                  {t('Crow Finance, also known as CrowFi, will provide a secure platform to reclaim control of your finances. You will get to manage and earn on your assets yourself without the need for banks and other middlemen, which creates a truly community-owned financial system.')}
+                  {t('Crow Finance, also known as CrowFi, provide a secure platform to reclaim control of your finances. You will get to manage and earn on your assets without the need for banks and other middlemen, creating a truly community-owned financial system.')}
                 </Text>
               </TextSectionWrapper>
             </Flex>
@@ -122,7 +122,7 @@ const Landing = () => {
                   {t('Decentralized & Efficient')}
                 </Heading>
                 <Text fontSize="24px" textAlign="center">
-                  {t('Crow is a decentralized currency that does not discriminate. Any individual or business can realize the advantages of digital finance.')}
+                  {t('Crow is a decentralized currency that does not discriminate. Any individual or business can realize the advantages of finance.')}
                 </Text>
               </TextSectionWrapper>
             </Flex>
