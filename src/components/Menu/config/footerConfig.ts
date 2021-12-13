@@ -69,7 +69,7 @@ export const footerLinks: (t: ContextApi['t']) => FooterLinkType[] = (t) => [
   //     },
   //     {
   //       label: t('Audits'),
-  //       href: 'https://docs.crowfi.app/help/faq#is-pancakeswap-safe-has-pancakeswap-been-audited',
+  //       href: 'https://docs.crowfi.app/help/faq#audits,
   //     },
   //     {
   //       label: t('Careers'),

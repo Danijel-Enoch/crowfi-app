@@ -17,10 +17,10 @@ export const getLotteryV2Address = () => {
   return getAddress(addresses.lotteryV2)
 }
 export const getPancakeProfileAddress = () => {
-  return getAddress(addresses.pancakeProfile)
+  return getAddress(addresses.crowfiProfile)
 }
 export const getPancakeRabbitsAddress = () => {
-  return getAddress(addresses.pancakeRabbits)
+  return getAddress(addresses.crowfiRabbits)
 }
 export const getBunnyFactoryAddress = () => {
   return getAddress(addresses.bunnyFactory)
@@ -71,7 +71,7 @@ export const getNftSaleAddress = () => {
   return getAddress(addresses.nftSale)
 }
 export const getPancakeSquadAddress = () => {
-  return getAddress(addresses.pancakeSquad)
+  return getAddress(addresses.crowfiSquad)
 }
 export const getReferralAddress = () => {
   return getAddress(addresses.referral)

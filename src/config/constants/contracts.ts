@@ -20,11 +20,11 @@ export default {
     338: '0x183A41B49A8ebA3585b923115162fed03f5B1Ad9',
     25: '0xB0A8997bA829a5A75a38464B29Aa85419c192ECc'
   },
-  pancakeProfile: {
+  crowfiProfile: {
     56: '0xDf4dBf6536201370F95e06A0F8a7a70fE40E388a',
     97: '0x4B683C7E13B6d5D7fd1FeA9530F451954c1A7c8A',
   },
-  pancakeRabbits: {
+  crowfiRabbits: {
     56: '0xDf7952B35f24aCF7fC0487D01c8d5690a60DBa07',
     97: '0x60935F36e4631F73f0f407e68642144e07aC7f5E',
   },
@@ -92,7 +92,7 @@ export default {
     56: '0x29fE7148636b7Ae0b1E53777b28dfbaA9327af8E',
     97: '0xe486De509c5381cbdBF3e71F57D7F1f7570f5c46',
   },
-  pancakeSquad: {
+  crowfiSquad: {
     56: '0x0a8901b0E25DEb55A87524f0cC164E9644020EBA',
     97: '0xfC0c3F11fDA72Cb9A56F28Ec8D44C0ae4B3ABF86',
   },
