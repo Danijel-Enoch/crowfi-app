@@ -88,7 +88,7 @@ const Landing = () => {
             <Text textAlign="center" color="primary" fontSize="24px" mb="36px" >
               {t('Built on the Cronos Network. Stake & Swap from your wallet')}
             </Text>
-            <Link to="/swap">
+            <Link to="/privatesales">
               <Button >{t('Launch App')}</Button>
             </Link>
           </TextSectionWrapper>
@@ -143,7 +143,7 @@ const Landing = () => {
             <Text textAlign="center" color="primary" fontSize="24px" mb="36px">
               {t('For easier access to your crow finance wallet')}
             </Text>
-            <Link to="/swap">
+            <Link to="/privatesales">
               <Button >{t('Launch App')}</Button>
             </Link>
           </TextSectionWrapper>
