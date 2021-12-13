@@ -19,11 +19,12 @@ const deserializePrivateSaleUserData = (sale: SerializedPrivateSale): Deserializ
     purchasedBalance: sale.userData ? new BigNumber(sale.userData.purchasedBalance) : BIG_ZERO,
     claimableBalance: sale.userData ? new BigNumber(sale.userData.claimableBalance) : BIG_ZERO,
     claimedBalance: sale.userData ? new BigNumber(sale.userData.claimedBalance) : BIG_ZERO,
+    whitelisted: sale.userData ? sale.userData.whitelisted : false
   }
 }
 
 const deserializePrivateSale = (privatesale: SerializedPrivateSale): DeserializedPrivateSale => {
-  const { type, manager, price, name, desc, startDate, endDate, claimStartDate, claimEndDate, claimDays, claimPercents } = privatesale
+  const { type, manager, price, name, desc, startDate, endDate, claimStartDate, claimEndDate, claimDays, claimPercents, whitelistEnabled } = privatesale
 
   return {
     type,
@@ -44,6 +45,7 @@ const deserializePrivateSale = (privatesale: SerializedPrivateSale): Deserialize
     claimDays,
     claimPercents,
     userData: deserializePrivateSaleUserData(privatesale),
+    whitelistEnabled
   }
 }
 
@@ -91,8 +93,8 @@ export const usePrivateSaleFromType = (type: PrivateSaleType): DeserializedPriva
 
 export const usePrivateSaleUser = (type): DeserializedPrivateSaleUserData => {
   const { userData } = usePrivateSaleFromType(type)
-  const { tempAllowance, quoteAllowance, purchasedBalance, claimedBalance, claimableBalance } = userData
+  const { tempAllowance, quoteAllowance, purchasedBalance, claimedBalance, claimableBalance, whitelisted } = userData
   return {
-    tempAllowance, quoteAllowance, purchasedBalance, claimedBalance, claimableBalance
+    tempAllowance, quoteAllowance, purchasedBalance, claimedBalance, claimableBalance, whitelisted
   }
 }

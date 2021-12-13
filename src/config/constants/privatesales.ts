@@ -15,7 +15,8 @@ const privatesales: SerializedPrivateSaleConfig[] = [
             25: '0x493A548fE6266B964b75dB3027adb1DF70fDf71F',
         },
         tempToken: serializedTokens.pcrow,
-        quoteToken: serializedTokens.usdc
+        quoteToken: serializedTokens.usdc,
+        whitelistEnabled: true
     },
     {
         type: PrivateSaleType.privatesale,
@@ -29,7 +30,8 @@ const privatesales: SerializedPrivateSaleConfig[] = [
             25: '0x967a3E1C4deA0888636A25967e47A8eC654a204d',
         },
         tempToken: serializedTokens.pcrow,
-        quoteToken: serializedTokens.usdc
+        quoteToken: serializedTokens.usdc,
+        whitelistEnabled: true
     },
     {
         type: PrivateSaleType.preSale,
@@ -43,7 +45,8 @@ const privatesales: SerializedPrivateSaleConfig[] = [
             25: '0xDba521aD7B3d84c417a224f2830B9399d7180076',
         },
         tempToken: serializedTokens.pcrow,
-        quoteToken: serializedTokens.usdc
+        quoteToken: serializedTokens.usdc,
+        whitelistEnabled: true
     }
 ]
 

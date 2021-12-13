@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import masterchefABI from 'config/abi/masterchef.json'
 import presaleABI from 'config/abi/presale.json'
+import { getContractAddress } from 'ethers/lib/utils'
 import { getAddress, getMasterChefAddress } from 'utils/addressHelpers'
 import { BIG_TEN, BIG_ZERO } from 'utils/bigNumber'
 import multicall from 'utils/multicall'
@@ -16,7 +17,8 @@ type PublicPrivateSaleData = {
   claimStartDate: number,
   claimEndDate: number,
   claimDays:number[],
-  claimPercents:number[]
+  claimPercents:number[],
+  whitelistEnabled: true
 }
 
 const fetchPrivateSale = async (sale: SerializedPrivateSale): Promise<PublicPrivateSaleData> => {
@@ -55,9 +57,13 @@ const fetchPrivateSale = async (sale: SerializedPrivateSale): Promise<PublicPriv
       address: contactAddress,
       name: 'getStages',
     },
+    {
+      address: contactAddress,
+      name: 'whitelistEnabled',
+    },
   ]
 
-  const [presaleTokenPrice, startTime, endTime, startBlock, endBlock, claimStartTime, claimEndTime, stagesInfo] =
+  const [presaleTokenPrice, startTime, endTime, startBlock, endBlock, claimStartTime, claimEndTime, stagesInfo, whitelistEnabled] =
     await multicall(presaleABI, calls)
 
   const claimDays = stagesInfo[0].map( (day) => new BigNumber(day).toNumber())
@@ -72,7 +78,8 @@ const fetchPrivateSale = async (sale: SerializedPrivateSale): Promise<PublicPriv
     claimStartDate: new BigNumber(claimStartTime).toNumber(),
     claimEndDate: new BigNumber(claimEndTime).toNumber(),
     claimDays,
-    claimPercents
+    claimPercents,
+    whitelistEnabled
   }
 }
 

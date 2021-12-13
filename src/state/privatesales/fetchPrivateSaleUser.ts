@@ -99,3 +99,21 @@ export const fetchPrivateSaleUserClaimable = async (account: string, salesToFetc
   })
   return parsedTokenBalances
 }
+
+export const fetchPrivateSaleUserWhitelisted = async (account: string, salesToFetch: SerializedPrivateSaleConfig[]) => {
+  const calls = salesToFetch.map((sale) => {
+    const contractAddress = getAddress(sale.manager)
+    return {
+      address: contractAddress,
+      name: 'whitelist',
+      params: [account],
+    }
+  })
+
+  const whiteLists = await multicall(presaleABI, calls)
+  // const parsedwhitelists = whiteLists.map((whitelist) => {
+  //   // return new BigNumber(1e18).toJSON()
+  //   return whitelist
+  // })
+  return whiteLists
+}

@@ -8,7 +8,8 @@ import {
   fetchPrivateSaleUserClaimed,
   fetchPrivateSaleUserClaimable,
   fetchPrivateSaleTempTokenUserAllowances,
-  fetchPrivateSaleQuoteTokenUserAllowances
+  fetchPrivateSaleQuoteTokenUserAllowances,
+  fetchPrivateSaleUserWhitelisted
 } from './fetchPrivateSaleUser'
 
 import { SerializedPrivateSalesState, SerializedPrivateSale } from '../types'
@@ -21,6 +22,7 @@ const noAccountSalesConfig = salesConfig.map((farm) => ({
         purchasedBalance: '0',
         claimedBalance: '0',
         claimableBalance: '0',
+        whitelisted: false
     },
 }))
   
@@ -49,6 +51,7 @@ interface PrivateSaleUserDataResponse {
   purchasedBalance: string
   claimedBalance: string
   claimableBalance: string
+  whitelisted: boolean
 }
   
 export const fetchPrivateSalesUserDataAsync = createAsyncThunk<PrivateSaleUserDataResponse[], { account: string; types: PrivateSaleType[] }>(
@@ -60,6 +63,7 @@ async ({ account, types }) => {
     const userTally = await fetchPrivateSaleUserTally(account, salesToFetch);
     const userClaimed = await fetchPrivateSaleUserClaimed(account, salesToFetch);
     const userClaimable = await fetchPrivateSaleUserClaimable(account, salesToFetch);
+    const userWhitelists = await fetchPrivateSaleUserWhitelisted(account, salesToFetch);
 
     return userTally.map((tally, index) => {
         return {
@@ -69,6 +73,7 @@ async ({ account, types }) => {
             purchasedBalance: userTally[index],
             claimedBalance: userClaimed[index],
             claimableBalance: userClaimable[index],
+            whitelisted: userWhitelists[index],
         }
     })
 },
