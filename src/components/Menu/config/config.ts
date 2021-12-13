@@ -30,10 +30,10 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         label: t('Farms'),
         href: '/farms',
       },
-      {
-        label: t('Pools'),
-        href: '/pools',
-      },
+      // {
+      //   label: t('Pools'),
+      //   href: '/pools',
+      // },
     ],
   },
   {
@@ -63,21 +63,21 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
   //     },
   //   ],
   // },
-  {
-    label: t('NFT'),
-    href: `${nftsBaseUrl}`,
-    icon: 'Nft',
-    items: [
-      {
-        label: t('Overview'),
-        href: `${nftsBaseUrl}`,
-      },
-      {
-        label: t('Collections'),
-        href: `${nftsBaseUrl}/collections`,
-      },
-    ],
-  },
+  // {
+  //   label: t('NFT'),
+  //   href: `${nftsBaseUrl}`,
+  //   icon: 'Nft',
+  //   items: [
+  //     {
+  //       label: t('Overview'),
+  //       href: `${nftsBaseUrl}`,
+  //     },
+  //     {
+  //       label: t('Collections'),
+  //       href: `${nftsBaseUrl}/collections`,
+  //     },
+  //   ],
+  // },
   // {
   //   label: '',
   //   href: '/info',

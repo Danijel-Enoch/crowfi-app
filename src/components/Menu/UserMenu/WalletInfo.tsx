@@ -41,14 +41,6 @@ const WalletInfo: React.FC<WalletInfoProps> = ({ hasLowBnbBalance, onDismiss }) 
           </Box>
         </Message>
       )}
-      <Flex alignItems="center" justifyContent="space-between">
-        <Text color="textSubtle">{t('BNB Balance')}</Text>
-        {fetchStatus !== FetchStatus.SUCCESS ? (
-          <Skeleton height="22px" width="60px" />
-        ) : (
-          <Text>{formatBigNumber(balance, 6)}</Text>
-        )}
-      </Flex>
       <Flex alignItems="center" justifyContent="space-between" mb="24px">
         <Text color="textSubtle">{t('CROW Balance')}</Text>
         {crowFetchStatus !== FetchStatus.SUCCESS ? (
