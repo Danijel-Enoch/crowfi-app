@@ -5,7 +5,7 @@ export const DEFAULT_META: PageMeta = {
   title: 'Crow Finance',
   description:
     'CrowFi - Crow Finance is a One-Stop-DeFi-Shop! The ultimate Cross-Chain DEX of the Cronos Network. We provide you with tools to invest, trade & earn with ease.',
-  image: 'https://pancakeswap.finance/images/hero.png',
+  image: 'https://crowfi.app/logo.png',
 }
 
 export const getCustomMeta = (path: string, t: ContextApi['t']): PageMeta => {
