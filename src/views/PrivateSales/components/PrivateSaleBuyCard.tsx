@@ -36,7 +36,7 @@ interface PPrivateSaleBuyCardProps {
 
 const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled, account }) => {
   const [val, setVal] = useState('')
-  const [max, setMax] = useState(new BigNumber(2500e18))
+  const [max, setMax] = useState(new BigNumber(1000000e18))
   const { toastSuccess, toastError } = useToast()
   const [requestedApproval, setRequestedApproval] = useState(false)
   const { quoteAllowance } = sale.userData || {}
@@ -92,6 +92,8 @@ const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled,
     setVal(fullBalance)
   }, [fullBalance, setVal])
 
+  console.log(fullBalanceNumber.toJSON());
+
   const renderApprovalOrBuyButton = () => {
     return isApproved ? (
       <Button
@@ -118,7 +120,7 @@ const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled,
               price={sale.price}
               onChange={handleChange}
               value={val}
-              max='2500'
+              max='1000000'
               symbol="CROW"
             />
           </AutoColumn>
