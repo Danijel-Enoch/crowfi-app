@@ -21,11 +21,11 @@ const privatesales: SerializedPrivateSaleConfig[] = [
         type: PrivateSaleType.privatesale,
         name: 'Private Sale',
         desc: 'Participate in the exclusive CrowFi private sale to get tokens at an incredible price!',
-        price: 0.015,
+        price: 0.014,
         manager: {
             97: '0x3b6d2c589a778FA053d1a4730895009d67BAa8DC',
             56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
-            338: '0xEB01b7f68035BFbCa7095410e4DE8385e9C53FE5',
+            338: '0x80E3989a551253a9dB4d0720436e17f342F1c512',
             25: '0xEB01b7f68035BFbCa7095410e4DE8385e9C53FE5',
         },
         tempToken: serializedTokens.pcrow,
