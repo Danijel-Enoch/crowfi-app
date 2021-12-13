@@ -134,7 +134,7 @@ const App: React.FC = () => {
               <NftMarket />
             </Route>
 
-            <Route path="/pancake-squad">
+            <Route path="/crowfi-squad">
               <PancakeSquad />
             </Route>
 

@@ -24,8 +24,8 @@ export const getCustomMeta = (path: string, t: ContextApi['t']): PageMeta => {
     basePath = '/nfts/collections'
   } else if (path.startsWith('/nfts/profile')) {
     basePath = '/nfts/profile'
-  } else if (path.startsWith('/pancake-squad')) {
-    basePath = '/pancake-squad'
+  } else if (path.startsWith('/crowfi-squad')) {
+    basePath = '/crowfi-squad'
   } else {
     basePath = path
   }
@@ -133,10 +133,6 @@ export const getCustomMeta = (path: string, t: ContextApi['t']): PageMeta => {
     case '/nfts/profile':
       return {
         title: `${t('Your Profile')} | ${t('CrowFi')}`,
-      }
-    case '/pancake-squad':
-      return {
-        title: `${t('Pancake Squad')} | ${t('CrowFi')}`,
       }
     default:
       return null
