@@ -66,7 +66,7 @@ const Footer = () => {
             id="clickExchangeHelp"
             as="a"
             external
-            href="https://docs.pancakeswap.finance/products/pancakeswap-exchange"
+            href="https://docs.crowfi.app/products/pancakeswap-exchange"
             variant="subtle"
           >
             {t('Need help ?')}

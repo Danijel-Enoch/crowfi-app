@@ -1,0 +1,38 @@
+{
+  "name": "CrowFi Default List",
+  "timestamp": "2021-05-06T00:00:00Z",
+  "version": {
+    "major": 3,
+    "minor": 0,
+    "patch": 0
+  },
+  "tags": {},
+  "logoURI": "https://crowfi.app/logo.png",
+  "keywords": ["pancake", "default"],
+  "tokens": [
+    {
+      "name": "WCRO Token",
+      "symbol": "WCRO",
+      "address": "0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23",
+      "chainId": 25,
+      "decimals": 18,
+      "logoURI": "https://crowfi.app/images/tokens/0x5c7f8a570d578ed84e63fdfa7b1ee72deae1ae23.svg"
+    },
+    {
+      "name": "USD Coin",
+      "symbol": "USDC",
+      "address": "0xc21223249CA28397B4B6541dfFaEcC539BfF0c59",
+      "chainId": 25,
+      "decimals": 6,
+      "logoURI": "https://crowfi.app/images/tokens/0xdba521ad7b3d84c417a224f2830b9399d7180076.svg"
+    },
+    {
+      "name": "Crow Token",
+      "symbol": "CROW",
+      "address": "0x285c3329930a3fd3C7c14bC041d3E50e165b1517",
+      "chainId": 25,
+      "decimals": 6,
+      "logoURI": "https://crowfi.app/images/tokens/0xf9872a4ea77278f06613a817d563012bfc7761b3.svg"
+    }
+  ]
+}
