@@ -5,37 +5,37 @@ import { nftsBaseUrl } from 'views/Nft/market/constants'
 export type ConfigMenuItemsType = MenuItemsType & { hideSubNav?: boolean }
 
 const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
-  {
-    label: t('Trade'),
-    icon: 'Trade',
-    href: '/swap',
-    showItemsOnMobile: false,
-    items: [
-      {
-        label: t('Exchange'),
-        href: '/swap',
-      },
-      {
-        label: t('Liquidity'),
-        href: '/liquidity',
-      },
-    ],
-  },
-  {
-    label: t('Farms'),
-    href: '/farms',
-    icon: 'Earn',
-    items: [
-      {
-        label: t('Farms'),
-        href: '/farms',
-      },
-      // {
-      //   label: t('Pools'),
-      //   href: '/pools',
-      // },
-    ],
-  },
+  // {
+  //   label: t('Trade'),
+  //   icon: 'Trade',
+  //   href: '/swap',
+  //   showItemsOnMobile: false,
+  //   items: [
+  //     {
+  //       label: t('Exchange'),
+  //       href: '/swap',
+  //     },
+  //     {
+  //       label: t('Liquidity'),
+  //       href: '/liquidity',
+  //     },
+  //   ],
+  // },
+  // {
+  //   label: t('Farms'),
+  //   href: '/farms',
+  //   icon: 'Earn',
+  //   items: [
+  //     {
+  //       label: t('Farms'),
+  //       href: '/farms',
+  //     },
+  //     // {
+  //     //   label: t('Pools'),
+  //     //   href: '/pools',
+  //     // },
+  //   ],
+  // },
   {
     label: t('Private Sales'),
     href: '/privatesales',
