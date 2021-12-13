@@ -346,7 +346,7 @@ const HowToPlay: React.FC = () => {
           <Text>
             {t('Check our in-depth guide on')}{' '}
             <InlineLink href="https://docs.crowfi.app/products/lottery/lottery-guide">
-              {t('how to play the PancakeSwap lottery!')}
+              {t('how to play the CrowFi lottery!')}
             </InlineLink>
           </Text>
         </Flex>
