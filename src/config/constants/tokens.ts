@@ -146,7 +146,7 @@ export const cronosTokens = {
     'Crow Token',
     'https://crowfi.app',
   ),
-  pcrow: new Token(CRONOS, '0xf7F778D7dbbEff45128B467070620C5e018ea58d', 18, 'PCROW', 'Crow Presale Token', 'https://crowfi.app/'),
+  pcrow: new Token(CRONOS, '0x6AA7C188E9b9C8006B4DAe6b7Dc72C2790789bC6', 18, 'PCROW', 'Crow Presale Token', 'https://crowfi.app/'),
   busd: new Token(
     CRONOS,
     '0x6A21673bB781C00ae176c640fb8AC8cab1019b60',

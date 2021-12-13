@@ -73,7 +73,7 @@ async ({ account, types }) => {
             purchasedBalance: userTally[index],
             claimedBalance: userClaimed[index],
             claimableBalance: userClaimable[index],
-            whitelisted: userWhitelists[index],
+            whitelisted: userWhitelists[index][0],
         }
     })
 },
