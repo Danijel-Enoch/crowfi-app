@@ -33,7 +33,7 @@ const UserMenu = () => {
   const hasProfile = isInitialized && !!profile
   const avatarSrc = profile?.nft?.image?.thumbnail
   const hasLowBnbBalance = fetchStatus === FetchStatus.SUCCESS && balance.lte(LOW_BNB_BALANCE)
-  const { balance: crowBalance, fetchStatus: spyFetchStatus } = useTokenBalance(tokens.crow.address)
+  const { balance: crowBalance, fetchStatus: _ } = useTokenBalance(tokens.crow.address)
 
   if (!account) {
     return <ConnectWalletButton scale="sm" />
