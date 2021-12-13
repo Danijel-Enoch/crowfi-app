@@ -11,6 +11,7 @@ const privatesales: SerializedPrivateSaleConfig[] = [
             97: '0xFB45aF3Fe47334e8c3c1F6EaA8e9a1E17Df30f11',
             56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
             338: '0xd343aE7540B92fE01688c37C8CCa19eaDcc32F76',
+            25: '0xd343aE7540B92fE01688c37C8CCa19eaDcc32F76',
         },
         tempToken: serializedTokens.pcrow,
         quoteToken: serializedTokens.usdc
@@ -23,6 +24,7 @@ const privatesales: SerializedPrivateSaleConfig[] = [
             97: '0x3b6d2c589a778FA053d1a4730895009d67BAa8DC',
             56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
             338: '0xEB01b7f68035BFbCa7095410e4DE8385e9C53FE5',
+            25: '0xEB01b7f68035BFbCa7095410e4DE8385e9C53FE5',
         },
         tempToken: serializedTokens.pcrow,
         quoteToken: serializedTokens.usdc
@@ -35,6 +37,7 @@ const privatesales: SerializedPrivateSaleConfig[] = [
             97: '0x83Fe700A857d41DEA8FE340295Ce1c5e01350225',
             56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
             338: '0xdEd4fb33637Cf5330e09a71ac410993651dcC65F',
+            25: '0xdEd4fb33637Cf5330e09a71ac410993651dcC65F',
         },
         tempToken: serializedTokens.pcrow,
         quoteToken: serializedTokens.usdc
