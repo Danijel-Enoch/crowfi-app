@@ -37,7 +37,7 @@ export const getCustomMeta = (path: string, t: ContextApi['t']): PageMeta => {
       }
     case '/swap':
       return {
-        title: `${t('Exchange')} | ${t('CrowFi')}`,
+        title: `${t('Token Exchange')} | ${t('CrowFi')}`,
       }
     case '/add':
       return {
@@ -49,7 +49,11 @@ export const getCustomMeta = (path: string, t: ContextApi['t']): PageMeta => {
       }
     case '/liquidity':
       return {
-        title: `${t('Liquidity')} | ${t('CrowFi')}`,
+        title: `${t('Liquidity Pairs')} | ${t('CrowFi')}`,
+      }
+    case '/privatesales':
+      return {
+        title: `${t('Private Sales')} | ${t('CrowFi')}`,
       }
     case '/find':
       return {
@@ -69,7 +73,7 @@ export const getCustomMeta = (path: string, t: ContextApi['t']): PageMeta => {
       }
     case '/farms':
       return {
-        title: `${t('Farms')} | ${t('CrowFi')}`,
+        title: `${t('Nests')} | ${t('CrowFi')}`,
       }
     case '/farms/auction':
       return {

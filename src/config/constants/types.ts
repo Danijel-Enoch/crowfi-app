@@ -233,6 +233,7 @@ export interface PrivateSaleBaseProps {
   manager: Address,
   price: number
   name: string
+  desc: string
 }
 export interface SerializedPrivateSaleConfig extends PrivateSaleBaseProps {
   tempToken: SerializedToken

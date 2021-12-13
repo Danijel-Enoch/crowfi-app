@@ -6,6 +6,7 @@ const privatesales: SerializedPrivateSaleConfig[] = [
     {
         type: PrivateSaleType.seedsale,
         name: 'Seed Sale',
+        desc: 'Participate in the CrowFi seed sale and receive Crow Tokens at the best price possible!',
         price: 0.01,
         manager: {
             97: '0xFB45aF3Fe47334e8c3c1F6EaA8e9a1E17Df30f11',
@@ -19,6 +20,7 @@ const privatesales: SerializedPrivateSaleConfig[] = [
     {
         type: PrivateSaleType.privatesale,
         name: 'Private Sale',
+        desc: 'Participate in the exclusive CrowFi private sale to get tokens at an incredible price!',
         price: 0.015,
         manager: {
             97: '0x3b6d2c589a778FA053d1a4730895009d67BAa8DC',
@@ -31,7 +33,8 @@ const privatesales: SerializedPrivateSaleConfig[] = [
     },
     {
         type: PrivateSaleType.preSale,
-        name: 'Pre Sale',
+        name: 'Public Pre Sale',
+        desc: 'Join the public pre sale and receive tokens at a great price!',
         price: 0.018,
         manager: {
             97: '0x83Fe700A857d41DEA8FE340295Ce1c5e01350225',
