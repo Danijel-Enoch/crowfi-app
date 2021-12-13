@@ -53,6 +53,7 @@ export type TokenAddressMap = Readonly<
 const EMPTY_LIST: TokenAddressMap = {
   [ChainId.MAINNET]: {},
   [ChainId.TESTNET]: {},
+  [ChainId.CRONOS]: {},
   [ChainId.CRONOSTESTNET]: {},
 }
 
@@ -106,6 +107,7 @@ function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddress
   return {
     [ChainId.MAINNET]: { ...map1[ChainId.MAINNET], ...map2[ChainId.MAINNET] },
     [ChainId.TESTNET]: { ...map1[ChainId.TESTNET], ...map2[ChainId.TESTNET] },
+    [ChainId.CRONOS]: { ...map1[ChainId.CRONOS], ...map2[ChainId.CRONOS] },
     [ChainId.CRONOSTESTNET]: { ...map1[ChainId.CRONOSTESTNET], ...map2[ChainId.CRONOSTESTNET] },
   }
 }

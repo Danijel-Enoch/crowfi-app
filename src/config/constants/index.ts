@@ -1,5 +1,5 @@
 import { ChainId, JSBI, Percent, Token } from '@pancakeswap/sdk'
-import { mainnetTokens, testnetTokens,cronosTestTokens } from './tokens'
+import { mainnetTokens, testnetTokens,cronosTokens,cronosTestTokens } from './tokens'
 
 export const ROUTER_ADDRESS = '0xeE203C18ded417D947a9f2Aaec0b25107BB2BE2a'
 
@@ -21,6 +21,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     mainnetTokens.usdc,
   ],
   [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, testnetTokens.busd],
+  [ChainId.CRONOS]: [cronosTokens.wcro, cronosTokens.crow, cronosTokens.usdc],
   [ChainId.CRONOSTESTNET]: [cronosTestTokens.wcro, cronosTestTokens.crow, cronosTestTokens.usdc]
 }
 
@@ -45,6 +46,7 @@ export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: To
 export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.MAINNET]: [mainnetTokens.busd, mainnetTokens.cake, mainnetTokens.btcb],
   [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, testnetTokens.busd],
+  [ChainId.CRONOS]: [cronosTokens.wcro, cronosTokens.crow, cronosTokens.usdc],
   [ChainId.CRONOSTESTNET]: [cronosTestTokens.wcro, cronosTestTokens.crow, cronosTestTokens.usdc]
 }
 
@@ -52,6 +54,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.MAINNET]: [mainnetTokens.wbnb, mainnetTokens.dai, mainnetTokens.busd, mainnetTokens.usdt],
   [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, testnetTokens.busd],
+  [ChainId.CRONOS]: [cronosTokens.wcro, cronosTokens.crow, cronosTokens.usdc],
   [ChainId.CRONOSTESTNET]: [cronosTestTokens.wcro, cronosTestTokens.crow, cronosTestTokens.usdc]
 }
 
