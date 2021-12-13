@@ -76,7 +76,7 @@ export const usePollFarmsWithUserData = (includeArchive = false) => {
 
 /**
  * Fetches the "core" farm data used globally
- * 1 = SPY-BNB LP
+ * 1 = CROW-BNB LP
  * 3 = BUSD-BNB LP
  */
 export const usePollCoreFarmData = () => {

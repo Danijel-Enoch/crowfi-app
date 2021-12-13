@@ -11,38 +11,6 @@
   "keywords": ["pancake", "default"],
   "tokens": [
     {
-      "name": "SPY Token",
-      "symbol": "SPY",
-      "address": "0x17fd3caa66502c6f1cbd5600d8448f3af8f2aba1",
-      "chainId": 56,
-      "decimals": 0,
-      "logoURI": "http://app.spy-token.io/images/tokens/0x17fd3cAa66502C6F1CbD5600D8448f3aF8f2ABA1.png"
-    },
-    {
-      "name": "Elektro-Pos Token",
-      "symbol": "EPST",
-      "address": "0xcF794c8a222Ff291c2A967E8907bA3279c650d80",
-      "chainId": 56,
-      "decimals": 0,
-      "logoURI": "http://app.spy-token.io/images/tokens/0xcF794c8a222Ff291c2A967E8907bA3279c650d80.png"
-    },
-    {
-      "name": "Smarty Pay V2",
-      "symbol": "SPYv2",
-      "address": "0x615a9Ea244863f43C75a4bb1A6713Ecc5271e727",
-      "chainId": 56,
-      "decimals": 0,
-      "logoURI": "http://app.spy-token.io/images/tokens/0x17fd3cAa66502C6F1CbD5600D8448f3aF8f2ABA1.png"
-    },
-    {
-      "name": "BUSDspy Token",
-      "symbol": "BUSDspy",
-      "address": "0x51b26771a999cc654Fb96cD883dadAFa0bFa3116",
-      "chainId": 56,
-      "decimals": 0,
-      "logoURI": "https://pancakeswap.finance/images/tokens/0xe9e7cea3dedca5984780bafc599bd69add087d56.png"
-    },
-    {
       "name": "WBNB Token",
       "symbol": "WBNB",
       "address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",

@@ -43,14 +43,12 @@ export const mainnetTokens = {
   usdc: new Token(MAINNET, '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', 18, 'USDC', 'Binance-Peg USD Coin', 'https://www.centre.io/usdc'),
   syrup: new Token(MAINNET, '0x009cF7bC57584b7998236eff51b98A168DceA9B0', 18, 'SYRUP', 'SyrupBar Token', 'https://pancakeswap.finance/'),
   babycake: new Token(MAINNET, '0xdB8D30b74bf098aF214e862C90E647bbB1fcC58c', 18, 'BABYCAKE', 'Baby Cake Token', 'https://babycake.app/'),
-  spy: new Token(TESTNET, '0x6F25144001Ce324E745c3FF25a646A292883feD5', 0, 'SPY', 'Smarty Pay', ''),
   pcrow: new Token(MAINNET, '0x6ac901eDA879Df9317BB18dF83c4440043D6bBbF', 18, 'PCROW', 'Crow Presale Token', 'https://crowfi.com/'),
   crow: new Token(MAINNET, '0x85529Febc78834e84a2055204BB802a6a4E2b0bf', 18, 'CROW', 'Crow Token', 'https://crowfi.com/'),
 }
 export const testnetTokens = {
   wbnb: new Token(TESTNET, '0xf9a7A2b01Bf758776703677719F8aCf018600070', 18, 'WBNB', 'Wrapped BNB', 'https://www.binance.com/'),
   cake: new Token(TESTNET, '0x12C6f5dEcaAda351D39E911E8f71e8e99F6D71D9', 0, 'CAKE', 'PancakeSwap Token', 'https://pancakeswap.finance/'),
-  spy: new Token(TESTNET, '0x6F25144001Ce324E745c3FF25a646A292883feD5', 0, 'SPY', 'SmartyPay Token', 'https://smartypay.io'),
   busd: new Token(TESTNET, '0x2aFD1d7DADEfb7fE31364A4f57f704c1558C8Edc', 18, 'BUSD', 'Binance USD', 'https://www.paxos.com/busd/'),
   usdc: new Token(TESTNET, '0x9e91D184a3ff79b9A7F666809769BF2E06a4fd7a', 6, 'USDC', 'Binance-Peg USD Coin', 'https://www.centre.io/usdc'),
   pcrow: new Token(TESTNET, '0x6ac901eDA879Df9317BB18dF83c4440043D6bBbF', 18, 'PCROW', 'Crow Presale Token', 'https://crowfi.com/'),
@@ -70,9 +68,9 @@ export const cronosTestTokens = {
     CRONOSTESTNET,
     '0xf9872a4Ea77278F06613A817D563012bfc7761B3',
     0,
-    'SPY',
-    'SmartyPay Token (fake Cake)',
-    'https://pancakeswap.finance/',
+    'CROW',
+    'Crow Token (fake Cake)',
+    'https://crowfi.app/',
   ),
   wcro: new Token(
     CRONOSTESTNET,
@@ -86,7 +84,7 @@ export const cronosTestTokens = {
     CRONOSTESTNET,
     '0xf9872a4Ea77278F06613A817D563012bfc7761B3',
     18,
-    'Crow',
+    'CROW',
     'Crow Token',
     'https://crowfi.app',
   ),
@@ -109,8 +107,6 @@ export const cronosTestTokens = {
   ),
   crow1: new Token(CRONOSTESTNET, '0xe4e4750Ec8ff4C2E489F40906f7412dEf221cc82', 0, 'CROW!', 'CROW Token1', 'https://crowfi.com'),
   crow2: new Token(CRONOSTESTNET, '0xe4e4750Ec8ff4C2E489F40906f7412dEf221cc82', 0, 'CROW2', 'CROW Token2', 'https://crowfi.com'),
-  msc: new Token(CRONOSTESTNET, '0xb3ae8E5bccebD6F7002C3bF1D5713477B16f8791', 18, 'MSC', 'MyShitCoin', ''),
-  spy: new Token(CRONOSTESTNET, '0x6F25144001Ce324E745c3FF25a646A292883feD5', 0, 'SPY', 'SmartyPay Token', 'https://smartypay.io'),
 }
 
 export const cronosTokens = {
@@ -165,8 +161,6 @@ export const cronosTokens = {
   ),
   crow1: new Token(CRONOS, '0x6AA7C188E9b9C8006B4DAe6b7Dc72C2790789bC6', 0, 'CROW!', 'CROW Token1', 'https://crowfi.com'),
   crow2: new Token(CRONOS, '0x6AA7C188E9b9C8006B4DAe6b7Dc72C2790789bC6', 0, 'CROW2', 'CROW Token2', 'https://crowfi.com'),
-  msc: new Token(CRONOS, '0xb3ae8E5bccebD6F7002C3bF1D5713477B16f8791', 18, 'MSC', 'MyShitCoin', ''),
-  spy: new Token(CRONOS, '0x6F25144001Ce324E745c3FF25a646A292883feD5', 0, 'SPY', 'SmartyPay Token', 'https://smartypay.io'),
 }
 
 const tokens = (): TokenList => {
