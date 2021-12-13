@@ -3,7 +3,9 @@ import styled from 'styled-components'
 import { Text, Button, Input, InputProps, Flex, Link } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import { parseUnits } from 'ethers/lib/utils'
-import { formatBigNumber } from 'utils/formatBalance'
+import { getBalanceNumber } from 'utils/formatBalance'
+import tokens from 'config/constants/tokens'
+import BigNumber from 'bignumber.js'
 import { Input as NumericalInput } from './NumericalInput'
 
 interface PSPriceInputProps {
@@ -13,6 +15,7 @@ interface PSPriceInputProps {
   symbol: string
   onChange: (string) => void
   value: string
+  usdcBalance: BigNumber
 }
 
 const getBoxShadow = ({ isWarning = false, theme }) => {
@@ -66,11 +69,13 @@ const PSPriceInput: React.FC<PSPriceInputProps> = ({
   symbol,
   onChange,
   value,
+  usdcBalance
 }) => {
   const { t } = useTranslation()
   const tooLow = value ? parseFloat(value) < 1e-3 : false
   const tooMuch = value ? parseFloat(value) > parseFloat(max) : false
   const usdPrice = Number.isNaN(parseFloat(value)) ? 0 : price * parseFloat(value)
+  const usdcBalanceNumber = getBalanceNumber(usdcBalance, tokens.usdc.decimals)
 
   return (
     <div style={{ position: 'relative' }}>
@@ -91,6 +96,11 @@ const PSPriceInput: React.FC<PSPriceInputProps> = ({
           <Text fontSize="14px">${usdPrice}</Text>
           <Text fontSize="12px">&nbsp;{'  USDC'}</Text>
         </Flex>
+        {usdcBalance && (
+          <Flex justifyContent="right" pl="16px" alignItems="end">
+            <Text fontSize="10px">Balance : ${usdcBalanceNumber} USDC</Text>
+          </Flex> 
+        )}
       </StyledTokenInput>
       {tooLow && enabled && (
         <StyledErrorMessage fontSize="14px" color="failure">

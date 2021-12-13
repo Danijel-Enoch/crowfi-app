@@ -31,12 +31,12 @@ export const Wrapper = styled.div`
 interface PPrivateSaleBuyCardProps {
   sale: DeserializedPrivateSale
   enabled: boolean
-  account?: string
+  account?: string,
+  usdcBalance: BigNumber
 }
 
-const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled, account }) => {
+const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled, account, usdcBalance }) => {
   const [val, setVal] = useState('')
-  const [max, setMax] = useState(new BigNumber(1000000e18))
   const { toastSuccess, toastError } = useToast()
   const [requestedApproval, setRequestedApproval] = useState(false)
   const { quoteAllowance } = sale.userData || {}
@@ -44,6 +44,10 @@ const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled,
   const [pendingTx, setPendingTx] = useState(false)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+
+  const max = useMemo(() => {
+    return sale.userData ? new BigNumber(1e22).div(sale.price).minus(sale.userData.purchasedBalance) : new BigNumber(1e24)
+  }, [sale])
   const fullBalance = useMemo(() => {
     return getFullDisplayBalance(max)
   }, [max])
@@ -92,8 +96,6 @@ const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled,
     setVal(fullBalance)
   }, [fullBalance, setVal])
 
-  console.log(fullBalanceNumber.toJSON());
-
   const renderApprovalOrBuyButton = () => {
     return isApproved ? (
       <Button
@@ -118,9 +120,10 @@ const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled,
             <PSPriceInput
               enabled={enabled}
               price={sale.price}
+              usdcBalance={usdcBalance}
               onChange={handleChange}
               value={val}
-              max='1000000'
+              max={getBalanceNumber(max).toString()}
               symbol="CROW"
             />
           </AutoColumn>

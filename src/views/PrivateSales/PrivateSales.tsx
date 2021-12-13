@@ -8,7 +8,8 @@ import { useWeb3React } from '@web3-react/core'
 import { Heading, Flex, Image, Text, Spinner } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import Page from 'components/Layout/Page'
-import PageHeader from 'components/PageHeader'
+import tokens from 'config/constants/tokens'
+import useTokenBalance from 'hooks/useTokenBalance'
 
 import { usePrivateSales, usePollPrivateSalesPublicData, usePollPrivateSalesWithUserData } from 'state/privatesales/hooks'
 import PrivateSaleRow from './components/PrivateSaleRow'
@@ -16,6 +17,7 @@ import PrivateSaleRow from './components/PrivateSaleRow'
 const PrivateSales: React.FC = () => {
     const { t } = useTranslation()
     const { data: privateSales, userDataLoaded } = usePrivateSales()
+    const { balance: usdcBalance, fetchStatus: usdcFetchStatus } = useTokenBalance(tokens.usdc.address)
     const { account } = useWeb3React()
     const hasData = privateSales.filter((sale) => sale.startDate).length > 0
 
@@ -31,6 +33,8 @@ const PrivateSales: React.FC = () => {
                             <PrivateSaleRow
                             sale={sale}
                             account={account}
+                            usdcBalance={usdcBalance}
+                            usdcFetchStatus={usdcFetchStatus}
                             />
                         ))}
                     </Flex>
