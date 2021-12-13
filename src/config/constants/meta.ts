@@ -110,17 +110,17 @@ export const getCustomMeta = (path: string, t: ContextApi['t']): PageMeta => {
     case '/info':
       return {
         title: `${t('Overview')} | ${t('CrowFi Info & Analytics')}`,
-        description: 'View statistics for Pancakeswap exchanges.',
+        description: 'View statistics for CrowFi exchanges.',
       }
     case '/info/pools':
       return {
         title: `${t('Pools')} | ${t('CrowFi Info & Analytics')}`,
-        description: 'View statistics for Pancakeswap exchanges.',
+        description: 'View statistics for CrowFi exchanges.',
       }
     case '/info/tokens':
       return {
         title: `${t('Tokens')} | ${t('CrowFi Info & Analytics')}`,
-        description: 'View statistics for Pancakeswap exchanges.',
+        description: 'View statistics for CrowFi exchanges.',
       }
     case '/nfts':
       return {

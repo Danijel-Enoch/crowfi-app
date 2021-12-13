@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { BIG_ONE, BIG_ZERO } from 'utils/bigNumber'
-import { filterFarmsByQuoteToken, getBNBPriceUSD } from 'utils/farmsPriceHelpers'
+import { filterFarmsByQuoteToken } from 'utils/farmsPriceHelpers'
 import { SerializedFarm } from 'state/types'
 import tokens from 'config/constants/tokens'
 
@@ -87,11 +87,7 @@ const getFarmQuoteTokenPrice = (
 
 const fetchFarmsPrices = async (farms: SerializedFarm[]) => {
   const bnbBusdFarm = farms.find((farm) => farm.pid === 3)
-  let bnbPriceBusd = bnbBusdFarm && bnbBusdFarm.tokenPriceVsQuote ? BIG_ONE.div(bnbBusdFarm.tokenPriceVsQuote) : BIG_ZERO
-
-  if (bnbPriceBusd.eq(BIG_ZERO)) {
-    bnbPriceBusd = await getBNBPriceUSD()
-  }
+  const bnbPriceBusd = bnbBusdFarm && bnbBusdFarm.tokenPriceVsQuote ? BIG_ONE.div(bnbBusdFarm.tokenPriceVsQuote) : BIG_ZERO
 
 
   const farmsWithPrices = farms.map((farm) => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import { useTranslation } from 'contexts/Localization'
 import { multicallv2 } from 'utils/multicall'
-import profileABI from 'config/abi/pancakeProfile.json'
+import profileABI from 'config/abi/crowfiProfile.json'
 import { getPancakeProfileAddress } from 'utils/addressHelpers'
 import useToast from 'hooks/useToast'
 
