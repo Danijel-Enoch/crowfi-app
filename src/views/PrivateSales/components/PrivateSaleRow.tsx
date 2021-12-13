@@ -7,6 +7,7 @@ import { Card, Flex, Text, Skeleton, Heading } from '@pancakeswap/uikit'
 import { DeserializedPrivateSale } from 'state/types'
 import { getBalanceAmount, getBalanceNumber } from 'utils/formatBalance'
 import { useTranslation } from 'contexts/Localization'
+import { FetchStatus } from 'hooks/useTokenBalance'
 import PrivateSaleBuyCard from './PrivateSaleBuyCard'
 import PrivateSaleClaimCard from './PrivateSaleClaimCard'
 
@@ -21,7 +22,9 @@ const SectionWrapper = styled(Flex)`
 
 interface PrivateSaleRowProps {
   sale: DeserializedPrivateSale
-  account?: string
+  account?: string,
+  usdcBalance?: BigNumber,
+  usdcFetchStatus: FetchStatus
 }
 
 enum SaleStatus {
@@ -32,7 +35,7 @@ enum SaleStatus {
   EXPIRED
 }
 
-const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account }) => {
+const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account, usdcBalance, usdcFetchStatus }) => {
   const { t } = useTranslation()
   const [status, setStatus] = useState(SaleStatus.NOT_STARTED)
 
@@ -148,7 +151,7 @@ const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account }) => {
             <PrivateSaleClaimCard account={account} sale={sale} enabled={status === SaleStatus.CLAIMING}/>
           )}
           { (status === SaleStatus.ACTIVE  || status === SaleStatus.NOT_STARTED) && (
-            <PrivateSaleBuyCard account={account} sale={sale} enabled={status === SaleStatus.ACTIVE && (!sale.whitelistEnabled || sale.userData?.whitelisted)} />
+            <PrivateSaleBuyCard account={account} sale={sale} usdcBalance={usdcBalance} enabled={status === SaleStatus.ACTIVE && (!sale.whitelistEnabled || sale.userData?.whitelisted)} />
           )}
           
         </SectionWrapper>
