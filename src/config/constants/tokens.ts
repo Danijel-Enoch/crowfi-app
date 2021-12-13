@@ -124,7 +124,7 @@ export const cronosTokens = {
   ),
   cake: new Token(
     CRONOS,
-    '0xf9872a4Ea77278F06613A817D563012bfc7761B3',
+    '0x285c3329930a3fd3C7c14bC041d3E50e165b1517',
     0,
     'Crow',
     'Crow Token',
@@ -140,7 +140,7 @@ export const cronosTokens = {
   ),
   crow: new Token(
     CRONOS,
-    '0xf9872a4Ea77278F06613A817D563012bfc7761B3',
+    '0x285c3329930a3fd3C7c14bC041d3E50e165b1517',
     18,
     'Crow',
     'Crow Token',
@@ -163,8 +163,8 @@ export const cronosTokens = {
     'USD Coin',
     'https://www.centre.io/usdc',
   ),
-  crow1: new Token(CRONOS, '0xe4e4750Ec8ff4C2E489F40906f7412dEf221cc82', 0, 'CROW!', 'CROW Token1', 'https://crowfi.com'),
-  crow2: new Token(CRONOS, '0xe4e4750Ec8ff4C2E489F40906f7412dEf221cc82', 0, 'CROW2', 'CROW Token2', 'https://crowfi.com'),
+  crow1: new Token(CRONOS, '0x6AA7C188E9b9C8006B4DAe6b7Dc72C2790789bC6', 0, 'CROW!', 'CROW Token1', 'https://crowfi.com'),
+  crow2: new Token(CRONOS, '0x6AA7C188E9b9C8006B4DAe6b7Dc72C2790789bC6', 0, 'CROW2', 'CROW Token2', 'https://crowfi.com'),
   msc: new Token(CRONOS, '0xb3ae8E5bccebD6F7002C3bF1D5713477B16f8791', 18, 'MSC', 'MyShitCoin', ''),
   spy: new Token(CRONOS, '0x6F25144001Ce324E745c3FF25a646A292883feD5', 0, 'SPY', 'SmartyPay Token', 'https://smartypay.io'),
 }
