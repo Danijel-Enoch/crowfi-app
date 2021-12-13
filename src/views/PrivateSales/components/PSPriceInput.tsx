@@ -75,6 +75,9 @@ const PSPriceInput: React.FC<PSPriceInputProps> = ({
   return (
     <div style={{ position: 'relative' }}>
       <StyledTokenInput isWarning={tooLow || tooMuch}>
+        <Text fontSize='10px' textAlign="right" pb="8px">
+          {t('Enter the amount of tokens you wish to purchase')}
+        </Text>
         <Flex alignItems="flex-end" justifyContent="space-around" pl="16px">
           <NumericalInput
             disabled={!enabled}
