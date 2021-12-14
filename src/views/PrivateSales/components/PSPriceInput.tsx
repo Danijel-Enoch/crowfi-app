@@ -33,9 +33,19 @@ const StyledTokenInput = styled.div<InputProps>`
   border-radius: 16px;
   box-shadow: ${getBoxShadow};
   color: ${({ theme }) => theme.colors.text};
-  padding: 8px 16px 8px 0;
+  padding: 8px 16px 8px 8px;
   width: 100%;
   min-width: 300px;
+  @media screen and (max-width: 400px) {
+    min-width: calc(100vw - 105px);
+  }
+`
+
+const DescText = styled(Text)`
+  font-size: 10px;
+  @media screen and (max-width: 400px) {
+    font-size: 9px;
+  }
 `
 
 const StyledInput = styled(Input)`
@@ -80,9 +90,9 @@ const PSPriceInput: React.FC<PSPriceInputProps> = ({
   return (
     <div style={{ position: 'relative' }}>
       <StyledTokenInput isWarning={tooLow || tooMuch}>
-        <Text fontSize='10px' textAlign="right" pb="8px">
+        <DescText textAlign="right" pb="8px">
           {t('Enter the amount of tokens you wish to purchase')}
-        </Text>
+        </DescText>
         <Flex alignItems="flex-end" justifyContent="space-around" pl="16px">
           <NumericalInput
             disabled={!enabled}
