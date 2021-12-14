@@ -18,8 +18,11 @@ import PrivateSaleRow from './components/PrivateSaleRow'
 const StyledPage = styled(Page)`
     position: relative;
     min-height: calc(100vh - 460px);
+    @media screen and (max-width: 768px) {
+      min-height: calc(100vh - 500px);
+    }
     @media screen and (max-width: 576px) {
-      min-height: calc(100vh - 730px);
+      min-height: 200px;
     }
 `
 
