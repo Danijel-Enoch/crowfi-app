@@ -14,6 +14,27 @@ import useTokenBalance from 'hooks/useTokenBalance'
 import { usePrivateSales, usePollPrivateSalesPublicData, usePollPrivateSalesWithUserData } from 'state/privatesales/hooks'
 import PrivateSaleRow from './components/PrivateSaleRow'
 
+
+const StyledPage = styled(Page)`
+    position: relative;
+    min-height: calc(100vh - 460px);
+    @media screen and (max-width: 576px) {
+      min-height: calc(100vh - 730px);
+    }
+`
+
+const SpinnerWrapper = styled(Flex)`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+`
+
+const FullWidthFlex = styled(Flex)`
+    width: 100%;
+`
+
 const PrivateSales: React.FC = () => {
     const { t } = useTranslation()
     const { data: privateSales, userDataLoaded } = usePrivateSales()
@@ -25,7 +46,7 @@ const PrivateSales: React.FC = () => {
     usePollPrivateSalesWithUserData();
     return (
         <>
-            <Page>
+            <StyledPage >
                 { hasData ?
                 (
                     <Flex flexDirection="column">
@@ -41,14 +62,16 @@ const PrivateSales: React.FC = () => {
                 )
                 :
                 (
-                    <Flex justifyContent="center" alignItems="center" height="100%">
-                        <Spinner />
-                    </Flex>
+                    <SpinnerWrapper >
+                        <FullWidthFlex justifyContent="center" alignItems="center">
+                            <Spinner />
+                        </FullWidthFlex>
+                    </SpinnerWrapper>
                 )
                 }
                 
                 
-            </Page>
+            </StyledPage>
         </>
     )
 }
