@@ -542,7 +542,7 @@ export default function RemoveLiquidity({
                             currencyB === ETHER ? WETH[chainId].address : currencyIdB
                           }`}
                         >
-                          {t('Receive WBNB')}
+                          {t('Receive WCRO')}
                         </StyledInternalLink>
                       ) : oneCurrencyIsWETH ? (
                         <StyledInternalLink
@@ -550,7 +550,7 @@ export default function RemoveLiquidity({
                             currencyB && currencyEquals(currencyB, WETH[chainId]) ? ETHER.symbol : currencyIdB
                           }`}
                         >
-                          {t('Receive BNB')}
+                          {t('Receive CRO')}
                         </StyledInternalLink>
                       ) : null}
                     </RowBetween>

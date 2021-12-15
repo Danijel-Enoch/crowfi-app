@@ -2,7 +2,7 @@
   "name": "CrowFi Default List",
   "timestamp": "2021-05-06T00:00:00Z",
   "version": {
-    "major": 3,
+    "major": 1,
     "minor": 0,
     "patch": 0
   },
@@ -33,6 +33,30 @@
       "chainId": 25,
       "decimals": 6,
       "logoURI": "https://crowfi.app/images/tokens/0xf9872a4ea77278f06613a817d563012bfc7761b3.svg"
+    },
+    {
+      "name": "WCRO Token",
+      "symbol": "WCRO",
+      "address": "0xDd7FBd7e655DE4B8eccb2B3254F6B69B569F0A9a",
+      "chainId": 338,
+      "decimals": 18,
+      "logoURI": "https://crowfi.app/images/tokens/0xDd7FBd7e655DE4B8eccb2B3254F6B69B569F0A9a.svg"
+    },
+    {
+      "name": "USD Coin",
+      "symbol": "USDC",
+      "address": "0xDba521aD7B3d84c417a224f2830B9399d7180076",
+      "chainId": 338,
+      "decimals": 6,
+      "logoURI": "https://crowfi.app/images/tokens/0xDba521aD7B3d84c417a224f2830B9399d7180076.svg"
+    },
+    {
+      "name": "Crow Token",
+      "symbol": "CROW",
+      "address": "0xf9872a4Ea77278F06613A817D563012bfc7761B3",
+      "chainId": 338,
+      "decimals": 18,
+      "logoURI": "https://crowfi.app/images/tokens/0xf9872a4Ea77278F06613A817D563012bfc7761B3.svg"
     }
   ]
 }
