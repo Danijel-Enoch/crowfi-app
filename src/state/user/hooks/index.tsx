@@ -283,10 +283,11 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
 }
 
 export function useGasPrice(): string {
-  return GAS_PRICE_GWEI.cronos
-  // const chainId = process.env.REACT_APP_CHAIN_ID
-  // const userGas = useSelector<AppState, AppState['user']['gasPrice']>((state) => state.user.gasPrice)
-  // return chainId === ChainId.MAINNET.toString() ? userGas : GAS_PRICE_GWEI.testnet
+  // return GAS_PRICE_GWEI.cronos
+  const chainId = process.env.REACT_APP_CHAIN_ID
+  const userGas = useSelector<AppState, AppState['user']['gasPrice']>((state) => state.user.gasPrice)
+  return userGas;
+  // return chainId === ChainId.CRONOS.toString() ? userGas : GAS_PRICE_GWEI.testnet
 }
 
 export function useGasPriceManager(): [string, (userGasPrice: string) => void] {

@@ -55,17 +55,6 @@ const GasSettings = () => {
         >
           {t('Instant (%gasPrice%)', { gasPrice: GAS_PRICE.instant })}
         </Button>
-        <Button
-          mr="4px"
-          mt="4px"
-          scale="sm"
-          onClick={() => {
-            setGasPrice(GAS_PRICE_GWEI.cronos)
-          }}
-          variant={gasPrice === GAS_PRICE_GWEI.cronos ? 'primary' : 'tertiary'}
-        >
-          {t('Instant (%gasPrice%)', { gasPrice: GAS_PRICE.cronos })}
-        </Button>
       </Flex>
     </Flex>
   )
