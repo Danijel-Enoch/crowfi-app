@@ -11,7 +11,7 @@ const privatesales: SerializedPrivateSaleConfig[] = [
         manager: {
             97: '0xFB45aF3Fe47334e8c3c1F6EaA8e9a1E17Df30f11',
             56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
-            338: '0xd343aE7540B92fE01688c37C8CCa19eaDcc32F76',
+            338: '0x3374179FFb346BB66f11B8Db10D484E3C8207923',
             25: '0xd5906BD352e04758e61E5c71EEc5ee1eEAA0Ef29',
         },
         tempToken: serializedTokens.pcrow,
@@ -22,11 +22,11 @@ const privatesales: SerializedPrivateSaleConfig[] = [
         type: PrivateSaleType.privatesale,
         name: 'Private Sale',
         desc: 'Participate in the exclusive CrowFi private sale to get tokens at an incredible price!',
-        price: 0.014,
+        price: 0.015,
         manager: {
             97: '0x3b6d2c589a778FA053d1a4730895009d67BAa8DC',
             56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
-            338: '0x80E3989a551253a9dB4d0720436e17f342F1c512',
+            338: '0x73180D2c4f1782f3463F94A8AaBC71495227d284',
             25: '0x9d2093b8c6Fe98475A6E831CF8cC04Eb45e89bFd',
         },
         tempToken: serializedTokens.pcrow,
@@ -41,7 +41,7 @@ const privatesales: SerializedPrivateSaleConfig[] = [
         manager: {
             97: '0x83Fe700A857d41DEA8FE340295Ce1c5e01350225',
             56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
-            338: '0xdEd4fb33637Cf5330e09a71ac410993651dcC65F',
+            338: '0x740C0dF7c64808189B8526f8C33359563BaBa467',
             25: '0x23435F3454E240B8af58ddc3e210388C5574e3a0',
         },
         tempToken: serializedTokens.pcrow,
