@@ -102,3 +102,26 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currenc
   if (currency === ETHER) return true
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
 }
+
+export function parseQueryParams(): Map<string,string> {
+  const res = new Map<string, string>();
+  if (window.location.search && window.location.search.length > 1) {
+    const query = window.location.search.substring(1);
+    const vars = query.split('&');
+    for (let i = 0; i < vars.length; i++) {
+        const pair = vars[i].split('=');
+        const key = decodeURIComponent(pair[0]);
+        const value = decodeURIComponent(pair[1]);
+        res.set(key, value);
+    }
+  }
+  return res;
+}
+
+export function getCurrentReffererFromUrl(): string {
+  const queryParams = parseQueryParams();
+  if (queryParams.has('ref')) {
+    return queryParams.get('ref');
+  }
+  return '';
+}

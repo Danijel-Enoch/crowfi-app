@@ -28,6 +28,7 @@ import {
   updateUserPredictionChartDisclaimerShow,
   updateUserUsernameVisibility,
   updateUserExpertModeAcknowledgementShow,
+  updateUserReferrer
 } from './actions'
 import { GAS_PRICE_GWEI } from './hooks/helpers'
 
@@ -75,6 +76,7 @@ export interface UserState {
   gasPrice: string
   watchlistTokens: string[]
   watchlistPools: string[]
+  userReferrer?: string
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -120,6 +122,10 @@ export default createReducer(initialState, (builder) =>
       }
 
       state.lastUpdateVersionTimestamp = currentTimestamp()
+    })
+    .addCase(updateUserReferrer, (state, action) => {
+      state.userReferrer = action.payload.userReferrer
+      state.timestamp = currentTimestamp()
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
