@@ -31,8 +31,25 @@ import {
   updateUserPredictionAcceptedRisk,
   updateUserUsernameVisibility,
   updateUserExpertModeAcknowledgementShow,
+  updateUserReferrer
 } from '../actions'
 import { deserializeToken, GAS_PRICE_GWEI, serializeToken } from './helpers'
+
+export function useUserReferrer(): [string, (referrer: string) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userReferrer = useSelector<AppState, AppState['user']['userReferrer']>((state) => {
+    return state.user.userReferrer
+  })
+
+  const setUserReferrer = useCallback(
+    (referrer: string) => {
+      dispatch(updateUserReferrer({ userReferrer: referrer }))
+    },
+    [dispatch],
+  )
+
+  return [userReferrer, setUserReferrer]
+}
 
 export function useAudioModeManager(): [boolean, () => void] {
   const dispatch = useDispatch<AppDispatch>()
@@ -283,10 +300,11 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
 }
 
 export function useGasPrice(): string {
-  return GAS_PRICE_GWEI.cronos
-  // const chainId = process.env.REACT_APP_CHAIN_ID
-  // const userGas = useSelector<AppState, AppState['user']['gasPrice']>((state) => state.user.gasPrice)
-  // return chainId === ChainId.MAINNET.toString() ? userGas : GAS_PRICE_GWEI.testnet
+  // return GAS_PRICE_GWEI.cronos
+  const chainId = process.env.REACT_APP_CHAIN_ID
+  const userGas = useSelector<AppState, AppState['user']['gasPrice']>((state) => state.user.gasPrice)
+  return userGas;
+  // return chainId === ChainId.CRONOS.toString() ? userGas : GAS_PRICE_GWEI.testnet
 }
 
 export function useGasPriceManager(): [string, (userGasPrice: string) => void] {

@@ -8,14 +8,19 @@ const options = {
   gasLimit: DEFAULT_GAS_LIMIT,
 }
 
-export const stakeFarm = async (masterChefContract, pid, amount) => {
+export const stakeFarm = async (masterChefContract, pid, amount, userRefferer) => {
   const gasPrice = getGasPrice()
   const value = new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString()
   // const gasEstimation = estimateGas(contract, methodName, methodArgs, gasMarginPer10000)
   // const rawGasEstimation = await masterChefContract.estimateGas['deposit'](pid, value)
   // const tx = await masterChefContract.deposit(pid, value, { ...options, gasPrice })
 
-  const tx = await callWithEstimateGas(masterChefContract, 'deposit', [pid, value], {
+  let referrer = userRefferer
+  if (!userRefferer || !userRefferer.startsWith('0x')) {
+    referrer = AddressZero
+  }
+
+  const tx = await callWithEstimateGas(masterChefContract, 'deposit', [pid, value, referrer], {
     gasPrice,
   })
   const receipt = await tx.wait()
@@ -34,7 +39,9 @@ export const unstakeFarm = async (masterChefContract, pid, amount) => {
 export const harvestFarm = async (masterChefContract, pid) => {
   const gasPrice = getGasPrice()
 
-  const tx = await masterChefContract.deposit(pid, '0', { ...options, gasPrice })
+  const tx = await callWithEstimateGas(masterChefContract, 'deposit', [pid, 0, AddressZero], {
+    gasPrice,
+  })
   const receipt = await tx.wait()
   return receipt.status
 }

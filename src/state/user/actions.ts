@@ -17,6 +17,7 @@ export enum ViewMode {
   CARD = 'CARD',
 }
 
+export const updateUserReferrer = createAction<{ userReferrer: string }>('user/updateUserReferrer')
 export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('user/updateUserExpertMode')
 export const updateUserSingleHopOnly = createAction<{ userSingleHopOnly: boolean }>('user/updateUserSingleHopOnly')
 export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance: number }>(

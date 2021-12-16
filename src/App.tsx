@@ -1,4 +1,4 @@
-import React, { lazy } from 'react'
+import React, { lazy, useEffect } from 'react'
 import { Router, Redirect, Route, Switch } from 'react-router-dom'
 import { ResetCSS } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
@@ -9,6 +9,9 @@ import useScrollOnRouteChange from 'hooks/useScrollOnRouteChange'
 import { usePollBlockNumber } from 'state/block/hooks'
 import { usePollCoreFarmData } from 'state/farms/hooks'
 import { useFetchProfile } from 'state/profile/hooks'
+import { useUserReferrer } from 'state/user/hooks'
+import { getCurrentReffererFromUrl } from 'utils'
+import { deRot13 } from 'utils/encode'
 import { DatePickerPortal } from 'components/DatePicker'
 import { nftsBaseUrl } from 'views/Nft/market/constants'
 import GlobalStyle from './style/Global'
@@ -35,6 +38,7 @@ import { RedirectPathToSwapOnly, RedirectToSwap } from './views/Swap/redirects'
 const Home = lazy(() => import('./views/Home'))
 const Farms = lazy(() => import('./views/Farms'))
 const PrivateSales = lazy(() => import('./views/PrivateSales'))
+const Referrals = lazy(() => import('./views/Referrals'))
 const FarmAuction = lazy(() => import('./views/FarmAuction'))
 const Lottery = lazy(() => import('./views/Lottery'))
 const Ifos = lazy(() => import('./views/Ifos'))
@@ -65,6 +69,16 @@ BigNumber.config({
 const App: React.FC = () => {
   const { account } = useWeb3React()
 
+  const [userRefferer, setUserReferrer] = useUserReferrer()
+
+  useEffect(() => {
+    const referrer = getCurrentReffererFromUrl()
+    const referrerDecoded = deRot13(referrer);
+    if (referrerDecoded.startsWith('0x')) {
+      setUserReferrer(referrerDecoded);
+    }
+  }, [setUserReferrer])
+
   usePollBlockNumber()
   useEagerConnect()
   useFetchProfile()
@@ -88,6 +102,9 @@ const App: React.FC = () => {
             </Route>
             <Route path="/farms">
               <Farms />
+            </Route>
+            <Route path="/referrals">
+              <Referrals />
             </Route>
             <Route path="/privatesales">
               <PrivateSales />
