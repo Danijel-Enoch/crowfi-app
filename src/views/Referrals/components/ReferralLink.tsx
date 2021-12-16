@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import styled from 'styled-components'
 import { BASE_URL } from 'config'
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import rot13 from '../../../utils/encode'
+import {rot13} from 'utils/encode'
 
 const StyleInput = styled(Input)`
     margin-top: 10px;
