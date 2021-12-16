@@ -1,23 +1,18 @@
 import React from 'react'
-import { Heading, Text } from '@pancakeswap/uikit'
-import styled from 'styled-components'
+import { Flex, Text } from '@pancakeswap/uikit'
 import useTotalReferralCount from 'hooks/useTotalReferralCount'
-
-const StyleCon = styled.div`
-    margin-top: 32px
-`
-
-const StyleText = styled(Text)`
-    margin-top: 5px;
-`
+import { useTranslation } from 'contexts/Localization'
 
 const TotalReferralCount = () => {
+    const { t } = useTranslation()
     const referralCount = useTotalReferralCount()
     return (
-        <StyleCon>
-            <Heading size="md">Total Referrals</Heading>
-            <StyleText>{referralCount}</StyleText>
-        </StyleCon>
+        <Flex justifyContent="start" alignItems="center" mb="8px" mt="16px">
+            <Text color="secondary" fontSize="12px" textTransform="uppercase" fontWeight="bold" mr="24px">
+                {t('Total Referrals')}
+            </Text>
+            <Text>{referralCount}</Text>
+        </Flex>
     )
 }
 

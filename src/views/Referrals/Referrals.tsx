@@ -1,13 +1,11 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { Flex, Heading } from '@pancakeswap/uikit'
+import { Flex, Heading, Text } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import Page from 'components/Layout/Page'
 import useTheme from 'hooks/useTheme'
-import { SlideSvgDark, SlideSvgLight } from './components/SlideSvg'
-import CompositeImage, { getSrcSet, CompositeImageProps } from './components/CompositeImage'
 import ReferralLink from './components/ReferralLink'
 import TotalReferralCount from './components/TotalReferralCount'
 
@@ -56,22 +54,6 @@ const rotCombiAnim = (x1, x2, x3, y, scale) => keyframes`
     }
 `
 
-const BgWrapper = styled.div`
-  z-index: -1;
-  overflow: hidden;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  bottom: 0px;
-  left: 0px;
-`
-
-const InnerWrapper = styled.div`
-  position: absolute;
-  width: 100%;
-  bottom: -3px;
-`
-
 const BunnyWrapper = styled.div`
   width: 100%;
   animation: ${rotCombiAnim(30, 60, 90, 50, 1)} 7s linear infinite;
@@ -89,9 +71,6 @@ const Referrals: React.FC = () => {
     return (
         <>
             <Page>
-                <BgWrapper>
-                    <InnerWrapper>{theme.isDark ? <SlideSvgDark width="100%" /> : <SlideSvgLight width="100%" />}</InnerWrapper>
-                </BgWrapper>
                 <Flex
                     position="relative"
                     flexDirection={['column-reverse', null, null, 'row']}
@@ -99,24 +78,24 @@ const Referrals: React.FC = () => {
                     justifyContent="center"
                 >
                     <Flex flex="1" flexDirection="column">
-                    <Heading scale="xxl" color="secondary" mb="24px">
-                        {t('CrowFi Referral Program')}
-                    </Heading>
-                    <Heading scale="md" mb="24px">
-                        {t('Share the referral link below to invite your friends and earn 5% of your friends earnings FOREVER!')}
-                    </Heading>
-                    <Flex>
-                        {account ? (
-                            <div>
-                            <ReferralLink /> 
-                            <TotalReferralCount />
-                            </div>
-                        ) : (
-                            <div>
-                            <ConnectWalletButton mr="8px" />
-                            </div>
-                        )}
-                    </Flex>
+                        <Heading scale="xl" color="primary" mb="24px">
+                            {t('CrowFi Referral Program')}
+                        </Heading>
+                        <Text textAlign="start" color="primary" fontSize="24px" mb="12px" >
+                            {t('Share the referral link below to invite your friends and earn 5% of your friends earnings FOREVER!')}
+                        </Text>
+                        <Flex flexDirection="column">
+                            {account ? (
+                                <>
+                                <TotalReferralCount />
+                                <ReferralLink account={account} /> 
+                                </>
+                            ) : (
+                                <>
+                                <ConnectWalletButton mr="8px" />
+                                </>
+                            )}
+                        </Flex>
                     </Flex>
                     <Flex
                     height={['128px', null, null, '100%']}
