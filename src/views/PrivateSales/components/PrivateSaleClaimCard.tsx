@@ -115,6 +115,7 @@ const PrivateSaleClaimCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, accoun
         <Wrapper>
           <AutoColumn gap="md">
             <PSClaimInput
+              inputTitle="CROW"
               enabled={enabled}
               onChange={handleChange}
               onSelectMax={handleSelectMax}
