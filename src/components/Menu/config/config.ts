@@ -41,10 +41,6 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     href: '/privatesales',
     icon: 'Earn',
     items: [
-      {
-        label: t('Private Sales'),
-        href: '/privatesales',
-      },
     ],
   },
 
