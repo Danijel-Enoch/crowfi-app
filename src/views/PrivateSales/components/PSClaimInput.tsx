@@ -27,6 +27,13 @@ const getBoxShadow = ({ isWarning = false, theme }) => {
   return theme.shadows.inset
 }
 
+const DescText = styled(Text)`
+  font-size: 10px;
+  @media screen and (max-width: 400px) {
+    font-size: 9px;
+  }
+`
+
 const StyledTokenInput = styled.div<InputProps>`
   display: flex;
   flex-direction: column;
@@ -37,6 +44,9 @@ const StyledTokenInput = styled.div<InputProps>`
   padding: 8px 16px 8px 0;
   width: 100%;
   min-width: 300px;
+  @media screen and (max-width: 400px) {
+    min-width: calc(100vw - 105px);
+  }
 `
 
 const StyledErrorMessage = styled(Text)`
@@ -74,11 +84,10 @@ const PSClaimInput: React.FC<PSClaimInputProps> = ({
   return (
     <div style={{ position: 'relative' }}>
       <StyledTokenInput isWarning={isBalanceZero && enabled}>
-        <Flex justifyContent="space-between" pl="16px">
-          <Text fontSize="14px">{inputTitle}</Text>
-          <Text fontSize="14px">{t('Balance: %balance%', { balance: getBalanceNumber(max) })}</Text>
-        </Flex>
-        <Flex alignItems="flex-end" justifyContent="space-around">
+        <DescText textAlign="right" pb="8px">
+          {t('Enter the amount of tokens you wish to claim')}
+        </DescText>
+        <Flex alignItems="center" justifyContent="space-around">
           <Button scale="sm" onClick={onSelectMax} ml="8px">
             {t('Max')}
           </Button>
@@ -90,7 +99,11 @@ const PSClaimInput: React.FC<PSClaimInputProps> = ({
             align="right"
             placeholder="0"
           />
-          <Text fontSize="14px">&nbsp;{symbol}</Text>
+          {/* <Text fontSize="14px">&nbsp;{symbol}</Text> */}
+        </Flex>
+        <Flex justifyContent="space-between" pl="16px">
+          <Text fontSize="14px">{t('Balance: %balance%', { balance: getBalanceNumber(max) })}</Text>
+          <Text fontSize="14px">{inputTitle}</Text>
         </Flex>
       </StyledTokenInput>
       {isBalanceZero && enabled && (
