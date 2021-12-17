@@ -63,6 +63,13 @@ const BunnyWrapper = styled.div`
   }
 `
 
+const WrappedFlex = styled(Flex)`
+    position:absolute;
+    ${({ theme }) => theme.mediaQueries.md} {
+        position:relative;  
+    }
+`
+
 const Referrals: React.FC = () => {
     const { t } = useTranslation()
     const { account } = useWeb3React()
@@ -97,7 +104,7 @@ const Referrals: React.FC = () => {
                             )}
                         </Flex>
                     </Flex>
-                    <Flex
+                    <WrappedFlex
                     height={['128px', null, null, '100%']}
                     width={['128px', null, null, '100%']}
                     flex={[null, null, null, '1']}
@@ -107,7 +114,7 @@ const Referrals: React.FC = () => {
                     <BunnyWrapper>
                         <img src='/logo.png' alt={t('Crow Logo')} />
                     </BunnyWrapper>
-                    </Flex>
+                    </WrappedFlex>
                 </Flex>
             </Page>
         </>
