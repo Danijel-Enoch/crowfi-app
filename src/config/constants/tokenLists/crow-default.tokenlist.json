@@ -53,10 +53,10 @@
     {
       "name": "Crow Token",
       "symbol": "CROW",
-      "address": "0xf9872a4Ea77278F06613A817D563012bfc7761B3",
+      "address": "0x852c75bd104b928BBF54e6Ab94F274B9F8Fa6536",
       "chainId": 338,
       "decimals": 18,
-      "logoURI": "https://crowfi.app/images/tokens/0xf9872a4Ea77278F06613A817D563012bfc7761B3.svg"
+      "logoURI": "https://crowfi.app/images/tokens/0x852c75bd104b928BBF54e6Ab94F274B9F8Fa6536.svg"
     }
   ]
 }

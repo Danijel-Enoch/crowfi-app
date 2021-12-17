@@ -66,7 +66,7 @@ export const cronosTestTokens = {
   ),
   cake: new Token(
     CRONOSTESTNET,
-    '0xf9872a4Ea77278F06613A817D563012bfc7761B3',
+    '0x852c75bd104b928BBF54e6Ab94F274B9F8Fa6536',
     0,
     'CROW',
     'Crow Token (fake Cake)',
