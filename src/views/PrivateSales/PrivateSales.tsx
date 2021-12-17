@@ -55,6 +55,7 @@ const PrivateSales: React.FC = () => {
                     <Flex flexDirection="column">
                         {privateSales.filter((sale) => sale.startDate).map((sale) => (
                             <PrivateSaleRow
+                            key={sale.type}
                             sale={sale}
                             account={account}
                             usdcBalance={usdcBalance}
