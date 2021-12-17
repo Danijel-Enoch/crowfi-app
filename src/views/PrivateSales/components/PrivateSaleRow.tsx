@@ -8,6 +8,7 @@ import { DeserializedPrivateSale } from 'state/types'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { useTranslation } from 'contexts/Localization'
 import { FetchStatus } from 'hooks/useTokenBalance'
+import useInterval from 'hooks/useInterval'
 import PrivateSaleBuyCard from './PrivateSaleBuyCard'
 import PrivateSaleClaimCard from './PrivateSaleClaimCard'
 
@@ -38,6 +39,7 @@ enum SaleStatus {
 const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account, usdcBalance }) => {
   const { t } = useTranslation()
   const [status, setStatus] = useState(SaleStatus.NOT_STARTED)
+  const [countdown, setCountdown] = useState('')
 
   useEffect(() => {
     const now = new Date().getTime()
@@ -53,6 +55,29 @@ const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account, usdcBala
     }
     setStatus(status_)
   }, [sale])
+
+  useInterval(() => {
+    if (sale.startDate) {
+      const target = sale.startDate.getTime();
+      const now = new Date().getTime();
+      const diffTime = target - now;
+      if (diffTime > 0) {
+        const duration = moment.duration(diffTime, 'milliseconds');
+        const hour = duration.hours();
+        const min = duration.minutes();
+        const sec = duration.seconds();
+
+        const hourS = hour < 10 ? `0${hour}`:`${hour}`;
+        const minS = min < 10 ? `0${min}`:`${min}`;
+        const secS = sec < 10 ? `0${sec}`:`${sec}`;
+        setCountdown(`${hourS}:${minS}:${secS}`);
+      } else {
+        setCountdown('');
+      }
+    } else {
+      setCountdown('');
+    }
+  }, 1000)
 
   return (
       <StyledWrapper flexDirection={['column', 'column', 'column', 'row']}>
@@ -73,7 +98,18 @@ const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account, usdcBala
                 <Text fontSize="16px">
                   Price per token ${sale.price}
                 </Text>
-
+                { sale.startDate && (
+                  <Flex  mt="20px" alignItems="center">
+                    <Text fontSize="16px" mr="10px">
+                      Begining in 
+                    </Text>
+                    <Text fontSize="22px" color="secondary">
+                      {countdown}
+                    </Text>
+                  </Flex>
+                  
+                )}
+                
                 {
                   sale.whitelistEnabled && !sale.userData?.whitelisted &&
                   (
