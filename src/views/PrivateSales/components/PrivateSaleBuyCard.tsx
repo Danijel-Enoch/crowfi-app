@@ -85,7 +85,12 @@ const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled,
       await onBuy(val)
       dispatch(fetchPrivateSalesUserDataAsync({ account, types: [sale.type] }))
     } catch (e) {
-      toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+      if (typeof e === 'object' && 'message' in e) {
+        const err: any = e;
+        toastError(t('Error'), err.message)
+      } else {
+        toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+      }
       console.error(e)
     } finally {
       setPendingTx(false)
