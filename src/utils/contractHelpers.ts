@@ -65,6 +65,7 @@ import nftSaleAbi from 'config/abi/nftSale.json'
 import pancakeSquadAbi from 'config/abi/crowfiSquad.json'
 import erc721CollctionAbi from 'config/abi/erc721collection.json'
 import privateSaleAbi from 'config/abi/presale.json'
+import { ERC20_ABI } from 'config/abi/erc20'
 import { ChainLinkOracleContract, FarmAuctionContract, PancakeProfileContract, PredictionsContract } from './types'
 
 const getContract = (abi: any, address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
@@ -74,6 +75,10 @@ const getContract = (abi: any, address: string, signer?: ethers.Signer | ethers.
 
 export const getBep20Contract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
   return getContract(bep20Abi, address, signer)
+}
+
+export const getErc20Contract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(ERC20_ABI, address, signer)
 }
 export const getErc721Contract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
   return getContract(erc721Abi, address, signer)
