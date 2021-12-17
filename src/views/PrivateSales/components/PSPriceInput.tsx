@@ -10,6 +10,7 @@ import { Input as NumericalInput } from './NumericalInput'
 interface PSPriceInputProps {
   enabled: boolean
   price: number
+  min: string
   max: string
   symbol: string
   onChange: (string) => void
@@ -57,6 +58,7 @@ const StyledErrorMessage = styled(Text)`
 
 const PSPriceInput: React.FC<PSPriceInputProps> = ({
   enabled,
+  min,
   max,
   price,
   symbol,
@@ -65,7 +67,7 @@ const PSPriceInput: React.FC<PSPriceInputProps> = ({
   usdcBalance
 }) => {
   const { t } = useTranslation()
-  const tooLow = value ? parseFloat(value) < 1e-3 : false
+  const tooLow = value ? parseFloat(value) < parseFloat(min) : false
   const tooMuch = value ? parseFloat(value) > parseFloat(max) : false
   const usdPrice = Number.isNaN(parseFloat(value)) ? 0 : price * parseFloat(value)
   const usdcBalanceNumber = getBalanceNumber(usdcBalance, tokens.usdc.decimals)

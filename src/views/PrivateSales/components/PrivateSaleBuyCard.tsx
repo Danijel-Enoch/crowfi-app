@@ -12,6 +12,7 @@ import { DeserializedPrivateSale } from 'state/types'
 import useToast from 'hooks/useToast'
 import { useERC20 } from 'hooks/useContract'
 import { getAddress } from 'utils/addressHelpers'
+import { PrivateSaleType } from 'config/constants/types'
 import useBuySale from '../hooks/useBuySale'
 import { AppHeader } from '../../../components/App'
 import { AutoColumn } from '../../../components/Layout/Column'
@@ -112,15 +113,33 @@ const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled,
         <AppHeader title={t('Buy with USDC')} subtitle={t('Your purchase : %amount% CROW', {amount: getBalanceNumber(sale.userData?.purchasedBalance)})} noConfig />
         <Wrapper>
           <AutoColumn gap="md">
-            <PSPriceInput
-              enabled={enabled}
-              price={sale.price}
-              usdcBalance={usdcBalance}
-              onChange={handleChange}
-              value={val}
-              max={getBalanceNumber(max).toString()}
-              symbol="CROW"
-            />
+            { sale.type === PrivateSaleType.preSale ?
+            (
+              <PSPriceInput
+                enabled={enabled}
+                price={sale.price}
+                usdcBalance={usdcBalance}
+                onChange={handleChange}
+                value={val}
+                min="5555"
+                max="277777"
+                symbol="CROW"
+              />
+            )
+            :
+            (
+              <PSPriceInput
+                enabled={enabled}
+                price={sale.price}
+                usdcBalance={usdcBalance}
+                onChange={handleChange}
+                value={val}
+                min="1"
+                max={getBalanceNumber(max).toString()}
+                symbol="CROW"
+              />
+            )}
+            
           </AutoColumn>
           <ModalActions>
             
