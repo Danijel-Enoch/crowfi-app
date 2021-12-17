@@ -101,7 +101,7 @@ const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account, usdcBala
                 { sale.startDate && (
                   <Flex  mt="20px" alignItems="center">
                     <Text fontSize="16px" mr="10px">
-                      Begining in 
+                      Beginning in 
                     </Text>
                     <Text fontSize="22px" color="secondary">
                       {countdown}
