@@ -107,7 +107,7 @@ const App: React.FC = () => {
             <Route path="/privatesales">
               <PrivateSales />
             </Route>
-            <Route path="/pools">
+            {/* <Route path="/pools">
               <Pools />
             </Route>
             <Route path="/lottery">
@@ -142,27 +142,27 @@ const App: React.FC = () => {
             </Route>
             <Route path="/voting/proposal/:id">
               <Proposal />
-            </Route>
+            </Route> */}
 
             {/* NFT */}
-            <Route path="/nfts">
+            {/* <Route path="/nfts">
               <NftMarket />
-            </Route>
+            </Route> */}
 
-            <Route path="/crowfi-squad">
+            {/* <Route path="/crowfi-squad">
               <PancakeSquad />
-            </Route>
+            </Route> */}
 
             {/* Info pages */}
-            <Route path="/info">
+            {/* <Route path="/info">
               <Info />
-            </Route>
+            </Route> */}
 
             {/* Using this format because these components use routes injected props. We need to rework them with hooks */}
             <Route exact strict path="/swap" component={Swap} />
             <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
-            <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
-            <Route exact strict path="/find" component={PoolFinder} />
+            {/* <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
+            <Route exact strict path="/find" component={PoolFinder} /> */}
             <Route exact strict path="/liquidity" component={Liquidity} />
             <Route exact strict path="/create" component={RedirectToAddLiquidity} />
             <Route exact path="/add" component={AddLiquidity} />
@@ -178,7 +178,7 @@ const App: React.FC = () => {
             <Route path="/pool">
               <Redirect to="/liquidity" />
             </Route>
-            <Route path="/staking">
+            {/* <Route path="/staking">
               <Redirect to="/pools" />
             </Route>
             <Route path="/syrup">
@@ -189,7 +189,7 @@ const App: React.FC = () => {
             </Route>
             <Route path="/profile">
               <Redirect to={`${nftsBaseUrl}/profile/${account?.toLowerCase() || ''}`} />
-            </Route>
+            </Route> */}
 
             {/* 404 */}
             <Route component={NotFound} />
