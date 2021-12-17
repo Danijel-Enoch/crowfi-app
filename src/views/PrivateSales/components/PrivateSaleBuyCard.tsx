@@ -1,21 +1,20 @@
 import BigNumber from 'bignumber.js'
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Card, Flex, Text, Skeleton, Heading, Button, Modal } from '@pancakeswap/uikit'
-import { ModalActions, ModalInput } from 'components/Modal'
+import { Card, Button } from '@pancakeswap/uikit'
+import { ModalActions } from 'components/Modal'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import { useTranslation } from 'contexts/Localization'
-import { getFullDisplayBalance, getBalanceAmount, getBalanceNumber } from 'utils/formatBalance'
+import { getFullDisplayBalance, getBalanceNumber } from 'utils/formatBalance'
 import { useAppDispatch } from 'state'
 import { fetchPrivateSalesUserDataAsync } from 'state/privatesales'
 import { DeserializedPrivateSale } from 'state/types'
 import useToast from 'hooks/useToast'
-import useApproveConfirmTransaction from 'hooks/useApproveConfirmTransaction'
 import { useERC20 } from 'hooks/useContract'
 import { getAddress } from 'utils/addressHelpers'
 import useBuySale from '../hooks/useBuySale'
-import { AppHeader, AppBody } from '../../../components/App'
-import Column, { AutoColumn } from '../../../components/Layout/Column'
+import { AppHeader } from '../../../components/App'
+import { AutoColumn } from '../../../components/Layout/Column'
 import PSPriceInput from './PSPriceInput'
 import useApproveJoinSale from '../hooks/useApproveJoinSale'
 
@@ -37,7 +36,7 @@ interface PPrivateSaleBuyCardProps {
 
 const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled, account, usdcBalance }) => {
   const [val, setVal] = useState('')
-  const { toastSuccess, toastError } = useToast()
+  const { toastError } = useToast()
   const [requestedApproval, setRequestedApproval] = useState(false)
   const { quoteAllowance } = sale.userData || {}
   const isApproved = account && quoteAllowance && quoteAllowance.isGreaterThan(0)
@@ -91,10 +90,6 @@ const PrivateSaleBuyCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, enabled,
       setPendingTx(false)
     }
   }, [onBuy, dispatch, account, t, toastError, sale.type, val])
-
-  const handleSelectMax = useCallback(() => {
-    setVal(fullBalance)
-  }, [fullBalance, setVal])
 
   const renderApprovalOrBuyButton = () => {
     return isApproved ? (

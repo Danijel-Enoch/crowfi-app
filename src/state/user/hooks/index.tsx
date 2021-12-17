@@ -1,4 +1,4 @@
-import { ChainId, Pair, Token } from '@pancakeswap/sdk'
+import { Pair, Token } from '@pancakeswap/sdk'
 import flatMap from 'lodash/flatMap'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -33,7 +33,7 @@ import {
   updateUserExpertModeAcknowledgementShow,
   updateUserReferrer
 } from '../actions'
-import { deserializeToken, GAS_PRICE_GWEI, serializeToken } from './helpers'
+import { deserializeToken, serializeToken } from './helpers'
 
 export function useUserReferrer(): [string, (referrer: string) => void] {
   const dispatch = useDispatch<AppDispatch>()
@@ -300,11 +300,8 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
 }
 
 export function useGasPrice(): string {
-  // return GAS_PRICE_GWEI.cronos
-  const chainId = process.env.REACT_APP_CHAIN_ID
   const userGas = useSelector<AppState, AppState['user']['gasPrice']>((state) => state.user.gasPrice)
   return userGas;
-  // return chainId === ChainId.CRONOS.toString() ? userGas : GAS_PRICE_GWEI.testnet
 }
 
 export function useGasPriceManager(): [string, (userGasPrice: string) => void] {

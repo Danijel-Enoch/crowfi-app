@@ -20,7 +20,6 @@ import SuspenseWithChunkError from './components/SuspenseWithChunkError'
 import { ToastListener } from './contexts/ToastsContext'
 import PageLoader from './components/Loader/PageLoader'
 import EasterEgg from './components/EasterEgg'
-import GlobalCheckClaimStatus from './components/GlobalCheckClaimStatus'
 import history from './routerHistory'
 // Views included in the main bundle
 import Pools from './views/Pools'
@@ -69,7 +68,7 @@ BigNumber.config({
 const App: React.FC = () => {
   const { account } = useWeb3React()
 
-  const [userRefferer, setUserReferrer] = useUserReferrer()
+  const [, setUserReferrer] = useUserReferrer()
 
   useEffect(() => {
     const referrer = getCurrentReffererFromUrl()
@@ -90,7 +89,6 @@ const App: React.FC = () => {
     <Router history={history}>
       <ResetCSS />
       <GlobalStyle />
-      {/* <GlobalCheckClaimStatus excludeLocations={[]} /> */}
       <Menu>
         <SuspenseWithChunkError fallback={<PageLoader />}>
           <Switch>

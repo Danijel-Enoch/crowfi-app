@@ -1,9 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text, Button, Input, InputProps, Flex, Link } from '@pancakeswap/uikit'
+import { Text, Button, InputProps, Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
-import { parseUnits } from 'ethers/lib/utils'
-import { getFullDisplayBalance, getBalanceAmount, getBalanceNumber, formatBigNumber } from 'utils/formatBalance'
+import { getBalanceNumber } from 'utils/formatBalance'
 import BigNumber from 'bignumber.js'
 import { Input as NumericalInput } from './NumericalInput'
 
@@ -60,26 +59,13 @@ const StyledErrorMessage = styled(Text)`
 const PSClaimInput: React.FC<PSClaimInputProps> = ({
   enabled = true,
   max,
-  symbol,
   onChange,
   onSelectMax,
   value,
-  inputTitle,
-  decimals = 18,
+  inputTitle
 }) => {
   const { t } = useTranslation()
   const isBalanceZero = !max || max.eq(0)
-  const displayBalance = (balance: string) => {
-    if (isBalanceZero) {
-      return '0'
-    }
-
-
-    const balanceUnits = parseUnits(balance, decimals)
-    
-    const res= formatBigNumber(balanceUnits, decimals, decimals)
-    return res
-  }
 
   return (
     <div style={{ position: 'relative' }}>
@@ -99,7 +85,6 @@ const PSClaimInput: React.FC<PSClaimInputProps> = ({
             align="right"
             placeholder="0"
           />
-          {/* <Text fontSize="14px">&nbsp;{symbol}</Text> */}
         </Flex>
         <Flex justifyContent="space-between" pl="16px">
           <Text fontSize="14px">{t('Balance: %balance%', { balance: getBalanceNumber(max) })}</Text>

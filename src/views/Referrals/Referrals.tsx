@@ -5,7 +5,6 @@ import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import Page from 'components/Layout/Page'
-import useTheme from 'hooks/useTheme'
 import ReferralLink from './components/ReferralLink'
 import TotalReferralCount from './components/TotalReferralCount'
 
@@ -73,7 +72,6 @@ const WrappedFlex = styled(Flex)`
 const Referrals: React.FC = () => {
     const { t } = useTranslation()
     const { account } = useWeb3React()
-    const { theme } = useTheme()
   
     return (
         <>

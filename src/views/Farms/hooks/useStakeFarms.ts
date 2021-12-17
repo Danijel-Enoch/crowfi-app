@@ -5,7 +5,7 @@ import { useUserReferrer } from 'state/user/hooks'
 
 const useStakeFarms = (pid: number) => {
   const masterChefContract = useMasterchef()
-  const [ userReferrer, _] = useUserReferrer()
+  const [ userReferrer ] = useUserReferrer()
 
   const handleStake = useCallback(
     async (amount: string) => {

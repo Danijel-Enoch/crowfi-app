@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text, Button, Input, InputProps, Flex, Link } from '@pancakeswap/uikit'
+import { Text, InputProps, Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
-import { parseUnits } from 'ethers/lib/utils'
 import { getBalanceNumber } from 'utils/formatBalance'
 import tokens from 'config/constants/tokens'
 import BigNumber from 'bignumber.js'
@@ -45,22 +44,6 @@ const DescText = styled(Text)`
   font-size: 10px;
   @media screen and (max-width: 400px) {
     font-size: 9px;
-  }
-`
-
-const StyledInput = styled(Input)`
-  box-shadow: none;
-  width: 60px;
-  margin: 0 8px;
-  padding: 0 8px;
-  border: none;
-
-  ${({ theme }) => theme.mediaQueries.xs} {
-    width: 80px;
-  }
-
-  ${({ theme }) => theme.mediaQueries.sm} {
-    width: auto;
   }
 `
 

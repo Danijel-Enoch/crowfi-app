@@ -1,23 +1,9 @@
 import React from 'react'
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { Flex, Heading, Text, Image, Button } from '@pancakeswap/uikit'
-import { useWeb3React } from '@web3-react/core'
+import { Flex, Heading, Text, Button } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import Container from 'components/Layout/Container'
-import useTheme from 'hooks/useTheme'
-
-const fading = () => keyframes`
-  from {
-    opacity: 0.9;
-  }
-  50% {
-    opacity: 0.1;
-  }
-  to {
-    opacity: 0.9;
-  }  
-`
 
 const LogoWrapper = styled.div`
   flex: none;
@@ -70,8 +56,6 @@ const PaddingWrapper = styled.div`
 
 const Landing = () => {
   const { t } = useTranslation()
-  const { account } = useWeb3React()
-  const { theme } = useTheme()
 
   return (
     <>
@@ -154,48 +138,6 @@ const Landing = () => {
         </Flex>
 
       </Flex>
-      {/* <Flex
-        position="relative"
-        flexDirection={['column-reverse', null, null, 'row']}
-        alignItems={['flex-end', null, null, 'center']}
-        justifyContent="center"
-        mt={[account ? '280px' : '50px', null, 0]}
-        id="homepage-hero"
-      >
-        <Flex flex="1" flexDirection="column">
-          <Heading scale="xxl" color="secondary" mb="24px">
-            {t('CrowFi Referral Program')}
-          </Heading>
-          <Heading scale="md" mb="24px">
-            {t('Share the referral link below to invite your friends and earn 5% of your friends earnings FOREVER!')}
-          </Heading>
-          <Flex>
-            {account ? (
-                <div>
-                  <ReferralLink /> 
-                  <TotalReferralCount />
-                </div>
-              ) : (
-                <div>
-                  <ConnectWalletButton mr="8px" />
-                </div>
-              )}
-          </Flex>
-        </Flex>
-        <Flex
-          height={['192px', null, null, '100%']}
-          width={['192px', null, null, '100%']}
-          flex={[null, null, null, '1']}
-          mb={['24px', null, null, '0']}
-          position="relative"
-        >
-          <BunnyWrapper>
-            <img src={`${imagePath}${imageSrc}.png`} srcSet={getSrcSet(imagePath, imageSrc)} alt={t('Lunar bunny')} />
-          </BunnyWrapper>
-          <StarsWrapper>
-          </StarsWrapper>
-        </Flex>
-      </Flex> */}
     </>
   )
 }
