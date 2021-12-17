@@ -5,7 +5,6 @@ import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import Page from 'components/Layout/Page'
-import useTheme from 'hooks/useTheme'
 import ReferralLink from './components/ReferralLink'
 import TotalReferralCount from './components/TotalReferralCount'
 
@@ -63,10 +62,16 @@ const BunnyWrapper = styled.div`
   }
 `
 
+const WrappedFlex = styled(Flex)`
+    position:absolute;
+    ${({ theme }) => theme.mediaQueries.md} {
+        position:relative;  
+    }
+`
+
 const Referrals: React.FC = () => {
     const { t } = useTranslation()
     const { account } = useWeb3React()
-    const { theme } = useTheme()
   
     return (
         <>
@@ -97,7 +102,7 @@ const Referrals: React.FC = () => {
                             )}
                         </Flex>
                     </Flex>
-                    <Flex
+                    <WrappedFlex
                     height={['128px', null, null, '100%']}
                     width={['128px', null, null, '100%']}
                     flex={[null, null, null, '1']}
@@ -107,7 +112,7 @@ const Referrals: React.FC = () => {
                     <BunnyWrapper>
                         <img src='/logo.png' alt={t('Crow Logo')} />
                     </BunnyWrapper>
-                    </Flex>
+                    </WrappedFlex>
                 </Flex>
             </Page>
         </>

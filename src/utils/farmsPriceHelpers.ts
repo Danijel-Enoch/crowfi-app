@@ -1,6 +1,4 @@
-import BigNumber from 'bignumber.js'
 import { SerializedFarm } from 'state/types'
-import { BIG_ONE, BIG_ZERO } from 'utils/bigNumber'
 
 /**
  * Returns the first farm with a quote token that matches from an array of preferred quote tokens

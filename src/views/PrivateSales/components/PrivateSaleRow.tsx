@@ -3,9 +3,9 @@ import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import 'moment-timezone'
 import styled from 'styled-components'
-import { Card, Flex, Text, Skeleton, Heading } from '@pancakeswap/uikit'
+import { Flex, Text, Heading } from '@pancakeswap/uikit'
 import { DeserializedPrivateSale } from 'state/types'
-import { getBalanceAmount, getBalanceNumber } from 'utils/formatBalance'
+import { getBalanceNumber } from 'utils/formatBalance'
 import { useTranslation } from 'contexts/Localization'
 import { FetchStatus } from 'hooks/useTokenBalance'
 import PrivateSaleBuyCard from './PrivateSaleBuyCard'
@@ -35,7 +35,7 @@ enum SaleStatus {
   EXPIRED
 }
 
-const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account, usdcBalance, usdcFetchStatus }) => {
+const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account, usdcBalance }) => {
   const { t } = useTranslation()
   const [status, setStatus] = useState(SaleStatus.NOT_STARTED)
 
@@ -146,7 +146,6 @@ const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account, usdcBala
           )}
         </SectionWrapper>
         <SectionWrapper justifyContent="center" alignItems="center">
-          {/* <PrivateSaleBuyCard sale={sale} /> */}
           { (status === SaleStatus.CLAIMING || status === SaleStatus.ENDED) && (
             <PrivateSaleClaimCard account={account} sale={sale} enabled={status === SaleStatus.CLAIMING}/>
           )}

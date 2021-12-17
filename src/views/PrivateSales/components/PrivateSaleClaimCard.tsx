@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Card, Flex, Text, Skeleton, Heading, Button, Modal } from '@pancakeswap/uikit'
-import { ModalActions, ModalInput } from 'components/Modal'
+import { Card, Button } from '@pancakeswap/uikit'
+import { ModalActions } from 'components/Modal'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import { useTranslation } from 'contexts/Localization'
 import { getFullDisplayBalance, getBalanceNumber } from 'utils/formatBalance'
@@ -12,8 +12,8 @@ import { DeserializedPrivateSale } from 'state/types'
 import useToast from 'hooks/useToast'
 import { useERC20 } from 'hooks/useContract'
 import { getAddress } from 'utils/addressHelpers'
-import { AppHeader, AppBody } from '../../../components/App'
-import Column, { AutoColumn } from '../../../components/Layout/Column'
+import { AppHeader } from '../../../components/App'
+import { AutoColumn } from '../../../components/Layout/Column'
 import PSClaimInput from './PSClaimInput'
 import useApproveClaimSale from '../hooks/useApproveClaimSale'
 import useClaimSale from '../hooks/useClaimSale'
@@ -36,7 +36,7 @@ interface PPrivateSaleBuyCardProps {
 
 const PrivateSaleClaimCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, account, enabled }) => {
   const [val, setVal] = useState('')
-  const { toastSuccess, toastError } = useToast()
+  const { toastError } = useToast()
   const [pendingTx, setPendingTx] = useState(false)
   const [requestedApproval, setRequestedApproval] = useState(false)
   const { tempAllowance } = sale.userData || {}

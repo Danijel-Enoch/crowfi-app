@@ -85,7 +85,8 @@ export const getProfileAvatar = async (address: string) => {
 
 export const getProfile = async (address: string): Promise<GetProfileResponse> => {
   try {
-    const hasRegistered = await profileContract.hasRegistered(address)
+    // const hasRegistered = await profileContract.hasRegistered(address)
+    const hasRegistered = false;
 
     if (!hasRegistered) {
       return { hasRegistered, profile: null }

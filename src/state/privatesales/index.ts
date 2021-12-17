@@ -1,6 +1,5 @@
 import salesConfig from 'config/constants/privatesales'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import isArchivedPid from 'utils/farmHelpers'
 import { PrivateSaleType } from 'config/constants/types'
 import fetchPrivateSales from './fetchPrivateSales'
 import {

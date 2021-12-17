@@ -39,7 +39,7 @@ const useStakePool = (sousId: number, isUsingBnb = false) => {
   const { account } = useWeb3React()
   const masterChefContract = useMasterchef()
   const sousChefContract = useSousChef(sousId)
-  const [ userReferrer, _] = useUserReferrer()
+  const [ userReferrer ] = useUserReferrer()
 
   const handleStake = useCallback(
     async (amount: string, decimals: number) => {

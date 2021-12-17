@@ -1,11 +1,7 @@
 import BigNumber from 'bignumber.js'
-import masterchefABI from 'config/abi/masterchef.json'
 import presaleABI from 'config/abi/presale.json'
-import { getContractAddress } from 'ethers/lib/utils'
-import { getAddress, getMasterChefAddress } from 'utils/addressHelpers'
-import { BIG_TEN, BIG_ZERO } from 'utils/bigNumber'
+import { getAddress } from 'utils/addressHelpers'
 import multicall from 'utils/multicall'
-import { getContract } from 'utils/web3'
 import { SerializedPrivateSale, SerializedBigNumber } from '../types'
 
 type PublicPrivateSaleData = {
@@ -22,7 +18,7 @@ type PublicPrivateSaleData = {
 }
 
 const fetchPrivateSale = async (sale: SerializedPrivateSale): Promise<PublicPrivateSaleData> => {
-  const { type, manager } = sale
+  const { manager } = sale
   const contactAddress = getAddress(manager)
   const calls = [
     {

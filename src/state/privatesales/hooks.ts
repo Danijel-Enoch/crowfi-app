@@ -1,10 +1,9 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'state'
 import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
 import { BIG_ZERO } from 'utils/bigNumber'
-import { getBalanceAmount } from 'utils/formatBalance'
 import { privatesalesConfig } from 'config/constants'
 import useRefresh from 'hooks/useRefresh'
 import { deserializeToken } from 'state/user/hooks/helpers'
@@ -49,7 +48,7 @@ const deserializePrivateSale = (privatesale: SerializedPrivateSale): Deserialize
   }
 }
 
-export const usePollPrivateSalesPublicData = (includeArchive = false) => {
+export const usePollPrivateSalesPublicData = () => {
   const dispatch = useAppDispatch()
   const { slowRefresh } = useRefresh()
 
@@ -57,10 +56,10 @@ export const usePollPrivateSalesPublicData = (includeArchive = false) => {
     const types = privatesalesConfig.map((saleToFetch) => saleToFetch.type)
 
     dispatch(fetchPrivateSalesPublicDataAsync(types))
-  }, [includeArchive, dispatch, slowRefresh])
+  }, [dispatch, slowRefresh])
 }
 
-export const usePollPrivateSalesWithUserData = (includeArchive = false) => {
+export const usePollPrivateSalesWithUserData = () => {
   const dispatch = useAppDispatch()
   const { slowRefresh } = useRefresh()
   const { account } = useWeb3React()

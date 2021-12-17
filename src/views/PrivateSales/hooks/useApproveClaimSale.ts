@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { ethers, Contract } from 'ethers'
-import { useMasterchef } from 'hooks/useContract'
 import { useCallWithGasPrice } from 'hooks/useCallWithGasPrice'
 
 const useApproveClaimSale = (token: Contract, manager: string) => {

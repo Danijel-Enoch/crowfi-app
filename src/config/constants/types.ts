@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { Token } from '@pancakeswap/sdk'
-import { String } from 'lodash'
 
 export type TranslatableText =
   | string
