@@ -159,8 +159,8 @@ export const cronosTokens = {
     'USD Coin',
     'https://www.centre.io/usdc',
   ),
-  crow1: new Token(CRONOS, '0x6AA7C188E9b9C8006B4DAe6b7Dc72C2790789bC6', 0, 'CROW!', 'CROW Token1', 'https://crowfi.com'),
-  crow2: new Token(CRONOS, '0x6AA7C188E9b9C8006B4DAe6b7Dc72C2790789bC6', 0, 'CROW2', 'CROW Token2', 'https://crowfi.com'),
+  crow1: new Token(CRONOS, '0xCcCE31b23B522b82ede8f8d30a975188891364b4', 0, 'CROW1', 'CROW Token1', 'https://crowfi.com'),
+  crow2: new Token(CRONOS, '0x24169D27C7b2d5E19a8D1FB23E5eC1C2865E8432', 0, 'CROW2', 'CROW Token2', 'https://crowfi.com'),
 }
 
 const tokens = (): TokenList => {
