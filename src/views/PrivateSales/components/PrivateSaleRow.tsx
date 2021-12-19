@@ -143,7 +143,7 @@ const PrivateSaleRow: React.FC<PrivateSaleRowProps> = ({ sale, account, usdcBala
             : status === SaleStatus.ENDED ?  
             (
               <Text fontSize="16px">
-                {t('All sold and claim will be start on')}&nbsp;{sale.claimStartDate ? moment.utc(sale.claimStartDate).format('ddd MMM Do, h A z') : ''}
+                {t('All sold out and claim will start on')}&nbsp;{sale.claimStartDate ? moment.utc(sale.claimStartDate).format('ddd MMM Do, h A z') : ''}
               </Text>
             )
             : status === SaleStatus.CLAIMING ?  
