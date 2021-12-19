@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { Flex, Heading, Text, Button } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import Container from 'components/Layout/Container'
+import useInterval from 'hooks/useInterval'
+import moment from 'moment'
 
 const LogoWrapper = styled.div`
   flex: none;
@@ -56,6 +58,28 @@ const PaddingWrapper = styled.div`
 
 const Landing = () => {
   const { t } = useTranslation()
+  const [countdown, setCountdown] = useState('')
+
+  useInterval(() => {
+    const target = 1640019600000;
+    const now = new Date().getTime();
+    const diffTime = target - now;
+    if (diffTime > 0) {
+      const duration = moment.duration(diffTime, 'milliseconds');
+      const day = duration.days();
+      const hour = day > 0 ? duration.hours() + day * 24 : duration.hours();
+      const min = duration.minutes();
+      const sec = duration.seconds();
+
+      const hourS = hour < 10 ? `0${hour}`:`${hour}`;
+      const minS = min < 10 ? `0${min}`:`${min}`;
+      const secS = sec < 10 ? `0${sec}`:`${sec}`;
+      setCountdown(`${hourS}:${minS}:${secS}`);
+      
+    } else {
+      setCountdown('');
+    }
+  }, 1000)
 
   return (
     <>
@@ -75,6 +99,18 @@ const Landing = () => {
             <Link to="/privatesales">
               <Button >{t('Launch App')}</Button>
             </Link>
+            {
+              countdown !== '' && (
+                <>
+                <Text textAlign="center" color="primary" fontSize="24px" mt="36px" >
+                  {t('CrowFi is coming soon')}
+                </Text>
+                <Heading scale="xxl" color="secondary" mt="24px" textAlign="center">
+                {countdown}
+                </Heading>
+                </>
+              )
+            }
           </TextSectionWrapper>
           <PaddingWrapper/>
           <LogoWrapper>
