@@ -3463,9 +3463,9 @@
     eslint-plugin-react "^7.21.5"
     eslint-plugin-react-hooks "^4.0.0"
 
-"@pancakeswap/sdk@https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?c17316157492d722a6e789b24c1db0ae9529e96e":
+"@pancakeswap/sdk@https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?0dcf239319d5479c1c55e4b5a2dd9b39ed7d91e6":
   version "2.4.0"
-  resolved "https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?c17316157492d722a6e789b24c1db0ae9529e96e#e6aaa8dbbdaab06b41879098f4f98449f6124807"
+  resolved "https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?0dcf239319d5479c1c55e4b5a2dd9b39ed7d91e6#9a6201d8d769b70f32a3c737b122e08b539c63f8"
   dependencies:
     "@pancakeswap-libs/pancake-swap-core" "^0.1.0"
     big.js "^5.2.2"

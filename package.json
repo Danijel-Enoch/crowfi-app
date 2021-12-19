@@ -39,7 +39,7 @@
   "dependencies": {
     "@binance-chain/bsc-connector": "^1.0.0",
     "@ethersproject/experimental": "^5.0.1",
-    "@pancakeswap/sdk": "https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?c17316157492d722a6e789b24c1db0ae9529e96e",
+    "@pancakeswap/sdk": "https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?0dcf239319d5479c1c55e4b5a2dd9b39ed7d91e6",
     "@pancakeswap/uikit": "https://gitpkg.now.sh/coderighter2/pancake-toolkit/packages/pancake-uikit?9fa3007b2ee2f791ac2364ad3cf3e55abadc18d0",
     "@reduxjs/toolkit": "^1.5.0",
     "@types/multicodec": "^1.0.0",
