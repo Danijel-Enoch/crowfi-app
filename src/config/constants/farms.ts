@@ -16,8 +16,8 @@ const farms: SerializedFarmConfig[] = [
       338: '0xe59179D3Dd34C1d33Cb938e29618aa9B11B4A073',
       25: '0x82E623AA112B03388A153D51142e5F9eA7EcE258',
     },
-    token: serializedTokens.usdc,
-    quoteToken: serializedTokens.crow,
+    token: serializedTokens.crow,
+    quoteToken: serializedTokens.usdc,
   },
   {
     pid: 2,
@@ -40,8 +40,8 @@ const farms: SerializedFarmConfig[] = [
       338: '0xed55E937966d1B2190Ce9A8D7B27619c1996EFAb',
       25: '0xfC84f7b512BF2A590ED48797aA42CcC817F918a0',
     },
-    token: serializedTokens.usdc,
-    quoteToken: serializedTokens.wcro,
+    token: serializedTokens.wcro,
+    quoteToken: serializedTokens.usdc,
   }
 ]
 

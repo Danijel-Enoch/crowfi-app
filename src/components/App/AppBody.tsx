@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Card } from '@pancakeswap/uikit'
 
 export const BodyWrapper = styled(Card)`
+  filter: ${({ theme }) => theme.card.dropShadow};
   max-width: 436px;
   width: 100%;
   z-index: 1;

@@ -20,6 +20,7 @@ import PSPriceInput from './PSPriceInput'
 import useApproveJoinSale from '../hooks/useApproveJoinSale'
 
 const StyledCard = styled(Card)`
+  filter: ${({ theme }) => theme.card.dropShadow};
   align-self: baseline;
 `
 
