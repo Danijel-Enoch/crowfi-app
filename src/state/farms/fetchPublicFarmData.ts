@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import masterchefABI from 'config/abi/masterchef.json'
 import erc20 from 'config/abi/erc20.json'
 import { getAddress, getMasterChefAddress } from 'utils/addressHelpers'
-import { BIG_TEN, BIG_ZERO } from 'utils/bigNumber'
+import { BIG_ONE, BIG_TEN, BIG_ZERO } from 'utils/bigNumber'
 import multicall from 'utils/multicall'
 import { SerializedFarm, SerializedBigNumber } from '../types'
 
@@ -73,7 +73,7 @@ const fetchFarm = async (farm: SerializedFarm): Promise<PublicFarmData> => {
   const lpTotalInQuoteToken = quoteTokenAmountMc.times(new BigNumber(2))
 
   // Only make masterchef calls if farm has pid
-  const [info, totalAllocPoint, crowPerBlock] =
+  const [info, totalAllocPoint, crowPerBlock, bonusMultiplier] =
     pid || pid === 0
       ? await multicall(masterchefABI, [
           {
@@ -89,6 +89,10 @@ const fetchFarm = async (farm: SerializedFarm): Promise<PublicFarmData> => {
             address: getMasterChefAddress(),
             name: 'crowPerBlock',
           },
+          {
+            address: getMasterChefAddress(),
+            name: 'BONUS_MULTIPLIER',
+          },
         ])
       : [null, null]
 
@@ -96,7 +100,9 @@ const fetchFarm = async (farm: SerializedFarm): Promise<PublicFarmData> => {
   const poolWeight = totalAllocPoint ? allocPoint.div(new BigNumber(totalAllocPoint)) : 
   BIG_ZERO
   const harvestInterval = info ? new BigNumber(info.harvestInterval?._hex) : BIG_ZERO
-  const crowPerBlockBN = crowPerBlock ? new BigNumber(crowPerBlock) : BIG_ZERO
+  const bonusMultiplierBN = bonusMultiplier ? new BigNumber(bonusMultiplier) : BIG_ONE
+  let crowPerBlockBN = crowPerBlock ? new BigNumber(crowPerBlock) : BIG_ZERO
+  crowPerBlockBN = crowPerBlockBN.multipliedBy(bonusMultiplierBN);
   return {
     tokenAmountTotal: tokenAmountTotal.toJSON(),
     lpTotalSupply: new BigNumber(lpTotalSupply).toJSON(),
