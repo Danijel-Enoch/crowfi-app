@@ -1,4 +1,4 @@
-import { MenuItemsType, DropdownMenuItemType } from '@pancakeswap/uikit'
+import { MenuItemsType } from '@pancakeswap/uikit'
 import { ContextApi } from 'contexts/Localization/types'
 import { nftsBaseUrl } from 'views/Nft/market/constants'
 
@@ -12,32 +12,17 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     showItemsOnMobile: false,
     items: [
       {
-        label: t('Exchange'),
+        label: t('Token Exchange'),
         href: '/swap',
       },
       {
-        label: t('Liquidity'),
+        label: t('Liquidity Pairs'),
         href: '/liquidity',
       },
     ],
   },
-  // {
-  //   label: t('Farms'),
-  //   href: '/farms',
-  //   icon: 'Earn',
-  //   items: [
-  //     {
-  //       label: t('Farms'),
-  //       href: '/farms',
-  //     },
-  //     // {
-  //     //   label: t('Pools'),
-  //     //   href: '/pools',
-  //     // },
-  //   ],
-  // },
   {
-    label: t('Farms'),
+    label: t('Nests'),
     href: '/farms',
     icon: 'Earn',
     items: [
@@ -46,16 +31,32 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
   {
     label: t('Referrals'),
     href: '/referrals',
-    icon: 'Earn',
-    items: [
-    ],
+    icon: 'Groups',
+    items: []
   },
   {
     label: t('Private Sales'),
     href: '/privatesales',
     icon: 'Earn',
+    items: []
+  },
+  {
+    label: t('Bridge'),
+    href: undefined,
+    icon: 'Trade',
+    showItemsOnMobile: true,
     items: [
-    ],
+      {
+        type: 1,
+        label: t('EVOdefi Bridge'),
+        href: 'https://bridge.evodefi.com',
+      },
+      {
+        type: 1,
+        label: t('Cronos Bridge'),
+        href: 'https://cronos.crypto.org/docs/bridge/cdcex.html',
+      },
+    ]
   },
 
   // {
