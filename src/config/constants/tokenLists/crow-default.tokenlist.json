@@ -31,7 +31,7 @@
       "symbol": "CROW",
       "address": "0x285c3329930a3fd3C7c14bC041d3E50e165b1517",
       "chainId": 25,
-      "decimals": 6,
+      "decimals": 18,
       "logoURI": "https://crowfi.app/images/tokens/0xf9872a4ea77278f06613a817d563012bfc7761b3.svg"
     },
     {
