@@ -48,7 +48,7 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     items: [
       {
         type: 1,
-        label: t('EVOdefi Bridge'),
+        label: t('EvoDeFi Bridge'),
         href: 'https://bridge.evodefi.com',
       },
       {
