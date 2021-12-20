@@ -20,6 +20,7 @@ import useClaimSale from '../hooks/useClaimSale'
 
 
 const StyledCard = styled(Card)`
+  filter: ${({ theme }) => theme.card.dropShadow};
   align-self: baseline;
 `
 
