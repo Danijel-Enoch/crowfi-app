@@ -1,5 +1,6 @@
 import { MenuItemsType } from '@pancakeswap/uikit'
 import { ContextApi } from 'contexts/Localization/types'
+import noop from "lodash"
 
 export type ConfigMenuItemsType = MenuItemsType & { hideSubNav?: boolean }
 
@@ -38,7 +39,7 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
   {
     label: t('Referrals'),
     href: '/referrals',
-    icon: 'Earn',
+    icon: 'Groups',
     items: []
   },
   {
@@ -46,6 +47,25 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     href: '/privatesales',
     icon: 'Earn',
     items: []
+  },
+  {
+    label: t('Bridge'),
+    href: undefined,
+    icon: 'Trade',
+    onClick: noop,
+    showItemsOnMobile: true,
+    items: [
+      {
+        type: 1,
+        label: t('EVOdefi Bridge'),
+        href: 'https://bridge.evodefi.com',
+      },
+      {
+        type: 1,
+        label: t('Cronos Bridge'),
+        href: 'https://cronos.crypto.org/docs/bridge/cdcex.html',
+      },
+    ]
   },
 
   // {
