@@ -28,8 +28,8 @@ const farms: SerializedFarmConfig[] = [
       338: '0xEf5b46555a8548b3E7CaCcB8511926643c8e7Ba2',
       25: '0xCd693F158865D071f100444c7F3b96e7463bAe8d'
     },
-    token: serializedTokens.crow,
-    quoteToken: serializedTokens.wcro,
+    token: serializedTokens.wcro,
+    quoteToken: serializedTokens.crow,
   },
   {
     pid: 3,

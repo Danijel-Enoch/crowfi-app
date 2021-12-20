@@ -76,7 +76,7 @@ function CurrencySearch({
     (currency: Currency) => {
       onCurrencySelect(currency)
       if (audioPlay) {
-        swapSound.play()
+        // swapSound.play()
       }
     },
     [audioPlay, onCurrencySelect],
