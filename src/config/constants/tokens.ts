@@ -121,7 +121,7 @@ export const cronosTokens = {
   cake: new Token(
     CRONOS,
     '0x285c3329930a3fd3C7c14bC041d3E50e165b1517',
-    0,
+    18,
     'Crow',
     'Crow Token',
     'https://crowfi.app',
