@@ -61,7 +61,7 @@ const Landing = () => {
   const [countdown, setCountdown] = useState('')
 
   useInterval(() => {
-    const target = 1640019600000;
+    const target = 1640026800000;
     const now = new Date().getTime();
     const diffTime = target - now;
     if (diffTime > 0) {
