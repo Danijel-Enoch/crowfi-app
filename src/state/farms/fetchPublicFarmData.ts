@@ -100,7 +100,11 @@ const fetchFarm = async (farm: SerializedFarm): Promise<PublicFarmData> => {
   const poolWeight = totalAllocPoint ? allocPoint.div(new BigNumber(totalAllocPoint)) : 
   BIG_ZERO
   const harvestInterval = info ? new BigNumber(info.harvestInterval?._hex) : BIG_ZERO
-  const bonusMultiplierBN = bonusMultiplier ? new BigNumber(bonusMultiplier) : BIG_ONE
+  let bonusMultiplierBN = bonusMultiplier ? new BigNumber(bonusMultiplier) : BIG_ONE
+  const decimalBN = BIG_TEN.pow(18)
+  if (bonusMultiplierBN.gte(decimalBN)) {
+    bonusMultiplierBN = decimalBN.div(decimalBN);
+  }
   let crowPerBlockBN = crowPerBlock ? new BigNumber(crowPerBlock) : BIG_ZERO
   crowPerBlockBN = crowPerBlockBN.multipliedBy(bonusMultiplierBN);
   return {
