@@ -161,8 +161,8 @@ const App: React.FC = () => {
             {/* Using this format because these components use routes injected props. We need to rework them with hooks */}
             <Route exact strict path="/swap" component={Swap} />
             <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
-            {/* <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
-            <Route exact strict path="/find" component={PoolFinder} /> */}
+            <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
+            <Route exact strict path="/find" component={PoolFinder} />
             <Route exact strict path="/liquidity" component={Liquidity} />
             <Route exact strict path="/create" component={RedirectToAddLiquidity} />
             <Route exact path="/add" component={AddLiquidity} />
