@@ -103,7 +103,7 @@ const fetchFarm = async (farm: SerializedFarm): Promise<PublicFarmData> => {
   let bonusMultiplierBN = bonusMultiplier ? new BigNumber(bonusMultiplier) : BIG_ONE
   const decimalBN = BIG_TEN.pow(18)
   if (bonusMultiplierBN.gte(decimalBN)) {
-    bonusMultiplierBN = decimalBN.div(decimalBN);
+    bonusMultiplierBN = bonusMultiplierBN.div(decimalBN);
   }
   let crowPerBlockBN = crowPerBlock ? new BigNumber(crowPerBlock) : BIG_ZERO
   crowPerBlockBN = crowPerBlockBN.multipliedBy(bonusMultiplierBN);
