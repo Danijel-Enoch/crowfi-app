@@ -25,7 +25,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earnings, pid }) => {
   const { onReward } = useHarvestFarm(pid)
   const cakePrice = usePriceCakeBusd()
   const dispatch = useAppDispatch()
-  const rawEarningsBalance = account ? getBalanceAmount(earnings, 0) : BIG_ZERO
+  const rawEarningsBalance = account ? getBalanceAmount(earnings, 18) : BIG_ZERO
   const displayBalance = rawEarningsBalance.toFixed(3, BigNumber.ROUND_DOWN)
   const earningsBusd = rawEarningsBalance ? rawEarningsBalance.multipliedBy(cakePrice).toNumber() : 0
 
