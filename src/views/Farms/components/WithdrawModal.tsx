@@ -34,14 +34,18 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max
     [setVal],
   )
 
-  const handleSelectMax = useCallback(() => {
-    setVal(fullBalance)
+  const handleSelectPercent = useCallback((percent: number) => {
+    if (percent === 100) {
+      setVal(fullBalance)
+    } else {
+      setVal(new BigNumber(fullBalance).div(100/percent).toFixed(18))
+    }
   }, [fullBalance, setVal])
 
   return (
     <Modal title={t('Unstake LP tokens')} onDismiss={onDismiss}>
       <ModalInput
-        onSelectMax={handleSelectMax}
+        onSelectPercent={handleSelectPercent}
         onChange={handleChange}
         value={val}
         max={fullBalance}
@@ -57,6 +61,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max
           onClick={async () => {
             setPendingTx(true)
             try {
+              console.log(val);
               await onConfirm(val)
               toastSuccess(t('Unstaked!'), t('Your earnings have also been harvested to your wallet'))
               onDismiss()

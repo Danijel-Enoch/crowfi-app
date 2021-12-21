@@ -9,6 +9,7 @@ interface ModalInputProps {
   max: string
   symbol: string
   onSelectMax?: () => void
+  onSelectPercent?: (percent: number) => void
   onChange: (e: React.FormEvent<HTMLInputElement>) => void
   placeholder?: string
   value: string
@@ -65,11 +66,13 @@ const ModalInput: React.FC<ModalInputProps> = ({
   symbol,
   onChange,
   onSelectMax,
+  onSelectPercent,
   value,
   addLiquidityUrl,
   inputTitle,
   decimals = 18,
 }) => {
+  const percents = [25, 50, 75, 100]
   const { t } = useTranslation()
   const isBalanceZero = max === '0' || !max
 
@@ -99,11 +102,23 @@ const ModalInput: React.FC<ModalInputProps> = ({
             placeholder="0"
             value={value}
           />
+          { onSelectMax && (
           <Button scale="sm" onClick={onSelectMax} mr="8px">
             {t('Max')}
           </Button>
+          )}
+          
           <Text fontSize="16px">{symbol}</Text>
         </Flex>
+        { onSelectPercent && (
+          <Flex alignItems="flex-end" justifyContent="space-between" pl="8px">
+          {percents.map((percent) => (
+            <Button scale="sm" onClick={() => onSelectPercent(percent)} ml="8px">
+              {percent}%
+            </Button>
+          ))}
+          </Flex>
+        )}
       </StyledTokenInput>
       {isBalanceZero && (
         <StyledErrorMessage fontSize="14px" color="failure">

@@ -86,8 +86,12 @@ const DepositModal: React.FC<DepositModalProps> = ({
     [setVal],
   )
 
-  const handleSelectMax = useCallback(() => {
-    setVal(fullBalance)
+  const handleSelectPercent = useCallback((percent: number) => {
+    if (percent === 100) {
+      setVal(fullBalance)
+    } else {
+      setVal(new BigNumber(fullBalance).div(100/percent).toFixed(18))
+    }
   }, [fullBalance, setVal])
 
   if (showRoiCalculator) {
@@ -113,7 +117,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
     <Modal title={t('Stake LP tokens')} onDismiss={onDismiss}>
       <ModalInput
         value={val}
-        onSelectMax={handleSelectMax}
+        onSelectPercent={handleSelectPercent}
         onChange={handleChange}
         max={fullBalance}
         symbol={tokenName}
