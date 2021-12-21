@@ -29,7 +29,7 @@ export default function Manage({
 
   return (
     <ModalBody>
-      <StyledButtonMenu
+      {/* <StyledButtonMenu
         activeIndex={showLists ? 0 : 1}
         onItemClick={() => setShowLists((prev) => !prev)}
         scale="sm"
@@ -38,12 +38,12 @@ export default function Manage({
       >
         <ButtonMenuItem width="50%">{t('Lists')}</ButtonMenuItem>
         <ButtonMenuItem width="50%">{t('Tokens')}</ButtonMenuItem>
-      </StyledButtonMenu>
-      {showLists ? (
+      </StyledButtonMenu> */}
+      {/* {showLists ? (
         <ManageLists setModalView={setModalView} setImportList={setImportList} setListUrl={setListUrl} />
-      ) : (
+      ) : ( */}
         <ManageTokens setModalView={setModalView} setImportToken={setImportToken} />
-      )}
+      {/* )} */}
     </ModalBody>
   )
 }
