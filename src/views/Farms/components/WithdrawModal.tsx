@@ -61,7 +61,6 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max
           onClick={async () => {
             setPendingTx(true)
             try {
-              console.log(val);
               await onConfirm(val)
               toastSuccess(t('Unstaked!'), t('Your earnings have also been harvested to your wallet'))
               onDismiss()
