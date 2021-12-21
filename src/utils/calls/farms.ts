@@ -31,7 +31,9 @@ export const unstakeFarm = async (masterChefContract, pid, amount) => {
   const gasPrice = getGasPrice()
   const value = new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString()
 
-  const tx = await masterChefContract.withdraw(pid, value, { ...options, gasPrice })
+  const tx = await callWithEstimateGas(masterChefContract, 'withdraw', [pid, value], {
+    gasPrice,
+  })
   const receipt = await tx.wait()
   return receipt.status
 }
