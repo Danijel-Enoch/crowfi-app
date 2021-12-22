@@ -7,6 +7,7 @@ import ConnectWalletButton from 'components/ConnectWalletButton'
 import Page from 'components/Layout/Page'
 import ReferralLink from './components/ReferralLink'
 import TotalReferralCount from './components/TotalReferralCount'
+import ReferralQRCode from './components/ReferralQRCode'
 
 const rotCombiAnim = (x1, x2, x3, y, scale) => keyframes`
     0% {
@@ -86,14 +87,23 @@ const Referrals: React.FC = () => {
                         <Heading scale="xl" color="primary" mb="24px">
                             {t('CrowFi Referral Program')}
                         </Heading>
-                        <Text textAlign="start" color="primary" fontSize="24px" mb="12px" >
-                            {t('Share the referral link below to invite your friends and earn 5% of your friends earnings FOREVER!')}
+                        <Text textAlign="start" color="primary" fontSize="18px" mb="12px" >
+                           1. Share this QR Code or link with your friends.
+                        </Text>
+                        <Text textAlign="start" color="primary" fontSize="18px" mb="12px" >
+                           2. Make sure they open in a web3 compatible browser (MetaMask, Token Pocket)
+                        </Text>
+                        <Text textAlign="start" color="primary" fontSize="18px" mb="12px" >
+                           3. Earn a 5% referral bonus when they harvest their farm earnings
                         </Text>
                         <Flex flexDirection="column">
                             {account ? (
                                 <>
                                 <TotalReferralCount />
                                 <ReferralLink account={account} /> 
+                                <Flex justifyContent="center">
+                                    <ReferralQRCode account={account} /> 
+                                </Flex>
                                 </>
                             ) : (
                                 <>
