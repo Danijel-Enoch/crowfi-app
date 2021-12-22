@@ -70,7 +70,7 @@ function CurrencySearch({
     return filteredTokens.sort(tokenComparator)
   }, [filteredTokens, tokenComparator])
 
-  const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
+  const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery).filter((tt) => tt.symbol !== 'WCRO')
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -100,7 +100,7 @@ function CurrencySearch({
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
         const s = debouncedQuery.toLowerCase().trim()
-        if (s === 'bnb') {
+        if (s === 'cro') {
           handleCurrencySelect(ETHER)
         } else if (filteredSortedTokens.length > 0) {
           if (
