@@ -6,11 +6,13 @@ const serializedTokens = serializeTokens()
 const pools: SerializedPoolConfig[] = [
   {
     sousId: 0,
-    stakingToken: serializedTokens.cake,
-    earningToken: serializedTokens.cake,
+    stakingToken: serializedTokens.crow,
+    earningToken: serializedTokens.crow,
     contractAddress: {
       97: '0x65e5cB1992C1E5878c4EFDd465051D4e946Ab403',
       56: '0x73feaa1eE314F8c655E354234017bE2193C9E24E',
+      338: '0x6D802Cc1111AD7c1485eBD1466A486855BcE7eAF',
+      25: '0x77ea4a4cF9F77A034E4291E8f457Af7772c2B254'
     },
     poolCategory: PoolCategory.CORE,
     harvest: true,
