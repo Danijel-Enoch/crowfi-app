@@ -57,7 +57,7 @@ function CurrencySearch({
 
   const showETH: boolean = useMemo(() => {
     const s = debouncedQuery.toLowerCase().trim()
-    return s === '' || s === 'b' || s === 'bn' || s === 'bnb'
+    return s === '' || s === 'c' || s === 'cr' || s === 'cro'
   }, [debouncedQuery])
 
   const tokenComparator = useTokenComparator(invertSearchOrder)
@@ -70,7 +70,7 @@ function CurrencySearch({
     return filteredTokens.sort(tokenComparator)
   }, [filteredTokens, tokenComparator])
 
-  const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery).filter((tt) => tt.symbol !== 'WCRO')
+  const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
