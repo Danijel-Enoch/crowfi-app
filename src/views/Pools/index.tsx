@@ -76,6 +76,13 @@ const LabelWrapper = styled.div`
   }
 `
 
+const DummyHelp = styled.div`
+  flex: 0;
+  ${({ theme }) => theme.mediaQueries.sm} {
+    flex: 1 1 auto;
+  }
+`
+
 const ControlStretch = styled(Flex)`
   > div {
     flex: 1;
@@ -269,7 +276,8 @@ const Pools: React.FC = () => {
             </Heading>
           </Flex>
           <Flex flex="1" height="fit-content" justifyContent="center" alignItems="center" mt={['24px', null, '0']}>
-            <HelpButton />
+            {/* <HelpButton /> */}
+            <DummyHelp />
             <BountyCard />
           </Flex>
         </Flex>
@@ -332,14 +340,14 @@ const Pools: React.FC = () => {
         )}
         {viewMode === ViewMode.CARD ? cardLayout : tableLayout}
         <div ref={observerRef} />
-        <Image
+        {/* <Image
           mx="auto"
           mt="12px"
           src="/images/decorations/3d-syrup-bunnies.png"
           alt="Pancake illustration"
           width={192}
           height={184.5}
-        />
+        /> */}
       </Page>
     </>
   )
