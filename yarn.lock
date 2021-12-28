@@ -3475,9 +3475,9 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pancakeswap/uikit@https://gitpkg.now.sh/coderighter2/pancake-toolkit/packages/pancake-uikit?9241259cc707bed305c9408014d4a51ed718759a":
+"@pancakeswap/uikit@https://gitpkg.now.sh/coderighter2/pancake-toolkit/packages/pancake-uikit?89dd8d7af19a398e39ad470fa4fb3ee01b092aea":
   version "0.58.0"
-  resolved "https://gitpkg.now.sh/coderighter2/pancake-toolkit/packages/pancake-uikit?9241259cc707bed305c9408014d4a51ed718759a#9510c85a366f790b1adfc0fc372e1fe7f78b59f3"
+  resolved "https://gitpkg.now.sh/coderighter2/pancake-toolkit/packages/pancake-uikit?89dd8d7af19a398e39ad470fa4fb3ee01b092aea#f5c5134c859ae7cdc99b31aa44c4a2a93b54943c"
   dependencies:
     "@popperjs/core" "^2.9.2"
     "@types/lodash" "^4.14.168"
