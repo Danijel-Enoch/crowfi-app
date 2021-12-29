@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'state'
 import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
-import { BIG_ZERO } from 'utils/bigNumber'
+import { BIG_ZERO, BIG_TEN, BIG_ONE } from 'utils/bigNumber'
 import { getBalanceAmount } from 'utils/formatBalance'
 import { farmsConfig } from 'config/constants'
 import useRefresh from 'hooks/useRefresh'
@@ -84,7 +84,7 @@ export const usePollCoreFarmData = () => {
   const { fastRefresh } = useRefresh()
 
   useEffect(() => {
-    dispatch(fetchFarmsPublicDataAsync([2, 3]))
+    dispatch(fetchFarmsPublicDataAsync([1, 2, 3]))
   }, [dispatch, fastRefresh])
 }
 
@@ -157,3 +157,22 @@ export const usePriceCakeBusd = (): BigNumber => {
 
   return cakePriceBusd
 }
+
+export const useTVLStaked = (): BigNumber => {
+  const farms = useFarms()
+  const tvlSaked = useMemo(() => {
+    let totalTVL = new BigNumber(0);
+    farms.data.forEach((farm) => {
+      const valueOfBaseTokenInFarm = new BigNumber(farm.tokenPriceBusd).times(farm.tokenAmountTotal)
+      const totalLiquidity = valueOfBaseTokenInFarm.times(2);
+      if (totalLiquidity && totalLiquidity.gt(0)) {
+        totalTVL = totalTVL.plus(totalLiquidity)
+      }
+      console.log('liquidity', totalLiquidity.toJSON());
+    })
+    return totalTVL;
+  }, [farms])
+
+  return tvlSaked
+}
+
