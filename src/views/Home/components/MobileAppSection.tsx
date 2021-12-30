@@ -24,10 +24,13 @@ const MobileAppSection = () => {
             {t('MOBILE APP')}
             </LandingHeading>
             <LandingHeading scale="md" color="primary" mb="2em" textAlign="center">
-            {t('LAUNCHING SOON')}
+            {t('LAUNCHING 2022')}
             </LandingHeading>
+            <GothamText fontSize="md" color="primary" textAlign="center" mb="10px">
+            {t('For Easier Control Over Your Finances')}
+            </GothamText>
             <GothamText fontSize="md" color="primary" textAlign="center">
-            {t('FOR EASIER ACCESS TO YOUR CROW')}
+            {t('Trade - Farm - Stake - Earn')}
             </GothamText>
             <Flex alignItems="center">
             <img src="/images/home/wallet.svg" width="50px" alt=""/>
