@@ -64,6 +64,12 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
     [mainnetTokens.busd, mainnetTokens.usdt],
     [mainnetTokens.dai, mainnetTokens.usdt],
   ],
+  [ChainId.CRONOS]: [
+    [cronosTokens.crow, cronosTokens.wcro],
+  ],
+  [ChainId.CRONOSTESTNET]: [
+    [cronosTestTokens.crow, cronosTestTokens.wcro],
+  ]
 }
 
 export const NetworkContextName = 'NETWORK'

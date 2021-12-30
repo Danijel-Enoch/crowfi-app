@@ -1,6 +1,6 @@
 import { MenuItemsType } from '@pancakeswap/uikit'
 import { ContextApi } from 'contexts/Localization/types'
-import { nftsBaseUrl } from 'views/Nft/market/constants'
+import noop from "lodash"
 
 export type ConfigMenuItemsType = MenuItemsType & { hideSubNav?: boolean }
 
@@ -22,10 +22,18 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     ],
   },
   {
-    label: t('Nests'),
+    label: t('Earn'),
     href: '/farms',
     icon: 'Earn',
     items: [
+      {
+        label: t('Nests'),
+        href: '/farms',
+      },
+      {
+        label: t('Pools'),
+        href: '/pools',
+      },
     ],
   },
   {
@@ -44,6 +52,7 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     label: t('Bridge'),
     href: undefined,
     icon: 'Trade',
+    onClick: noop,
     showItemsOnMobile: true,
     items: [
       {

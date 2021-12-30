@@ -76,6 +76,13 @@ const LabelWrapper = styled.div`
   }
 `
 
+const DummyHelp = styled.div`
+  flex: 0;
+  ${({ theme }) => theme.mediaQueries.sm} {
+    flex: 1 1 auto;
+  }
+`
+
 const ControlStretch = styled(Flex)`
   > div {
     flex: 1;
@@ -258,18 +265,19 @@ const Pools: React.FC = () => {
       <PageHeader>
         <Flex justifyContent="space-between" flexDirection={['column', null, null, 'row']}>
           <Flex flex="1" flexDirection="column" mr={['8px', 0]}>
-            <Heading as="h1" scale="xxl" color="secondary" mb="24px">
-              {t('Syrup Pools')}
+            <Heading as="h1" scale="xl" color="secondary" mb="24px">
+              {t('Watering Holes')}
             </Heading>
             <Heading scale="md" color="text">
-              {t('Just stake some tokens to earn.')}
+              {t('Single Asset Staking')}
             </Heading>
             <Heading scale="md" color="text">
-              {t('High APR, low risk.')}
+              {t('High APR, Low Risk')}
             </Heading>
           </Flex>
           <Flex flex="1" height="fit-content" justifyContent="center" alignItems="center" mt={['24px', null, '0']}>
-            <HelpButton />
+            {/* <HelpButton /> */}
+            <DummyHelp />
             <BountyCard />
           </Flex>
         </Flex>
@@ -332,14 +340,14 @@ const Pools: React.FC = () => {
         )}
         {viewMode === ViewMode.CARD ? cardLayout : tableLayout}
         <div ref={observerRef} />
-        <Image
+        {/* <Image
           mx="auto"
           mt="12px"
           src="/images/decorations/3d-syrup-bunnies.png"
           alt="Pancake illustration"
           width={192}
           height={184.5}
-        />
+        /> */}
       </Page>
     </>
   )

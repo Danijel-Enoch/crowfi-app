@@ -107,10 +107,10 @@ const App: React.FC = () => {
             <Route path="/privatesales">
               <PrivateSales />
             </Route>
-            {/* <Route path="/pools">
+            <Route path="/pools">
               <Pools />
             </Route>
-            <Route path="/lottery">
+            {/* <Route path="/lottery">
               <Lottery />
             </Route>
             <Route path="/ifo">
@@ -178,13 +178,13 @@ const App: React.FC = () => {
             <Route path="/pool">
               <Redirect to="/liquidity" />
             </Route>
-            {/* <Route path="/staking">
+            <Route path="/staking">
               <Redirect to="/pools" />
             </Route>
             <Route path="/syrup">
               <Redirect to="/pools" />
             </Route>
-            <Route path="/collectibles">
+            {/* <Route path="/collectibles">
               <Redirect to="/nfts" />
             </Route>
             <Route path="/profile">

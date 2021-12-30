@@ -23,13 +23,16 @@ const MetaverseSection = () => {
         </Flex>
         <TextSectionWrapper order={[1, null, 0]} flexDirection="column" style={{flex:1}} justifyContent="center">
           <LandingHeading scale="lg" textAlign="center" color="primary">
-            {t('CROW CLUB METAVERSE')}
+            {t('CROW CLUB')}
           </LandingHeading>
           <FuturaText scale="md" textAlign="center" color="primary"  mb="24px">
             {t('(Comming Soon)')}
           </FuturaText>
+          <FuturaText scale="lg" textAlign="center" color="primary" mb="10px">
+            {t('Step into the ever-expanding Metaverse with Crow Club! An interactive NFT-based MMO, where players can show off their bird-houses, fly around completing quests, or hang out with friends.')}
+          </FuturaText>
           <FuturaText scale="lg" textAlign="center" color="primary">
-            {t('Crow Finance, also known as CrowFi, provide a secure platform to trade with high leverage, low fees, low slippage and gas costs. STOP LOSS / LIMIT ORDER enables efficient trading at safe price range.')}
+            {t('Each Crow is a fully customizable NFT character that is owned by you! Collect, Play, Earn, Trade, & Have Fun')}
           </FuturaText>
         </TextSectionWrapper>
       </Flex>

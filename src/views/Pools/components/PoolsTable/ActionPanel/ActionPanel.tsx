@@ -60,7 +60,7 @@ const StyledActionPanel = styled.div<{ expanded: boolean }>`
           ${collapseAnimation} 300ms linear forwards
         `};
   overflow: hidden;
-  background: ${({ theme }) => theme.colors.dropdown};
+  background: #fff;
   display: flex;
   flex-direction: column-reverse;
   justify-content: center;
@@ -292,7 +292,7 @@ const ActionPanel: React.FC<ActionPanelProps> = ({ account, pool, userDataLoaded
       <ActionContainer>
         {showSubtitle && (
           <Text mt="4px" mb="16px" color="textSubtle">
-            {isAutoVault ? t('Automatic restaking') : `${t('Earn')} CAKE ${t('Stake').toLocaleLowerCase()} CAKE`}
+            {isAutoVault ? t('Automatic restaking') : `${t('Earn')} CROW ${t('Stake').toLocaleLowerCase()} CROW`}
           </Text>
         )}
         {pool.isAutoVault ? (

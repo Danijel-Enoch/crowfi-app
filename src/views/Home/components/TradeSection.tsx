@@ -22,13 +22,13 @@ const TradeSection = () => {
         </Flex>
         <TextSectionWrapper flexDirection="column" style={{flex:1}} justifyContent="center">
             <LandingHeading scale="lg" textAlign="center" color="primary">
-            {t('Trade, Stop Loss, Limit Order')}
+            {t('Real Trading Tools for Real Traders')}
             </LandingHeading>
             <FuturaText scale="md" textAlign="center" color="primary"  mb="24px">
             {t('(Comming Soon)')}
             </FuturaText>
             <FuturaText scale="lg" textAlign="center" color="primary">
-            {t('Crow Finance, also known as CrowFi, provide a secure platform to trade with high leverage, low fees, low slippage and gas costs. STOP LOSS / LIMIT ORDER enables efficient trading at safe price range.')}
+            {t('CrowFi provides a secure platform to trade with high leverage and low fees. Introducing Stop Losses and Limit Orders enables efficient trading at safe price ranges!')}
             </FuturaText>
         </TextSectionWrapper>
         </Flex>

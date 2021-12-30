@@ -105,7 +105,7 @@ export const getPointCenterIfoContract = (signer?: ethers.Signer | ethers.provid
   return getContract(pointCenterIfo, getPointCenterIfoAddress(), signer)
 }
 export const getCakeContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
-  return getContract(cakeAbi, tokens.cake.address, signer)
+  return getContract(cakeAbi, tokens.crow.address, signer)
 }
 export const getUSDCContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
   return getContract(bep20Abi, tokens.usdc.address, signer)
