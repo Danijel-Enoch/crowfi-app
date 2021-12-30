@@ -41,7 +41,7 @@ export const getAprData = (pool: DeserializedPool, performanceFee: number) => {
   const autoCompoundFrequency = isAutoVault ? AUTO_VAULT_COMPOUND_FREQUENCY : MANUAL_POOL_AUTO_COMPOUND_FREQUENCY
 
   if (isAutoVault) {
-    const autoApr = getApy(apr, AUTO_VAULT_COMPOUND_FREQUENCY, 365, performanceFee) * 100
+    const autoApr = getApy(apr, AUTO_VAULT_COMPOUND_FREQUENCY, 30, performanceFee) * 100
     return { apr: autoApr, autoCompoundFrequency }
   }
   return { apr, autoCompoundFrequency }
