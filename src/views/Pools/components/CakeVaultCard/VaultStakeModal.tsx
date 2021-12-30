@@ -30,6 +30,8 @@ import { getInterestBreakdown } from 'utils/compoundApyHelpers'
 import RoiCalculatorModal from 'components/RoiCalculatorModal'
 import { ToastDescriptionWithTx } from 'components/Toast'
 import { useCallWithGasPrice } from 'hooks/useCallWithGasPrice'
+import getGasPrice from 'utils/getGasPrice'
+import { callWithEstimateGas } from 'utils/calls'
 import { convertCakeToShares, convertSharesToCake } from '../../helpers'
 import FeeSummary from './FeeSummary'
 
@@ -134,7 +136,10 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
 
     if (isWithdrawingAll) {
       try {
-        const tx = await callWithGasPrice(cakeVaultContract, 'withdrawAll', undefined, callOptions)
+        const gasPrice = getGasPrice()
+        const tx = await callWithEstimateGas(cakeVaultContract, 'withdrawAll', [], {
+          gasPrice,
+        })
         const receipt = await tx.wait()
         if (receipt.status) {
           toastSuccess(
@@ -185,7 +190,10 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
     try {
       // .toString() being called to fix a BigNumber error in prod
       // as suggested here https://github.com/ChainSafe/web3.js/issues/2077
-      const tx = await callWithGasPrice(cakeVaultContract, 'deposit', [convertedStakeAmount.toString()], callOptions)
+      const gasPrice = getGasPrice()
+      const tx = await callWithEstimateGas(cakeVaultContract, 'deposit', [convertedStakeAmount.toString()], {
+        gasPrice,
+      })
       const receipt = await tx.wait()
       if (receipt.status) {
         toastSuccess(

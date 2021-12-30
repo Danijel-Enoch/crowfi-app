@@ -14,6 +14,8 @@ import Balance from 'components/Balance'
 import { usePriceCakeBusd } from 'state/farms/hooks'
 import { useCakeVault } from 'state/pools/hooks'
 import { useCallWithGasPrice } from 'hooks/useCallWithGasPrice'
+import getGasPrice from 'utils/getGasPrice'
+import { callWithEstimateGas } from 'utils/calls'
 
 interface BountyModalProps {
   onDismiss?: () => void
@@ -61,7 +63,10 @@ const BountyModal: React.FC<BountyModalProps> = ({ onDismiss, TooltipComponent }
   const handleConfirmClick = async () => {
     setPendingTx(true)
     try {
-      const tx = await callWithGasPrice(cakeVaultContract, 'harvest', undefined, { gasLimit: 300000 })
+      const gasPrice = getGasPrice()
+      const tx = await callWithEstimateGas(cakeVaultContract, 'harvest', [], {
+        gasPrice,
+      })
       const receipt = await tx.wait()
       if (receipt.status) {
         toastSuccess(
