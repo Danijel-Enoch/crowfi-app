@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Flex } from '@pancakeswap/uikit'
+import { Flex, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import { useTVLStaked } from 'state/farms/hooks'
+import { formatLocalisedCompactNumber } from 'utils/formatBalance'
 import { GothamText, LandingHeading} from './LandingText'
 
 
@@ -16,6 +17,13 @@ const TextSectionWrapper = styled(Flex)`
 const TVLSection = () => {
   const { t } = useTranslation()
   const tvlStaked = useTVLStaked()
+  const tvlStakedCompactNumber = tvlStaked ? formatLocalisedCompactNumber(tvlStaked.toNumber()) : '-'
+
+  const { isMobile, isTablet } = useMatchBreakpoints()
+  const isSmallerScreen = isMobile || isTablet
+  const split = tvlStakedCompactNumber.split(' ')
+  const lastWord = split.pop()
+  const remainingWords = split.slice(0, split.length).join(' ')
 
   return (
     <>
@@ -25,11 +33,15 @@ const TVLSection = () => {
           <LandingHeading scale="lg"  color="primary" textAlign="center">
             {t('TOTAL VALUE LOCKED')}
           </LandingHeading>
-          <GothamText scale="xxl" color="primary" textAlign="center">
+          {isSmallerScreen  ? (
+            <GothamText scale="xl" color="primary" textAlign="center">${tvlStakedCompactNumber}</GothamText>
+          ) : (
+            <GothamText scale="xxl" color="primary" textAlign="center">
             {tvlStaked && tvlStaked.gt(0)
   ? `$${tvlStaked.toNumber().toLocaleString(undefined, { maximumFractionDigits: 0 })}`
   : ''}
           </GothamText>
+          )}
         </TextSectionWrapper>
       </Flex>
     </>
