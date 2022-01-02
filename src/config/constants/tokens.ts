@@ -107,6 +107,30 @@ export const cronosTestTokens = {
   ),
   crow1: new Token(CRONOSTESTNET, '0xe4e4750Ec8ff4C2E489F40906f7412dEf221cc82', 0, 'CROW!', 'CROW Token1', 'https://crowfi.com'),
   crow2: new Token(CRONOSTESTNET, '0xe4e4750Ec8ff4C2E489F40906f7412dEf221cc82', 0, 'CROW2', 'CROW Token2', 'https://crowfi.com'),
+  weth: new Token(
+    CRONOSTESTNET, 
+    '0x796135E94527c38433e9c42f4Cd91ca931E5e6A6', 
+    18, 
+    'ETH', 
+    'Cronos-Peg Ethereum Token', 
+    'https://ethereum.org/en/'
+  ),
+  wbtc: new Token(
+    CRONOSTESTNET,
+    '0xEE200f25d7B1B9518AC944fd60b113d39bee209c',
+    8,
+    'WBTC',
+    'Cronos-Peg BTC',
+    'https://bitcoin.org/en/',
+  ),
+  usdt: new Token(
+    CRONOSTESTNET, 
+    '0xdF2d3Be2037DB4922f46d1c4Fc4282d8251FadA1', 
+    6, 
+    'USDT', 
+    'Tether USD', 
+    'https://tether.to/'
+  ),
 }
 
 export const cronosTokens = {
@@ -117,6 +141,30 @@ export const cronosTokens = {
     'WBNB',
     'Wrapped BNB',
     'https://www.binance.com/',
+  ),
+  weth: new Token(
+    CRONOS, 
+    '0xe44Fd7fCb2b1581822D0c862B68222998a0c299a', 
+    18, 
+    'ETH', 
+    'Cronos-Peg Ethereum Token', 
+    'https://ethereum.org/en/'
+  ),
+  wbtc: new Token(
+    CRONOS,
+    '0x062E66477Faf219F25D27dCED647BF57C3107d52',
+    8,
+    'WBTC',
+    'Cronos-Peg BTC',
+    'https://bitcoin.org/en/',
+  ),
+  usdt: new Token(
+    CRONOS, 
+    '0x66e428c3f67a68878562e79A0234c1F83c208770', 
+    6, 
+    'USDT', 
+    'Tether USD', 
+    'https://tether.to/'
   ),
   cake: new Token(
     CRONOS,
