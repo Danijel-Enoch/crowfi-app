@@ -3,6 +3,10 @@ import { Text, TextProps } from '@pancakeswap/uikit'
 import { scales, LandingTextProps } from "./types";
 
 const style = {
+  [scales.SM]: {
+    fontSize: "20px",
+    fontSizeLg: "24px"
+  },
   [scales.MD]: {
     fontSize: "24px",
     fontSizeLg: "32px"

@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import useTheme from 'hooks/useTheme'
+import { useMatchBreakpoints } from '@pancakeswap/uikit'
 import { PageMeta } from 'components/Layout/Page'
 import PageSection from 'components/PageSection'
 import Hero from './components/Hero'
@@ -10,6 +11,7 @@ import TradeSection from './components/TradeSection'
 import MetaverseSection from './components/MetaverseSection'
 import MobileAppSection from './components/MobileAppSection'
 import { WedgeTopLeft, InnerWedgeWrapper, OuterWedgeWrapper, WedgeTopRight } from './components/WedgeSvgs'
+import DeFiSection from './components/DeFiSection'
 
 const StyledHeroSection = styled(PageSection)`
   padding-top: 16px;
@@ -33,6 +35,7 @@ const PageWrapper = styled.div`
 
 const Home: React.FC = () => {
   const { theme } = useTheme()
+  const { isMobile } = useMatchBreakpoints()
 
   const HomeSectionContainerStyles = { margin: '0', width: '100%', maxWidth: '968px' }
 
@@ -49,25 +52,38 @@ const Home: React.FC = () => {
       </StyledHeroSection>
       <PageSection
         innerProps={{ style: { margin: '0', width: '100%' } }}
-        background='linear-gradient(180deg, #FFFFFF 22%, #E7F1F8 100%)'
+        background='linear-gradient(180deg, #FFFFFF 22%, #ebf5f7 100%)'
         index={2}
         hasCurvedDivider={false}
       >
         <TVLSection />
       </PageSection>
-      <PageSection
+      {/* <PageSection
         innerProps={{ style: HomeSectionContainerStyles }}
         // background={theme.colors.secondary}
-        background='linear-gradient(180deg, #E7F1F8 22%, #205d8f 100%)'
+        background='linear-gradient(180deg, #004475 22%, #205d8f 100%)'
         index={2}
         hasCurvedDivider={false}
       >
         <OuterWedgeWrapper>
-          <InnerWedgeWrapper top fill={theme.colors.background}>
+          <InnerWedgeWrapper top fill={theme.colors.primary}>
             <WedgeTopLeft />
           </InnerWedgeWrapper>
         </OuterWedgeWrapper>
         <AnnouncementSection />
+      </PageSection> */}
+      <PageSection
+        innerProps={{ style: HomeSectionContainerStyles }}
+        background={theme.colors.secondary}
+        // background = {
+        //   isMobile
+        //     ? 'linear-gradient(180deg, #205d8f 0%, #ebf5f7 100%)'
+        //     : 'radial-gradient(#205d8f 0%, #428dcb 50%, #ebf5f7 70%)'
+        // }
+        index={2}
+        hasCurvedDivider={false}
+      >
+        <DeFiSection />
       </PageSection>
       <PageSection
         innerProps={{ style: HomeSectionContainerStyles }}
@@ -75,11 +91,6 @@ const Home: React.FC = () => {
         index={2}
         hasCurvedDivider={false}
       >
-        <OuterWedgeWrapper>
-          <InnerWedgeWrapper width="150%" top fill={theme.colors.background}>
-            <WedgeTopRight />
-          </InnerWedgeWrapper>
-        </OuterWedgeWrapper>
         <TradeSection />
       </PageSection>
 
