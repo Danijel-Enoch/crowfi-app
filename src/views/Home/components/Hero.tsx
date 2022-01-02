@@ -79,11 +79,11 @@ const Hero = () => {
 
           <Flex flexDirection="column">
             <SubHeadingWrapper flexDirection="column" alignItems="center" >
-              <GothamText scale="md" color="primary">
-                {t('BUILT ON THE CRONOS NETWORK')}
+              <GothamText scale="md" color="primary" textTransform='uppercase'>
+                {t('Built on Cronos Network')}
               </GothamText>
-              <GothamText scale="lg" color="primary" textAlign="center">
-                {t('STAKE & SWAP FROM YOUR WALLET')}
+              <GothamText scale="lg" color="primary" textAlign="center" textTransform='uppercase'>
+                {t('Trade, Stake, & Earn With Your DeFi Wallet')}
               </GothamText>
             </SubHeadingWrapper>
             <Flex justifyContent="center" width="100%" mt="1em">

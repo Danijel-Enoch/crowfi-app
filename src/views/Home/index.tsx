@@ -57,7 +57,8 @@ const Home: React.FC = () => {
       </PageSection>
       <PageSection
         innerProps={{ style: HomeSectionContainerStyles }}
-        background={theme.colors.background}
+        // background={theme.colors.secondary}
+        background='linear-gradient(180deg, #E7F1F8 22%, #205d8f 100%)'
         index={2}
         hasCurvedDivider={false}
       >
