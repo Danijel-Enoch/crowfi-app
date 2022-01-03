@@ -4,6 +4,7 @@ import { Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import { GothamText, LandingHeading, FuturaText} from './LandingText'
 import LaunchButton from './LaunchButton'
+import IconCard, { IconCardData } from './IconCard'
 
 
 const TextSectionWrapper = styled(Flex)`
@@ -16,10 +17,14 @@ const TextSectionWrapper = styled(Flex)`
 const MobileAppSection = () => {
   const { t } = useTranslation()
 
+  const cardData: IconCardData = {
+  }
+
   return (
     <>
       <Flex justifyContent="center" >
-        <TextSectionWrapper flexDirection="column" justifyContent="center" alignItems="center">
+      <IconCard {...cardData} mr={[null, null, null, '16px']} mt="32px" width="fit-content" background='rgba(255, 255, 255, 0.7)'>
+        <TextSectionWrapper style={{height:'fit-content', width: 'fit-content'}} flexDirection="column" justifyContent="center" alignItems="center">
             <LandingHeading scale="xl" color="primary" textAlign="center">
             {t('MOBILE APP')}
             </LandingHeading>
@@ -40,6 +45,7 @@ const MobileAppSection = () => {
             </Flex>
             <LaunchButton />
         </TextSectionWrapper>
+        </IconCard>
         </Flex>
     </>
   )

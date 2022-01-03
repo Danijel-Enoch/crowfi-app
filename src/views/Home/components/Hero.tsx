@@ -40,7 +40,7 @@ const SubHeadingWrapper = styled(Flex)`
     margin-top: 8em;
     border-radius: 80px 0px 0px 80px;
     background: white;
-    padding: 10px 30px 10px 60px;
+    padding: 10px 30px 10px 30px;
   }
 `
 
@@ -55,7 +55,7 @@ const Hero = () => {
           <img width="600px" src="/images/home/hot-air-balloon.svg" alt=""/>
         </Flex>
         <Flex flex={[1, null, null, 4]} flexDirection="column" alignItems={["center", "cener", "center", "end"]}>
-          <Flex flexDirection="column" pr={['0', null, '4em']}>
+          <Flex flexDirection="column" pr={['0', null, '30px']}>
             <Flex alignItems="center" justifyContent={["center", "cener", "center", null]}>
               <LandingHeading scale="md" color="primary">
                 {t('WE ARE')}
@@ -79,16 +79,16 @@ const Hero = () => {
           </Flex>
 
           <Flex flexDirection="column">
-            <SubHeadingWrapper flexDirection="column" alignItems="center" >
+            <SubHeadingWrapper flexDirection="column" alignItems={["center", null, null, "end"]} >
               <GothamText scale="md" color="primary" textTransform='uppercase'>
                 {t('Built on Cronos Network')}
               </GothamText>
               { isMobile ? (
-                <GothamText scale="lg" color="primary" textAlign="center" textTransform='uppercase'>
+                <GothamText scale="lg" color="primary" textAlign={["center", null, null, "right"]} textTransform='uppercase'>
                   {t('Trade, Stake, & Earn With Your DeFi Wallet')}
                 </GothamText>
               ) : (
-                <GothamText scale="lg" color="primary" textAlign="center" textTransform='uppercase'>
+                <GothamText scale="lg" color="primary" textAlign={["center", null, null, "right"]} textTransform='uppercase'>
                   {t('Trade, Stake, & Earn')}<br/>{t('With Your DeFi Wallet')}
                 </GothamText>
               )}

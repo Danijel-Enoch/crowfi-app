@@ -30,14 +30,14 @@ const DeFiSection = () => {
             </LandingHeading>
 
             <Flex flexDirection={['column', null, null, 'row']}>
-                <IconCard {...tradeCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}}>
+                <IconCard {...tradeCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}} background='rgba(255, 255, 255, 0.7)'>
                     <Flex
                     minWidth="232px"
                     flexDirection="column"
                     justifyContent="flex-start"
                     mt={[null, null, null, '64px']}
                     >
-                        <LandingHeading scale="sm" mb="24px" textAlign="center" color={theme.colors.primary} pr={['36px', '36px', '36px', '0px']} pl={['36px', '36px', '36px', '0px']}>
+                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color={theme.colors.primary}>
                         {t('Trade Token With Ease')}
                         </LandingHeading>
                         <FuturaText scale="md" textAlign="justify" color={theme.colors.primary}>
@@ -45,7 +45,7 @@ const DeFiSection = () => {
                         </FuturaText>
                     </Flex>
                 </IconCard>
-                <IconCard {...poolCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}}>
+                <IconCard {...poolCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}} background='rgba(255, 255, 255, 0.7)'>
                     <Flex
                     minWidth="232px"
                     width="fit-content"
@@ -53,7 +53,7 @@ const DeFiSection = () => {
                     justifyContent="flex-start"
                     mt={[null, null, null, '64px']}
                     >
-                        <LandingHeading scale="sm" mb="24px" textAlign="center" color={theme.colors.primary} pr={['36px', '36px', '36px', '0px']} pl={['36px', '36px', '36px', '0px']}>
+                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color={theme.colors.primary}>
                         {t('Become a Liquidity Provider')}
                         </LandingHeading>
                         <FuturaText scale="md" textAlign="justify" color={theme.colors.primary}>
@@ -61,7 +61,7 @@ const DeFiSection = () => {
                         </FuturaText>
                     </Flex>
                 </IconCard>
-                <IconCard {...stakeCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}}>
+                <IconCard {...stakeCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}} background='rgba(255, 255, 255, 0.7)'>
                     <Flex
                     minWidth="232px"
                     width="fit-content"
@@ -69,7 +69,7 @@ const DeFiSection = () => {
                     justifyContent="flex-start"
                     mt={[null, null, null, '64px']}
                     >
-                        <LandingHeading scale="sm" mb="24px" textAlign="center" color={theme.colors.primary} pr={['36px', '36px', '36px', '0px']} pl={['36px', '36px', '36px', '0px']}>
+                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color={theme.colors.primary}>
                         {t('Put Your Crows To Work')}
                         </LandingHeading>
                         <FuturaText scale="md" textAlign="justify" color={theme.colors.primary}>
