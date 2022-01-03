@@ -26,7 +26,7 @@ const MetaverseSection = () => {
             {t('CROW CLUB')}
           </LandingHeading>
           <FuturaText scale="md" textAlign="center" color="primary"  mb="24px">
-            {t('(Comming Soon)')}
+            {t('(Coming Soon)')}
           </FuturaText>
           <FuturaText scale="lg" textAlign="center" color="primary" mb="10px">
             {t('Step into the ever-expanding Metaverse with Crow Club! An interactive NFT-based MMO, where players can show off their bird-houses, fly around completing quests, or hang out with friends.')}

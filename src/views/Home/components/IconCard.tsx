@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { Card, CardBody, Box, CardProps } from '@pancakeswap/uikit'
 
 const StyledCard = styled(Card)<{ background: string; rotation?: string }>`
-  height: fit-content;
   padding: 1px 1px 4px 1px;
   box-sizing: border-box;
 
