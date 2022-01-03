@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { HTMLAttributes, useState } from 'react'
 import styled from 'styled-components'
-import { Flex } from '@pancakeswap/uikit'
+import { Flex, FlexProps } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import { GothamText, LandingHeading, FuturaText} from './LandingText'
 import LaunchButton from './LaunchButton'
@@ -14,7 +14,7 @@ const TextSectionWrapper = styled(Flex)`
   }
 `
 
-const MobileAppSection = () => {
+const MobileAppSection: React.FC<FlexProps> = ({ ...props }) => {
   const { t } = useTranslation()
 
   const cardData: IconCardData = {
@@ -22,7 +22,7 @@ const MobileAppSection = () => {
 
   return (
     <>
-      <Flex justifyContent="center" >
+      <Flex justifyContent="center" {...props}>
       <IconCard {...cardData} mr={[null, null, null, '16px']} mt="32px" width="fit-content" background='rgba(255, 255, 255, 0.7)'>
         <TextSectionWrapper style={{height:'fit-content', width: 'fit-content'}} flexDirection="column" justifyContent="center" alignItems="center">
             <LandingHeading scale="xl" color="primary" textAlign="center">
