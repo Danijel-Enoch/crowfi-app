@@ -32,9 +32,7 @@ const DeFiSection = () => {
             <Flex flexDirection={['column', null, null, 'row']}>
                 <IconCard {...tradeCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}}>
                     <Flex
-                    minHeight={[null, null, null, '176px']}
                     minWidth="232px"
-                    width="fit-content"
                     flexDirection="column"
                     justifyContent="flex-start"
                     mt={[null, null, null, '64px']}
@@ -49,7 +47,6 @@ const DeFiSection = () => {
                 </IconCard>
                 <IconCard {...poolCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}}>
                     <Flex
-                    minHeight={[null, null, null, '176px']}
                     minWidth="232px"
                     width="fit-content"
                     flexDirection="column"
@@ -66,7 +63,6 @@ const DeFiSection = () => {
                 </IconCard>
                 <IconCard {...stakeCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}}>
                     <Flex
-                    minHeight={[null, null, null, '176px']}
                     minWidth="232px"
                     width="fit-content"
                     flexDirection="column"
