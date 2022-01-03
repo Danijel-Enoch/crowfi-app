@@ -69,7 +69,7 @@ const Hero = () => {
                   {t('CROW')}
                 </LandingHeading>
                 <LandingHeading scale="lg" color="primary">
-                  {t('FINANACE')}
+                  {t('FINANCE')}
                 </LandingHeading>
               </Flex>
               <WhiteLogo>
