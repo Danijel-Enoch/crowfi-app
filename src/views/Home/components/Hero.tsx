@@ -50,10 +50,10 @@ const Hero = () => {
   return (
     <>
       <Flex flexDirection={['column', 'column', 'column', 'row']}>
-        <Flex flex="1" flexDirection="column" justifyContent="center" alignItems="center">
+        <Flex flex={[1, null, null, 3]}  flexDirection="column" justifyContent="center" alignItems="center">
           <img width="600px" src="/images/home/hot-air-balloon.svg" alt=""/>
         </Flex>
-        <Flex flexDirection="column" alignItems={["center", "cener", "center", "end"]}>
+        <Flex flex={[1, null, null, 4]} flexDirection="column" alignItems={["center", "cener", "center", "end"]}>
           <Flex flexDirection="column" pr={['0', null, '4em']}>
             <Flex alignItems="center" justifyContent={["center", "cener", "center", null]}>
               <LandingHeading scale="md" color="primary">
