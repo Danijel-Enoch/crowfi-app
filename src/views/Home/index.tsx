@@ -33,6 +33,18 @@ const PageWrapper = styled.div`
 }
 `
 
+const CloudBGWrapper = styled.div`
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background:url('/images/home/background.jpg');
+  background-size: cover;
+  opacity: 0.1;
+`
+
 const Home: React.FC = () => {
   const { theme } = useTheme()
   const { isMobile } = useMatchBreakpoints()
@@ -100,14 +112,8 @@ const Home: React.FC = () => {
         index={2}
         hasCurvedDivider={false}
       >
+        <CloudBGWrapper />
         <MetaverseSection />
-      </PageSection>
-      <PageSection
-        innerProps={{ style: HomeSectionContainerStyles }}
-        background={theme.colors.background}
-        index={2}
-        hasCurvedDivider={false}
-      >
         <MobileAppSection />
       </PageSection>
       
