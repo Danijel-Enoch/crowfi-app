@@ -114,7 +114,7 @@ const Home: React.FC = () => {
       >
         <CloudBGWrapper />
         <MetaverseSection />
-        <MobileAppSection />
+        <MobileAppSection mt={["40px", null, null, "80px"]}/>
       </PageSection>
       
     </>
