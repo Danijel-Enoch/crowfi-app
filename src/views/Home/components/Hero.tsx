@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Flex } from '@pancakeswap/uikit'
+import { Flex, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import { GothamText, LandingHeading, FuturaText} from './LandingText'
 import LaunchButton from './LaunchButton'
@@ -46,6 +46,7 @@ const SubHeadingWrapper = styled(Flex)`
 
 const Hero = () => {
   const { t } = useTranslation()
+  const { isMobile, isTablet } = useMatchBreakpoints()
 
   return (
     <>
@@ -82,9 +83,16 @@ const Hero = () => {
               <GothamText scale="md" color="primary" textTransform='uppercase'>
                 {t('Built on Cronos Network')}
               </GothamText>
-              <GothamText scale="lg" color="primary" textAlign="center" textTransform='uppercase'>
-                {t('Trade, Stake, & Earn With Your DeFi Wallet')}
-              </GothamText>
+              { isMobile ? (
+                <GothamText scale="lg" color="primary" textAlign="center" textTransform='uppercase'>
+                  {t('Trade, Stake, & Earn With Your DeFi Wallet')}
+                </GothamText>
+              ) : (
+                <GothamText scale="lg" color="primary" textAlign="center" textTransform='uppercase'>
+                  {t('Trade, Stake, & Earn')}<br/>{t('With Your DeFi Wallet')}
+                </GothamText>
+              )}
+              
             </SubHeadingWrapper>
             <Flex justifyContent="center" width="100%" mt="1em">
               <LaunchButton />
