@@ -33,6 +33,18 @@ const PageWrapper = styled.div`
 }
 `
 
+const DefiBGWrapper = styled.div`
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background-image:url('/images/home/background_blue.png');
+  background-color: rgba(255, 255, 255, 0);
+  background-size: cover;
+`
+
 const CloudBGWrapper = styled.div`
   position: absolute;
   top:0;
@@ -95,6 +107,7 @@ const Home: React.FC = () => {
         index={2}
         hasCurvedDivider={false}
       >
+        <DefiBGWrapper />
         <DeFiSection />
       </PageSection>
       <PageSection
