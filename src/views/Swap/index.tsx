@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import BigNumber from 'bignumber.js'
 import { CurrencyAmount, JSBI, Token, Trade } from '@pancakeswap/sdk'
 import { Button, Text, ArrowDownIcon, Box, useModal } from '@pancakeswap/uikit'
 import { useIsTransactionUnsupported } from 'hooks/Trades'
@@ -255,6 +256,17 @@ export default function Swap({ history }: RouteComponentProps) {
     }
   }, [maxAmountInput, onUserInput])
 
+  const handleChangePercentInput =  useCallback((percent: number) => {
+    if (maxAmountInput) {
+      if (percent === 100) {
+        onUserInput(Field.INPUT, maxAmountInput.toExact())
+      } else {
+        onUserInput(Field.INPUT, new BigNumber(maxAmountInput.toExact()).multipliedBy(percent).dividedBy(100).toString())
+      }
+      
+    }
+  }, [maxAmountInput, onUserInput])
+
   const handleOutputSelect = useCallback(
     (outputCurrency) => {
       onCurrencySelection(Field.OUTPUT, outputCurrency)
@@ -310,9 +322,11 @@ export default function Swap({ history }: RouteComponentProps) {
               label={independentField === Field.OUTPUT && !showWrap && trade ? t('From (estimated)') : t('From')}
               value={formattedAmounts[Field.INPUT]}
               showMaxButton={!atMaxAmountInput}
+              showPercentButtons
               currency={currencies[Field.INPUT]}
               onUserInput={handleTypeInput}
               onMax={handleMaxInput}
+              onChangePercent={handleChangePercentInput}
               onCurrencySelect={handleInputSelect}
               otherCurrency={currencies[Field.OUTPUT]}
               id="swap-currency-input"
