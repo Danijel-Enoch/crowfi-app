@@ -11,6 +11,12 @@ import { CurrencyLogo, DoubleCurrencyLogo } from '../Logo'
 import { RowBetween } from '../Layout/Row'
 import { Input as NumericalInput } from './NumericalInput'
 
+const PercentButtonsRow = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 0.75rem 0.75rem 0.75rem 1rem;
+`
 const InputRow = styled.div<{ selected: boolean }>`
   display: flex;
   flex-flow: row nowrap;
@@ -42,11 +48,17 @@ const Container = styled.div<{ hideInput: boolean }>`
   background-color: ${({ theme }) => theme.colors.input};
   box-shadow: ${({ theme }) => theme.shadows.inset};
 `
+
+const StyledButton = styled(Button)`
+  flex-grow: 1;
+`
 interface CurrencyInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
   showMaxButton: boolean
+  showPercentButtons?: boolean
+  onChangePercent?: (percent: number) => void
   label?: string
   onCurrencySelect: (currency: Currency) => void
   currency?: Currency | null
@@ -63,6 +75,8 @@ export default function CurrencyInputPanel({
   onUserInput,
   onMax,
   showMaxButton,
+  showPercentButtons,
+  onChangePercent,
   label,
   onCurrencySelect,
   currency,
@@ -114,7 +128,7 @@ export default function CurrencyInputPanel({
                   onUserInput(val)
                 }}
               />
-              {account && currency && showMaxButton && label !== 'To' && (
+              {account && currency && showMaxButton && !showPercentButtons && label !== 'To' && (
                 <Button onClick={onMax} scale="sm" variant="text">
                   MAX
                 </Button>
@@ -154,6 +168,22 @@ export default function CurrencyInputPanel({
             </Flex>
           </CurrencySelectButton>
         </InputRow>
+        { showPercentButtons && (
+          <PercentButtonsRow>
+            <StyledButton scale="xs" mx="2px" p="4px 16px" variant="tertiary" onClick={() => onChangePercent(25)}>
+              25%
+            </StyledButton>
+            <StyledButton scale="xs" mx="2px" p="4px 16px" variant="tertiary" onClick={() => onChangePercent(50)}>
+              50%
+            </StyledButton>
+            <StyledButton scale="xs" mx="2px" p="4px 16px" variant="tertiary" onClick={() => onChangePercent(75)}>
+              75%
+            </StyledButton>
+            <StyledButton disabled={!showMaxButton} scale="xs" mx="2px" p="4px 16px" variant="tertiary" onClick={() => onChangePercent(100)}>
+              {t('Max')}
+            </StyledButton>
+          </PercentButtonsRow>
+        )}
       </Container>
     </InputPanel>
   )
