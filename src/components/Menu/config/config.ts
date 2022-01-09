@@ -67,6 +67,14 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         label: t('Cronos Bridge'),
         href: 'https://cronos.crypto.org/docs/bridge/cdcex.html',
       },
+      {
+        type: DropdownMenuItemType.DIVIDER,
+      },
+      {
+        type: 1,
+        label: t('Documentation'),
+        href: 'https://docs.crowfi.app',
+      },
     ],
   }
   
