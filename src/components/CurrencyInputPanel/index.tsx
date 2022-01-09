@@ -56,11 +56,13 @@ interface CurrencyInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
+  showPairs?: boolean
   showMaxButton: boolean
   showPercentButtons?: boolean
   onChangePercent?: (percent: number) => void
   label?: string
   onCurrencySelect: (currency: Currency) => void
+  onCurrencyPairSelect?: (currencyA: Currency, currencyB: Currency) => void
   currency?: Currency | null
   disableCurrencySelect?: boolean
   hideBalance?: boolean
@@ -74,11 +76,13 @@ export default function CurrencyInputPanel({
   value,
   onUserInput,
   onMax,
+  showPairs,
   showMaxButton,
   showPercentButtons,
   onChangePercent,
   label,
   onCurrencySelect,
+  onCurrencyPairSelect,
   currency,
   disableCurrencySelect = false,
   hideBalance = false,
@@ -96,9 +100,11 @@ export default function CurrencyInputPanel({
   const [onPresentCurrencyModal] = useModal(
     <CurrencySearchModal
       onCurrencySelect={onCurrencySelect}
+      onCurrencyPairSelect={onCurrencyPairSelect}
       selectedCurrency={currency}
       otherSelectedCurrency={otherCurrency}
       showCommonBases={showCommonBases}
+      showPairs={showPairs}
     />,
   )
   return (

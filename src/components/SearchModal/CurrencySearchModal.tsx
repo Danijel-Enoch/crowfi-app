@@ -45,16 +45,20 @@ const StyledModalBody = styled(ModalBody)`
 interface CurrencySearchModalProps extends InjectedModalProps {
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
+  onCurrencyPairSelect?: (currencyA: Currency,currencyB: Currency) => void
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
+  showPairs?: boolean
 }
 
 export default function CurrencySearchModal({
   onDismiss = () => null,
   onCurrencySelect,
+  onCurrencyPairSelect,
   selectedCurrency,
   otherSelectedCurrency,
   showCommonBases = false,
+  showPairs = false,
 }: CurrencySearchModalProps) {
   const [modalView, setModalView] = useState<CurrencyModalView>(CurrencyModalView.search)
 
@@ -64,6 +68,14 @@ export default function CurrencySearchModal({
       onCurrencySelect(currency)
     },
     [onDismiss, onCurrencySelect],
+  )
+
+  const handleCurrencyPairSelect = useCallback(
+    (currencyA: Currency, currencyB: Currency) => {
+      onDismiss()
+      onCurrencyPairSelect(currencyA, currencyB)
+    },
+    [onDismiss, onCurrencyPairSelect],
   )
 
   // for token import view
@@ -102,9 +114,11 @@ export default function CurrencySearchModal({
         {modalView === CurrencyModalView.search ? (
           <CurrencySearch
             onCurrencySelect={handleCurrencySelect}
+            onCurrencyPairSelect={handleCurrencyPairSelect}
             selectedCurrency={selectedCurrency}
             otherSelectedCurrency={otherSelectedCurrency}
             showCommonBases={showCommonBases}
+            showPairs={showPairs}
             showImportView={() => setModalView(CurrencyModalView.importToken)}
             setImportToken={setImportToken}
           />
