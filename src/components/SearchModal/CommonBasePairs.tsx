@@ -50,7 +50,7 @@ export default function CommonBasePairs({
           <TokenPairImage variant='inverted' primaryToken={tokens.wcro} secondaryToken={tokens.crow} width={32} height={32} style={{ marginRight: 8 }} />
           <Text>{ETHER.symbol} - CROW</Text>
         </BaseWrapper>
-        {(chainId ? SUGGESTED_BASES[chainId] : []).filter((token) => token.symbol !== 'CROW' && token.symbol !== 'WCRO').map((token: Token) => {
+        {(chainId ? SUGGESTED_BASES[chainId] : []).filter((token) => token.symbol.toLowerCase() !== 'crow' && token.symbol !== 'WCRO').map((token: Token) => {
           return (
             <BaseWrapper onClick={() => onSelect(token, tokens.crow)} key={token.address}>
               <TokenPairImage variant='inverted' primaryToken={token} secondaryToken={tokens.crow} width={32} height={32} style={{ marginRight: 8 }} />

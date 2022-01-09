@@ -37,7 +37,7 @@ function CurrencySearch({
   onCurrencyPairSelect,
   otherSelectedCurrency,
   showCommonBases,
-  showPairs,
+  showPairs = false,
   showImportView,
   setImportToken,
 }: CurrencySearchProps) {
@@ -150,7 +150,7 @@ function CurrencySearch({
           {showCommonBases && (
             <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
           )}
-          {showCommonBases && (
+          {showPairs && (
             <CommonBasePairs chainId={chainId} onSelect={handleCurrencyPairSelect} />
           )}
         </AutoColumn>
