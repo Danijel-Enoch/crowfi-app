@@ -371,10 +371,12 @@ export default function AddLiquidity({
               value={formattedAmounts[Field.CURRENCY_B]}
               onUserInput={onFieldBInput}
               onCurrencySelect={handleCurrencyBSelect}
+              onCurrencyPairSelect={handleCurrencyPairSelect}
               onMax={() => {
                 onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
               }}
               showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
+              showPairs
               currency={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
               showCommonBases
