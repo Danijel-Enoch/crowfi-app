@@ -16,12 +16,15 @@ import { filterTokens, useSortedTokensByQuery } from './filtering'
 import useTokenComparator from './sorting'
 
 import ImportRow from './ImportRow'
+import CommonBasePairs from './CommonBasePairs'
 
 interface CurrencySearchProps {
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
+  onCurrencyPairSelect?: (currencyA: Currency, currencyB: Currency) => void
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
+  showPairs?:boolean
   showImportView: () => void
   setImportToken: (token: Token) => void
 }
@@ -31,8 +34,10 @@ const swapSound = new Audio('swap.mp3')
 function CurrencySearch({
   selectedCurrency,
   onCurrencySelect,
+  onCurrencyPairSelect,
   otherSelectedCurrency,
   showCommonBases,
+  showPairs,
   showImportView,
   setImportToken,
 }: CurrencySearchProps) {
@@ -80,6 +85,13 @@ function CurrencySearch({
       }
     },
     [audioPlay, onCurrencySelect],
+  )
+
+  const handleCurrencyPairSelect = useCallback(
+    (currencyA: Currency, currencyB: Currency) => {
+      onCurrencyPairSelect(currencyA, currencyB)
+    },
+    [onCurrencyPairSelect],
   )
 
   // manage focus on modal show
@@ -137,6 +149,9 @@ function CurrencySearch({
           </Row>
           {showCommonBases && (
             <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
+          )}
+          {showCommonBases && (
+            <CommonBasePairs chainId={chainId} onSelect={handleCurrencyPairSelect} />
           )}
         </AutoColumn>
         {searchToken && !searchTokenIsAdded ? (

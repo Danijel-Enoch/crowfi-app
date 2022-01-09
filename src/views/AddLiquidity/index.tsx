@@ -261,6 +261,15 @@ export default function AddLiquidity({
     symbolB: currencies[Field.CURRENCY_B]?.symbol ?? '',
   })
 
+  const handleCurrencyPairSelect = useCallback(
+    (currencyA_: Currency, currencyB_: Currency) => {
+      const newCurrencyIdA = currencyId(currencyA_)
+      const newCurrencyIdB = currencyId(currencyB_)
+      history.push(`/add/${newCurrencyIdA}/${newCurrencyIdB}`)
+    },
+    [history],
+  )
+
   const handleCurrencyASelect = useCallback(
     (currencyA_: Currency) => {
       const newCurrencyIdA = currencyId(currencyA_)
@@ -348,7 +357,9 @@ export default function AddLiquidity({
                 onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
               }}
               onCurrencySelect={handleCurrencyASelect}
+              onCurrencyPairSelect={handleCurrencyPairSelect}
               showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
+              showPairs
               currency={currencies[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
               showCommonBases
