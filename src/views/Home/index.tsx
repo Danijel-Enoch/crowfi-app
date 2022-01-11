@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import useTheme from 'hooks/useTheme'
-import { useMatchBreakpoints } from '@pancakeswap/uikit'
+import { useMatchBreakpoints, Flex } from '@pancakeswap/uikit'
 import { PageMeta } from 'components/Layout/Page'
 import PageSection from 'components/PageSection'
 import Hero from './components/Hero'
@@ -158,7 +158,7 @@ const Home: React.FC = () => {
           <img src="/images/home/moon.png" alt=""/>
         </Moon>
         <TradeSection />
-        <MetaverseSection />
+        <Flex height={["0px", null, null, "300px"]}/>
       </PageSection>
 
       <PageSection
