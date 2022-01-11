@@ -261,7 +261,7 @@ export default function Swap({ history }: RouteComponentProps) {
       if (percent === 100) {
         onUserInput(Field.INPUT, maxAmountInput.toExact())
       } else {
-        onUserInput(Field.INPUT, new BigNumber(maxAmountInput.toExact()).multipliedBy(percent).dividedBy(100).toString())
+        onUserInput(Field.INPUT, new BigNumber(maxAmountInput.toExact()).multipliedBy(percent).dividedBy(100).toFixed(maxAmountInput.currency.decimals ? maxAmountInput.currency.decimals : 0))
       }
       
     }
