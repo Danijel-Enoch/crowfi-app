@@ -1,7 +1,7 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import useTheme from 'hooks/useTheme'
-import { useMatchBreakpoints } from '@pancakeswap/uikit'
+import { useMatchBreakpoints, Flex } from '@pancakeswap/uikit'
 import { PageMeta } from 'components/Layout/Page'
 import PageSection from 'components/PageSection'
 import Hero from './components/Hero'
@@ -13,48 +13,107 @@ import MobileAppSection from './components/MobileAppSection'
 import { WedgeTopLeft, InnerWedgeWrapper, OuterWedgeWrapper, WedgeTopRight } from './components/WedgeSvgs'
 import DeFiSection from './components/DeFiSection'
 
-const StyledHeroSection = styled(PageSection)`
-  padding-top: 16px;
-
-  ${({ theme }) => theme.mediaQueries.md} {
-    padding-top: 48px;
+const HomeBodyStyle = createGlobalStyle`
+  body {
+    background-color: #002338;
   }
 `
 
-const PageWrapper = styled.div`
-  background-size: cover;
-  background-position: top center;
-  padding-top: 16px;
-  padding-bottom: 240px;
-  margin-bottom: -240px;
-
+const StyledHeroSection = styled(PageSection)`
   ${({ theme }) => theme.mediaQueries.md} {
-    padding-top: 48px;
-}
+  }
 `
 
 const DefiBGWrapper = styled.div`
   position: absolute;
-  top:0;
+  top:70px;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: -1;
-  background-image:url('/images/home/background_blue.png');
-  background-color: rgba(255, 255, 255, 0);
-  background-size: cover;
-`
+  background-image:url('/images/home/home_bg3.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center top;
 
-const CloudBGWrapper = styled.div`
+  ${({ theme }) => theme.mediaQueries.md} {
+    top:100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+`
+const HeroImageBGWrapper = styled.div`
   position: absolute;
   top:0;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: -1;
-  background:url('/images/home/background.jpg');
-  background-size: cover;
-  opacity: 0.1;
+  background-image:url('/images/home/home_bg1.jpg');
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: right top;
+
+  ${({ theme }) => theme.mediaQueries.md} {
+    padding-top: 48px;
+    background-position: center top;
+    background-size: cover;
+  }
+`
+
+const HeroBGWrapper = styled.div`
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,rgb(0,35,56,0) 90%,rgb(0,35,56) 99%,rgb(0,35,56) 100%);
+`
+const TradeBGImageWrapper = styled.div`
+  position: absolute;
+  top:100px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background-image:url('/images/home/home_bg2.jpg');
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: right top;
+
+  ${({ theme }) => theme.mediaQueries.md} {
+    padding-top: 48px;
+    background-position: center top;
+    background-size: cover;
+  }
+`
+const TradeBGWrapper = styled.div`
+  position: absolute;
+  top:100px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,rgb(102, 175, 188,0) 92%,rgb(102, 175, 188) 99%,rgb(102, 175, 188) 100%);
+`
+
+const Moon = styled.div`
+    position: absolute;
+    top: 30%;
+    right: 20%;
+    width: 60px;
+    height: 60px;
+    border-radius: 60px;
+    z-index: -1;
+    box-shadow: 0 0 120px 30px #fff; 
+    > img {
+      width: 100%;
+      height: 100%;
+    }
 `
 
 const Home: React.FC = () => {
@@ -66,68 +125,49 @@ const Home: React.FC = () => {
   return (
     <>
       <PageMeta />
+      <HomeBodyStyle />
       <StyledHeroSection
         innerProps={{ style: { margin: '0', width: '100%' } }}
-        background='linear-gradient(180deg, #E7F1F8 20%, #FFF 100%)'
+        background='linear-gradient(180deg, rgb(0,35,56,0.1) 90%, rgb(0,35,56) 100%)'
         index={2}
         hasCurvedDivider={false}
       >
+        <HeroImageBGWrapper />
+        <HeroBGWrapper />
         <Hero />
       </StyledHeroSection>
       <PageSection
         innerProps={{ style: { margin: '0', width: '100%' } }}
-        background='linear-gradient(180deg, #FFFFFF 22%, #ebf5f7 100%)'
-        index={2}
-        hasCurvedDivider={false}
-      >
-        <TVLSection />
-      </PageSection>
-      {/* <PageSection
-        innerProps={{ style: HomeSectionContainerStyles }}
-        // background={theme.colors.secondary}
-        background='linear-gradient(180deg, #004475 22%, #205d8f 100%)'
-        index={2}
-        hasCurvedDivider={false}
-      >
-        <OuterWedgeWrapper>
-          <InnerWedgeWrapper top fill={theme.colors.primary}>
-            <WedgeTopLeft />
-          </InnerWedgeWrapper>
-        </OuterWedgeWrapper>
-        <AnnouncementSection />
-      </PageSection> */}
-      <PageSection
-        innerProps={{ style: HomeSectionContainerStyles }}
-        background={theme.colors.secondary}
-        // background = {
-        //   isMobile
-        //     ? 'linear-gradient(180deg, #205d8f 0%, #ebf5f7 100%)'
-        //     : 'radial-gradient(#205d8f 0%, #428dcb 50%, #ebf5f7 70%)'
-        // }
+        background='transparent'
         index={2}
         hasCurvedDivider={false}
       >
         <DefiBGWrapper />
+        <TVLSection />
         <DeFiSection />
       </PageSection>
       <PageSection
-        innerProps={{ style: HomeSectionContainerStyles }}
-        background={theme.colors.gradients.cardHeader}
+        innerProps={{ style: { margin: '0', width: '100%' } }}
+        background='transparent'
         index={2}
         hasCurvedDivider={false}
       >
+        <TradeBGImageWrapper/>
+        <TradeBGWrapper/>
+        <Moon>
+          <img src="/images/home/moon.png" alt=""/>
+        </Moon>
         <TradeSection />
+        <Flex height={["0px", null, null, "300px"]}/>
       </PageSection>
 
       <PageSection
         innerProps={{ style: HomeSectionContainerStyles }}
-        background='linear-gradient(180deg, #6FB6F1 0%, #EAF2F6 100%)'
+        background='#66afbc'
         index={2}
         hasCurvedDivider={false}
       >
-        <CloudBGWrapper />
-        <MetaverseSection />
-        <MobileAppSection mt={["40px", null, null, "80px"]}/>
+        <MobileAppSection/>
       </PageSection>
       
     </>

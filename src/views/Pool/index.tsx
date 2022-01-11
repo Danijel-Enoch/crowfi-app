@@ -11,7 +11,7 @@ import { usePairs } from '../../hooks/usePairs'
 import { toV2LiquidityToken, useTrackedTokenPairs } from '../../state/user/hooks'
 import Dots from '../../components/Loader/Dots'
 import { AppHeader, AppBody } from '../../components/App'
-import Page from '../Page'
+import Page2 from '../Page2'
 
 const Body = styled(CardBody)`
   background-color: ${({ theme }) => theme.colors.input};
@@ -83,7 +83,7 @@ export default function Pool() {
   }
 
   return (
-    <Page>
+    <Page2>
       <AppBody>
         <AppHeader title={t('Your Liquidity')} subtitle={t('Remove liquidity to receive tokens back')} />
         <Body>
@@ -105,6 +105,6 @@ export default function Pool() {
           </Button>
         </CardFooter>
       </AppBody>
-    </Page>
+    </Page2>
   )
 }

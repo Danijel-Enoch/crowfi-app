@@ -8,9 +8,9 @@ import IconCard, { IconCardData } from './IconCard'
 
 
 const TextSectionWrapper = styled(Flex)`
-  padding: 40px 10px;
+  padding: 0px 10px;
   ${({ theme }) => theme.mediaQueries.md} {
-    padding: 40px;
+    padding: 0px 40px;
   }
 `
 
@@ -23,18 +23,18 @@ const MobileAppSection: React.FC<FlexProps> = ({ ...props }) => {
   return (
     <>
       <Flex justifyContent="center" {...props}>
-      <IconCard {...cardData} mr={[null, null, null, '16px']} mt="32px" width="fit-content" background='rgba(255, 255, 255, 0.7)'>
         <TextSectionWrapper style={{height:'fit-content', width: 'fit-content'}} flexDirection="column" justifyContent="center" alignItems="center">
-            <LandingHeading scale="xl" color="primary" textAlign="center">
+            <LandingHeading scale="xl" color="white" textAlign="center">
             {t('MOBILE APP')}
             </LandingHeading>
-            <LandingHeading scale="md" color="primary" mb="2em" textAlign="center">
+            <LandingHeading scale="md" color="white" mb="2em" textAlign="center">
             {t('LAUNCHING 2022')}
             </LandingHeading>
-            <GothamText fontSize="md" color="primary" textAlign="center" mb="10px">
+            <img src="/images/home/mobile_app.png" alt="" width="200px"/>
+            <GothamText fontSize="md" color="white" textAlign="center" mb="10px">
             {t('For Easier Control Over Your Finances')}
             </GothamText>
-            <GothamText fontSize="md" color="primary" textAlign="center">
+            <GothamText fontSize="md" color="white" textAlign="center">
             {t('Trade - Farm - Stake - Earn')}
             </GothamText>
             <Flex alignItems="center">
@@ -45,8 +45,7 @@ const MobileAppSection: React.FC<FlexProps> = ({ ...props }) => {
             </Flex>
             <LaunchButton />
         </TextSectionWrapper>
-        </IconCard>
-        </Flex>
+      </Flex>
     </>
   )
 }

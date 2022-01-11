@@ -30,13 +30,13 @@ const TVLSection = () => {
       <Flex flexDirection={['column', 'column', 'column', 'row']} justifyContent="space-around">
         <TextSectionWrapper flexDirection="column" style={{flex:1}} justifyContent="center">
 
-          <LandingHeading scale="lg"  color="primary" textAlign="center">
+          <LandingHeading scale="lg"  color="white" textAlign="center">
             {t('TOTAL VALUE LOCKED')}
           </LandingHeading>
           {isSmallerScreen  ? (
-            <GothamText scale="xl" color="primary" textAlign="center">${tvlStakedCompactNumber}</GothamText>
+            <GothamText scale="xl" color="white" textAlign="center">${tvlStakedCompactNumber}</GothamText>
           ) : (
-            <GothamText scale="xxl" color="primary" textAlign="center">
+            <GothamText scale="xxl" color="white" textAlign="center">
             {tvlStaked && tvlStaked.gt(0)
   ? `$${tvlStaked.toNumber().toLocaleString(undefined, { maximumFractionDigits: 0 })}`
   : ''}
