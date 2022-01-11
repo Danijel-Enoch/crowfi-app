@@ -24,6 +24,7 @@ import FarmTabButtons from './components/FarmTabButtons'
 import { RowProps } from './components/FarmTable/Row'
 import ToggleView from './components/ToggleView/ToggleView'
 import { DesktopColumnSchema } from './components/types'
+import Page2 from '../Page2'
 
 const ControlContainer = styled.div`
   display: flex;
@@ -333,7 +334,7 @@ const Farms: React.FC = () => {
 
   return (
     <>
-      <Page>
+      <Page2>
         <ControlContainer>
           <ViewControls>
             <ToggleView viewMode={viewMode} onToggle={(mode: ViewMode) => setViewMode(mode)} />
@@ -344,7 +345,7 @@ const Farms: React.FC = () => {
                 onChange={() => setStakedOnly(!stakedOnly)}
                 scale="sm"
               />
-              <Text> {t('Staked only')}</Text>
+              <Text color="white"> {t('Staked only')}</Text>
             </ToggleWrapper>
             <FarmTabButtons hasStakeInFinishedFarms={stakedInactiveFarms.length > 0} />
           </ViewControls>
@@ -356,7 +357,7 @@ const Farms: React.FC = () => {
           </Flex>
         )}
         <div ref={observerRef} />
-      </Page>
+      </Page2>
     </>
   )
 }
