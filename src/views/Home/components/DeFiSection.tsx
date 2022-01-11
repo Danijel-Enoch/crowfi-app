@@ -11,15 +11,15 @@ const DeFiSection = () => {
     const { theme } = useTheme()
 
     const tradeCardData: IconCardData = {
-        icon: <SwapIcon color="secondary" width="36px" />,
+        icon: <SwapIcon color="white" width="36px" />,
     }
 
     const poolCardData: IconCardData = {
-        icon: <EarnIcon color="secondary" width="36px" />,
+        icon: <EarnIcon color="white" width="36px" />,
     }
 
     const stakeCardData: IconCardData = {
-        icon: <CrowLogoIcon fill={theme.colors.secondary} width="36px" />,
+        icon: <CrowLogoIcon fill="white" width="36px" />,
     }
   
     return (
@@ -30,22 +30,22 @@ const DeFiSection = () => {
             </LandingHeading>
 
             <Flex flexDirection={['column', null, null, 'row']}>
-                <IconCard {...tradeCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}} background='rgba(255, 255, 255, 0.7)'>
+                <IconCard {...tradeCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}} background='#66afbc'>
                     <Flex
                     minWidth="232px"
                     flexDirection="column"
                     justifyContent="flex-start"
                     mt={[null, null, null, '64px']}
                     >
-                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color={theme.colors.primary}>
+                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color="white">
                         {t('Trade Token With Ease')}
                         </LandingHeading>
-                        <FuturaText scale="md" textAlign="justify" color={theme.colors.primary}>
+                        <FuturaText scale="md" textAlign="justify" color="white">
                         {t('Swap DeFi tokens on the Cronos network with the lowest fees!')}
                         </FuturaText>
                     </Flex>
                 </IconCard>
-                <IconCard {...poolCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}} background='rgba(255, 255, 255, 0.7)'>
+                <IconCard {...poolCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}} background='#66afbc'>
                     <Flex
                     minWidth="232px"
                     width="fit-content"
@@ -53,15 +53,15 @@ const DeFiSection = () => {
                     justifyContent="flex-start"
                     mt={[null, null, null, '64px']}
                     >
-                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color={theme.colors.primary}>
+                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color="white">
                         {t('Become a Liquidity Provider')}
                         </LandingHeading>
-                        <FuturaText scale="md" textAlign="justify" color={theme.colors.primary}>
+                        <FuturaText scale="md" textAlign="justify" color="white">
                         {t('Supply liquidity to a pair to receive LP Tokens and earn Crow from trading fees!')}
                         </FuturaText>
                     </Flex>
                 </IconCard>
-                <IconCard {...stakeCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}} background='rgba(255, 255, 255, 0.7)'>
+                <IconCard {...stakeCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']} style={{flex: 1}} background='#66afbc'>
                     <Flex
                     minWidth="232px"
                     width="fit-content"
@@ -69,10 +69,10 @@ const DeFiSection = () => {
                     justifyContent="flex-start"
                     mt={[null, null, null, '64px']}
                     >
-                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color={theme.colors.primary}>
+                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color="white">
                         {t('Put Your Crows To Work')}
                         </LandingHeading>
-                        <FuturaText scale="md" textAlign="justify" color={theme.colors.primary}>
+                        <FuturaText scale="md" textAlign="justify" color="white">
                         {t('Simply stake your Crow tokens to earn passive income')}
                         </FuturaText>
                     </Flex>
