@@ -35,6 +35,7 @@ import BountyCard from './components/BountyCard'
 import HelpButton from './components/HelpButton'
 import PoolsTable from './components/PoolsTable/PoolsTable'
 import { getAprData, getCakeVaultEarnings } from './helpers'
+import Page2 from '../Page2'
 
 const CardLayout = styled(FlexLayout)`
   justify-content: center;
@@ -87,6 +88,19 @@ const ControlStretch = styled(Flex)`
   > div {
     flex: 1;
   }
+`
+
+const BGWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-image: url(/images/bg2.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: -1;
 `
 
 const NUMBER_OF_POOLS_VISIBLE = 12
@@ -262,16 +276,17 @@ const Pools: React.FC = () => {
 
   return (
     <>
+      <BGWrapper />
       <PageHeader>
         <Flex justifyContent="space-between" flexDirection={['column', null, null, 'row']}>
           <Flex flex="1" flexDirection="column" mr={['8px', 0]}>
-            <Heading as="h1" scale="xl" color="secondary" mb="24px">
+            <Heading as="h1" scale="xl" color="white" mb="24px">
               {t('Watering Holes')}
             </Heading>
-            <Heading scale="md" color="text">
+            <Heading scale="md" color="white">
               {t('Single Asset Staking')}
             </Heading>
-            <Heading scale="md" color="text">
+            <Heading scale="md" color="white">
               {t('High APR, Low Risk')}
             </Heading>
           </Flex>
@@ -293,7 +308,7 @@ const Pools: React.FC = () => {
           />
           <FilterContainer>
             <LabelWrapper>
-              <Text fontSize="12px" bold color="textSubtle" textTransform="uppercase">
+              <Text fontSize="12px" bold color="white" textTransform="uppercase">
                 {t('Sort by')}
               </Text>
               <ControlStretch>

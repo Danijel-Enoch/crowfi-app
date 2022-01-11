@@ -40,7 +40,7 @@ import { useExpertModeManager, useUserSlippageTolerance, useUserSingleHopOnly } 
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import CircleLoader from '../../components/Loader/CircleLoader'
-import Page from '../Page'
+import Page2 from '../Page2'
 import SwapWarningModal from './components/SwapWarningModal'
 
 const Label = styled(Text)`
@@ -313,7 +313,7 @@ export default function Swap({ history }: RouteComponentProps) {
   )
 
   return (
-    <Page>
+    <Page2>
       <AppBody>
         <AppHeader title={t('Exchange')} subtitle={t('Trade tokens in an instant')} />
         <Wrapper id="swap-page">
@@ -509,6 +509,6 @@ export default function Swap({ history }: RouteComponentProps) {
       ) : (
         <UnsupportedCurrencyFooter currencies={[currencies.INPUT, currencies.OUTPUT]} />
       )}
-    </Page>
+    </Page2>
   )
 }

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { ArrowDropDownIcon, Box, BoxProps, Text } from '@pancakeswap/uikit'
+import useTheme from 'hooks/useTheme'
 
 const DropDownHeader = styled.div`
   width: 100%;
@@ -10,7 +11,7 @@ const DropDownHeader = styled.div`
   justify-content: space-between;
   padding: 0px 16px;
   box-shadow: ${({ theme }) => theme.shadows.inset};
-  border: 1px solid ${({ theme }) => theme.colors.inputSecondary};
+  border: 1px solid ${({ theme }) => theme.colors.secondary};
   border-radius: 16px;
   background: ${({ theme }) => theme.colors.input};
   transition: border-radius 0.15s;
@@ -53,7 +54,7 @@ const DropDownContainer = styled(Box)<{ isOpen: boolean }>`
     props.isOpen &&
     css`
       ${DropDownHeader} {
-        border-bottom: 1px solid ${({ theme }) => theme.colors.inputSecondary};
+        border-bottom: 1px solid ${({ theme }) => theme.colors.secondary};
         box-shadow: ${({ theme }) => theme.tooltip.boxShadow};
         border-radius: 16px 16px 0 0;
       }
@@ -62,7 +63,7 @@ const DropDownContainer = styled(Box)<{ isOpen: boolean }>`
         height: auto;
         transform: scaleY(1);
         opacity: 1;
-        border: 1px solid ${({ theme }) => theme.colors.inputSecondary};
+        border: 1px solid ${({ theme }) => theme.colors.secondary};
         border-top-width: 0;
         border-radius: 0 0 16px 16px;
         box-shadow: ${({ theme }) => theme.tooltip.boxShadow};
@@ -88,7 +89,7 @@ const ListItem = styled.li`
   list-style: none;
   padding: 8px 16px;
   &:hover {
-    background: ${({ theme }) => theme.colors.inputSecondary};
+    background: ${({ theme }) => theme.colors.tertiary};
   }
 `
 
@@ -96,6 +97,8 @@ export interface SelectProps extends BoxProps {
   options: OptionProps[]
   onOptionChange?: (option: OptionProps) => void
   defaultOptionIndex?: number
+
+  textColor?: string
 }
 
 export interface OptionProps {
@@ -105,6 +108,7 @@ export interface OptionProps {
 
 const Select: React.FunctionComponent<SelectProps> = ({
   options,
+  textColor,
   onOptionChange,
   defaultOptionIndex = 0,
   ...props
@@ -112,6 +116,7 @@ const Select: React.FunctionComponent<SelectProps> = ({
   const dropdownRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(defaultOptionIndex)
+  const { theme } = useTheme()
 
   const toggling = (event: React.MouseEvent<HTMLDivElement>) => {
     setIsOpen(!isOpen)
@@ -141,7 +146,7 @@ const Select: React.FunctionComponent<SelectProps> = ({
   return (
     <DropDownContainer isOpen={isOpen} {...props}>
       <DropDownHeader onClick={toggling}>
-        <Text>{options[selectedOptionIndex].label}</Text>
+        <Text color={textColor}>{options[selectedOptionIndex].label}</Text>
       </DropDownHeader>
       <ArrowDropDownIcon color="text" onClick={toggling} />
       <DropDownListContainer>

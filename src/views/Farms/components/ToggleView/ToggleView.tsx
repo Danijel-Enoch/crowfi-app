@@ -26,10 +26,10 @@ const ToggleView: React.FunctionComponent<ToggleViewProps> = ({ viewMode, onTogg
   return (
     <Container>
       <IconButton variant="text" scale="sm" id="clickFarmCardView" onClick={() => handleToggle(ViewMode.CARD)}>
-        <CardViewIcon color={viewMode === ViewMode.CARD ? 'primary' : 'textDisabled'} />
+        <CardViewIcon color={viewMode === ViewMode.CARD ? 'white' : 'gray'} />
       </IconButton>
       <IconButton variant="text" scale="sm" id="clickFarmTableView" onClick={() => handleToggle(ViewMode.TABLE)}>
-        <ListViewIcon color={viewMode === ViewMode.TABLE ? 'primary' : 'textDisabled'} />
+        <ListViewIcon color={viewMode === ViewMode.TABLE ? 'white' : 'gray'} />
       </IconButton>
     </Container>
   )

@@ -11,16 +11,18 @@ const WhiteLogo = styled(Flex)`
   align-items:center;
   width: 70px;
   height: 70px;
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: transparent;
   border-radius:35px;
-  padding: 18px;
+  border: 3px solid white;
+  padding: 6px;
 
 
   ${({ theme }) => theme.mediaQueries.md} {
     width: 140px;
     height: 140px;
     border-radius:70px;
-    padding: 36px;
+    border: 4px solid white;
+    padding: 12px;
   }
 `
 
@@ -39,7 +41,6 @@ const SubHeadingWrapper = styled(Flex)`
   ${({ theme }) => theme.mediaQueries.md} {
     margin-top: 8em;
     border-radius: 80px 0px 0px 80px;
-    background: white;
     padding: 10px 30px 10px 30px;
   }
 `
@@ -51,24 +52,21 @@ const Hero = () => {
   return (
     <>
       <Flex flexDirection={['column', 'column', 'column', 'row']}>
-        <Flex flex={[1, null, null, 3]}  flexDirection="column" justifyContent="center" alignItems="center">
-          <img width="600px" src="/images/home/hot-air-balloon.svg" alt=""/>
-        </Flex>
+        <Flex flex={[1, null, null, 3]}  flexDirection="column" justifyContent="center" alignItems="center" />
         <Flex flex={[1, null, null, 4]} flexDirection="column" alignItems={["center", "cener", "center", "end"]}>
           <Flex flexDirection="column" pr={['0', null, '30px']}>
-            <Flex alignItems="center" justifyContent={["center", "cener", "center", null]}>
-              <LandingHeading scale="md" color="primary">
+            <Flex alignItems="center" justifyContent={["center", "cener", "center", "flex-start"]}>
+              <LandingHeading scale="md" color="white">
                 {t('WE ARE')}
               </LandingHeading>
-              <Line />
             </Flex>
             
             <Flex flexDirection="row" alignItems="center">
               <Flex flexDirection="column" alignItems="end">
-                <LandingHeading scale="xl" color="primary">
+                <LandingHeading scale="xl" color="white">
                   {t('CROW')}
                 </LandingHeading>
-                <LandingHeading scale="lg" color="primary">
+                <LandingHeading scale="lg" color="white">
                   {t('FINANCE')}
                 </LandingHeading>
               </Flex>
@@ -80,22 +78,22 @@ const Hero = () => {
 
           <Flex flexDirection="column">
             <SubHeadingWrapper flexDirection="column" alignItems={["center", null, null, "end"]} >
-              <GothamText scale="md" color="primary" textTransform='uppercase'>
+              <GothamText scale="md" color="white" textTransform='uppercase'>
                 {t('Built on Cronos Network')}
               </GothamText>
               { isMobile ? (
-                <GothamText scale="lg" color="primary" textAlign={["center", null, null, "right"]} textTransform='uppercase'>
+                <GothamText scale="lg" color="white" textAlign={["center", null, null, "right"]} textTransform='uppercase'>
                   {t('Trade, Stake, & Earn With Your DeFi Wallet')}
                 </GothamText>
               ) : (
-                <GothamText scale="lg" color="primary" textAlign={["center", null, null, "right"]} textTransform='uppercase'>
+                <GothamText scale="lg" color="white" textAlign={["center", null, null, "right"]} textTransform='uppercase'>
                   {t('Trade, Stake, & Earn')}<br/>{t('With Your DeFi Wallet')}
                 </GothamText>
               )}
               
             </SubHeadingWrapper>
             <Flex justifyContent="center" width="100%" mt="1em">
-              <LaunchButton />
+              <LaunchButton style={{backgroundColor:'white', color:'#004475'}}/>
             </Flex>
           </Flex>
           
