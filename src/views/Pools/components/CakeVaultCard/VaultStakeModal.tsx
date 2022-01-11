@@ -117,7 +117,10 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
 
   const handleChangePercent = (sliderPercent: number) => {
     if (sliderPercent > 0) {
-      const percentageOfStakingMax = stakingMax.dividedBy(100).multipliedBy(sliderPercent)
+      let percentageOfStakingMax = stakingMax.dividedBy(100).multipliedBy(sliderPercent)
+      if (!isRemovingStake && sliderPercent === 100 && percentageOfStakingMax.gt(new BigNumber(10).pow(stakingToken.decimals))) {
+        percentageOfStakingMax = percentageOfStakingMax.minus(new BigNumber(10).pow(stakingToken.decimals))
+      }
       const amountToStake = getFullDisplayBalance(percentageOfStakingMax, stakingToken.decimals, stakingToken.decimals)
       setStakeAmount(amountToStake)
     } else {
@@ -160,12 +163,14 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
       // .toString() being called to fix a BigNumber error in prod
       // as suggested here https://github.com/ChainSafe/web3.js/issues/2077
       try {
-        const tx = await callWithGasPrice(
+        const gasPrice = getGasPrice()
+        const tx = await callWithEstimateGas(
           cakeVaultContract,
           'withdraw',
           [shareStakeToWithdraw.sharesAsBigNumber.toString()],
-          callOptions,
-        )
+          {
+            gasPrice,
+          })
         const receipt = await tx.wait()
         if (receipt.status) {
           toastSuccess(
