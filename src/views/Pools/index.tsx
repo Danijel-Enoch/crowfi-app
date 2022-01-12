@@ -280,13 +280,13 @@ const Pools: React.FC = () => {
       <PageHeader>
         <Flex justifyContent="space-between" flexDirection={['column', null, null, 'row']}>
           <Flex flex="1" flexDirection="column" mr={['8px', 0]}>
-            <Heading as="h1" scale="xl" color="white" mb="24px">
+            <Heading as="h1" scale="xl" color="white" mb="24px" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
               {t('Watering Holes')}
             </Heading>
-            <Heading scale="md" color="white">
+            <Heading scale="md" color="white" style={{textShadow:"1px 2px rgba(255,255,255,0.2)"}}>
               {t('Single Asset Staking')}
             </Heading>
-            <Heading scale="md" color="white">
+            <Heading scale="md" color="white" style={{textShadow:"1px 2px rgba(255,255,255,0.2)"}}>
               {t('High APR, Low Risk')}
             </Heading>
           </Flex>
@@ -308,7 +308,7 @@ const Pools: React.FC = () => {
           />
           <FilterContainer>
             <LabelWrapper>
-              <Text fontSize="12px" bold color="white" textTransform="uppercase">
+              <Text fontSize="12px" bold color="white" textTransform="uppercase" style={{textShadow:"1px 2px rgba(255,255,255,0.2)"}}>
                 {t('Sort by')}
               </Text>
               <ControlStretch>
@@ -336,7 +336,7 @@ const Pools: React.FC = () => {
               </ControlStretch>
             </LabelWrapper>
             <LabelWrapper style={{ marginLeft: 16 }}>
-              <Text fontSize="12px" bold color="textSubtle" textTransform="uppercase">
+              <Text fontSize="12px"  bold color="white" textTransform="uppercase" style={{textShadow:"1px 2px rgba(255,255,255,0.2)"}}>
                 {t('Search')}
               </Text>
               <SearchInput onChange={handleChangeSearchQuery} placeholder="Search Pools" />

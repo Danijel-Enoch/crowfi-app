@@ -76,7 +76,7 @@ const PoolTabButtons = ({ stakedOnly, setStakedOnly, hasStakeInFinishedPools, vi
   const stakedOnlySwitch = (
     <ToggleWrapper>
       <Toggle checked={stakedOnly} onChange={() => setStakedOnly(!stakedOnly)} scale="sm" />
-      <Text color="white"> {t('Staked only')}</Text>
+      <Text  color="white" style={{textShadow:"1px 2px rgba(255,255,255,0.2)"}}> {t('Staked only')}</Text>
     </ToggleWrapper>
   )
 
