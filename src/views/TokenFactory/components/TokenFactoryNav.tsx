@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Box, Flex, ButtonMenu, ButtonMenuItem, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
+import BoxButtonMenu from 'components/BoxButtonMenu'
 
 const NavWrapper = styled(Flex)`
   justify-content: center;
@@ -31,19 +32,13 @@ const TokenFactoryNav: React.FC<TokenFactoryNavProps> = ({activeIndex = 0, onIte
     }
   }
 
+  const menuItems = ['Create Token', 'Manage Tokens']
+  const menuItemsOnMobile = ['Create', 'Manage']
+
 
   return (
     <NavWrapper>
-      <Box>
-        <ButtonMenu activeIndex={activeButtonIndex} scale="sm" variant="subtle" onItemClick={onMenuItemClick}>
-          <ButtonMenuItem as="button">
-            {isMobile ? t('Create') : t('Create Token')}
-          </ButtonMenuItem>
-          <ButtonMenuItem as="button">
-            {isMobile ? t('Manage') : t('Manage Tokens')}
-          </ButtonMenuItem>
-        </ButtonMenu>
-      </Box>
+      <BoxButtonMenu onItemClick={onMenuItemClick} items={menuItems} mobileItems={menuItemsOnMobile}/>
     </NavWrapper>
   )
 }

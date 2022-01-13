@@ -4,9 +4,9 @@ import BigNumber from 'bignumber.js'
 import { Card, Flex, Text, Button, LinkExternal } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import { getFullDisplayBalance } from 'utils/formatBalance'
+import TokenAddress from 'components/TokenAddress'
 import { TokenType } from '../../types'
 import CardHeading from './CardHeading'
-import TokenAddress from './TokenAddress'
 
 const StyledCard = styled(Card)`
   align-self: baseline;

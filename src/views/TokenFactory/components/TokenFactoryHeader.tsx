@@ -19,10 +19,7 @@ const TokenFactoryHeader: React.FC<TokenFactoryHeaderProps> = ({tokens, network}
                     {tokens}
                 </Heading>
                 <Text color='secondary' textAlign="center">
-                    {t('tokens')}
-                </Text>
-                <Text color='secondary' textAlign="center" mt="12px">
-                    {t('Created on %network%', {network})}
+                    {t('tokens created')}
                 </Text>
             </Flex>
         </>

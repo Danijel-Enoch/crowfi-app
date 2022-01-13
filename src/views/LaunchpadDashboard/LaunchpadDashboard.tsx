@@ -10,7 +10,7 @@ import PresaleSection from './components/PresaleSection'
 import TokenFactorySection from './components/TokenFactorySection'
 
 
-const LaunchPadDashboard: React.FC = () => {
+const LaunchpadDashboard: React.FC = () => {
 
     const theme = useTheme()
     const { t } = useTranslation()
@@ -61,4 +61,4 @@ const LaunchPadDashboard: React.FC = () => {
     )
 }
 
-export default LaunchPadDashboard
+export default LaunchpadDashboard

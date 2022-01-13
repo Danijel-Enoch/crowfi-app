@@ -3,11 +3,31 @@ import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { Text, Flex, Box, Input, Heading, Button } from '@pancakeswap/uikit'
 import Select from 'components/Select/Select'
+import {StyledInput} from 'components/Launchpad/StyledControls'
 import useTheme from 'hooks/useTheme'
 import { TokenType } from '../../types'
 
+
 const InputWrap = styled.div`
     padding: 8px 0px;
+`
+
+const StyledList = styled.ul`
+    margin-top: 16px;
+    color: ${({ theme }) => theme.colors.secondary};
+    list-style: none;
+    font-size: 14px;
+    line-height: 1.2;
+    > li {
+        margin-top: 8px;
+        position: relative;
+        padding-left: 16px;
+        ::before {
+            content: '-';
+            position: absolute;
+            left: 0;
+        }
+    }
 `
 
 const CreateTokenSection: React.FC = () => {
@@ -44,24 +64,24 @@ const CreateTokenSection: React.FC = () => {
                     <Flex flexDirection={["column", "column", "column", "row"]} maxWidth="960px" width="100%">
                         <Flex flexDirection="column" flex="1" order={[1, 1, 1, 0]}>
                             <InputWrap>
-                                <Input placeholder={t('Token Name')} />
+                                <StyledInput placeholder={t('Token Name')} />
                             </InputWrap>
                             <InputWrap>
-                                <Input placeholder={t('Token Symbol')} />
+                                <StyledInput placeholder={t('Token Symbol')} />
                             </InputWrap>
                             <InputWrap>
-                                <Input placeholder={t('Token Decimal')} />
+                                <StyledInput placeholder={t('Token Decimal')} />
                             </InputWrap>
                             <InputWrap>
-                                <Input placeholder={t('Token Total Supply')} />
+                                <StyledInput placeholder={t('Token Total Supply')} />
                             </InputWrap>
                             { tokenType === TokenType.LIQUIDITY && (
                                 <>
                                 <InputWrap>
-                                    <Input placeholder={t('Transaction Fee in % to generate yield')} />
+                                    <StyledInput placeholder={t('Transaction Fee in % to generate yield')} />
                                 </InputWrap>
                                 <InputWrap>
-                                    <Input placeholder={t('Transaction Fee in 5 to generate Liquidity ')} />
+                                    <StyledInput placeholder={t('Transaction Fee in 5 to generate Liquidity ')} />
                                 </InputWrap>
                                 </>
                             )}
@@ -79,30 +99,23 @@ const CreateTokenSection: React.FC = () => {
                                     <Heading color="primary" mt="8px">
                                         {t('Standard Token Features:')}
                                     </Heading>
-                                    <Text color="secondary" fontSize="14px" mt="8px">
-                                        {t('- Basic token with all standard features')}
-                                    </Text>
-                                    <Text color="secondary" fontSize="14px" mt="4px">
-                                        {t('- Perfect for utility based projects such as charting tools')}
-                                    </Text>
+                                    <StyledList>
+                                        <li>{t('Basic token with all standard features')}</li>
+                                        <li>{t('Perfect for utility based projects such as charting tools')}</li>
+                                    </StyledList>
                                     </>
                                 ) : (
                                     <>
                                     <Heading color="primary" mt="8px">
                                         {t('Liquidity Generator Token Features:')}
                                     </Heading>
-                                    <Text color="secondary" fontSize="14px" mt="8px">
-                                        {t('- Auto yield and liquidity generation (Safemoon Fork)')}
-                                    </Text>
-                                    <Text color="secondary" fontSize="14px" mt="4px">
-                                        {t('- Customize fees taken to reward holders')}
-                                    </Text>
-                                    <Text color="secondary" fontSize="14px" mt="4px">
-                                        {t('- Customize fees to generate liquidty')}
-                                    </Text>
-                                    <Text color="secondary" fontSize="14px" mt="4px">
-                                        {t('- Whitelist functions')}
-                                    </Text>
+
+                                    <StyledList>
+                                        <li>{t('Auto yield and liquidity generation (Safemoon Fork)')}</li>
+                                        <li>{t('Customize fees taken to reward holders')}</li>
+                                        <li>{t('Customize fees to generate liquidty')}</li>
+                                        <li>{t('Whitelist functions')}</li>
+                                    </StyledList>
                                     </>
                                 )
                             }

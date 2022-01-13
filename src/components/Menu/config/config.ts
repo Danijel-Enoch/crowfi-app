@@ -58,6 +58,25 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         type: DropdownMenuItemType.DIVIDER,
       },
       {
+        label: t('Launchpad'),
+        href: '/launchpad',
+      },
+      {
+        label: t('Launches'),
+        href: '/sales',
+      },
+      {
+        label: t('Token Factory'),
+        href: '/token-factory',
+      },
+      {
+        label: t('Lockers'),
+        href: '/lockers',
+      },
+      {
+        type: DropdownMenuItemType.DIVIDER,
+      },
+      {
         type: 1,
         label: t('EvoDeFi Bridge'),
         href: 'https://bridge.evodefi.com',

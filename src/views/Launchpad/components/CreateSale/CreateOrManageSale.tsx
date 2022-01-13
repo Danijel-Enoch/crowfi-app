@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
-import { Heading, Text, Flex } from '@pancakeswap/uikit'
-import PageHeader from 'components/PageHeader'
+import { Heading, Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
-import TokenFactoryHeader from './components/TokenFactoryHeader'
-import TokenFactoryNav from './components/TokenFactoryNav'
-import CreateTokenSection from './components/CreateTokenSection'
-import ManageTokenSection from './components/MangeTokenSection'
+import BoxButtonMenu from 'components/BoxButtonMenu'
+import CreateSale from './CreateSale'
+// import CreateLiquidityLocker from './CreateLiquidityLocker'
 
 const PageWrapper = styled(Flex)`
 `
@@ -26,7 +24,7 @@ export enum ViewMode {
     MANAGE = 'MANAGE',
 }
 
-const TokenFactory: React.FC = () => {
+const CreateOrManageSale: React.FC = () => {
 
     const theme = useTheme()
     const { t } = useTranslation()
@@ -34,35 +32,24 @@ const TokenFactory: React.FC = () => {
 
     const renderContent = () => {
         if (viewMode === ViewMode.CREATE) {
-            return <CreateTokenSection/>
+            return <CreateSale/>
         }
-        return <ManageTokenSection />
-    }
-
-    const onMenuClick = (index: number) =>  {
-        const nViewMode = index === 0 ? ViewMode.CREATE : ViewMode.MANAGE
-        if (nViewMode !== viewMode) {
-            setViewMode(nViewMode)
-        }
+        return <CreateSale />
     }
 
     return (
         <>
-            <PageHeader>
+            {/* <PageHeader>
                 <Heading as="h1" scale="xl" color="secondary">
-                {t('Token Factory')}
+                {t('Lockers')}
                 </Heading>
                 <Text color="secondary">
-                {t('Create Or Manage Your Own Token')}
+                {t('Create Lockers')}
                 </Text>
-            </PageHeader>
+            </PageHeader> */}
 
             <PageWrapper>
                 <StyledPageBody flexDirection="column" flex="1"margin={["12px", "12px", "12px", "24px"]}>
-
-                    <TokenFactoryHeader tokens={4} network="Cronos"/>
-
-                    <TokenFactoryNav onItemClick={onMenuClick}/>
 
                     {renderContent()}
                     
@@ -73,4 +60,4 @@ const TokenFactory: React.FC = () => {
     )
 }
 
-export default TokenFactory
+export default CreateOrManageSale
