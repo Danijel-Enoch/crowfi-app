@@ -66,7 +66,7 @@ import pancakeSquadAbi from 'config/abi/crowfiSquad.json'
 import erc721CollctionAbi from 'config/abi/erc721collection.json'
 import privateSaleAbi from 'config/abi/presale.json'
 import { ERC20_ABI } from 'config/abi/erc20'
-import { ChainLinkOracleContract, FarmAuctionContract, PancakeProfileContract, PredictionsContract } from './types'
+import { ChainLinkOracleContract, FarmAuctionContract, PancakeProfileContract } from './types'
 
 const getContract = (abi: any, address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
   const signerOrProvider = signer ?? simpleRpcProvider
@@ -143,10 +143,6 @@ export const getEasterNftContract = (signer?: ethers.Signer | ethers.providers.P
 }
 export const getCakeVaultContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
   return getContract(cakeVaultAbi, getCakeVaultAddress(), signer)
-}
-
-export const getPredictionsContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
-  return getContract(predictionsAbi, getPredictionsAddress(), signer) as PredictionsContract
 }
 
 export const getChainlinkOracleContract = (signer?: ethers.Signer | ethers.providers.Provider) => {

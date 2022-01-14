@@ -9,13 +9,11 @@ import {
   LotteryTicket,
   DeserializedPoolConfig,
   SerializedPoolConfig,
-  Team,
   TranslatableText,
   DeserializedFarmConfig,
   SerializedPrivateSaleConfig,
   DeserializedPrivateSaleConfig
 } from 'config/constants/types'
-import { NftToken, State as NftMarketState } from './nftMarket/types'
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, State, unknown, AnyAction>
 
@@ -135,19 +133,6 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   }
 }
 
-export interface Profile {
-  userId: number
-  points: number
-  teamId: number
-  collectionAddress: string
-  tokenId: number
-  isActive: boolean
-  username: string
-  nft?: NftToken
-  team: Team
-  hasRegistered: boolean
-}
-
 // Slices states
 
 
@@ -206,67 +191,7 @@ export interface PoolsState {
   userDataLoaded: boolean
 }
 
-export enum ProfileAvatarFetchStatus {
-  NOT_FETCHED = 'not-fetched',
-  FETCHING = 'fetching',
-  FETCHED = 'fetched',
-}
 
-export interface ProfileState {
-  isInitialized: boolean
-  isLoading: boolean
-  hasRegistered: boolean
-  data: Profile
-  profileAvatars: {
-    [key: string]: {
-      username: string
-      nft: NftToken
-      hasRegistered: boolean
-      usernameFetchStatus: ProfileAvatarFetchStatus
-      avatarFetchStatus: ProfileAvatarFetchStatus
-    }
-  }
-}
-
-export type TeamResponse = {
-  0: string
-  1: string
-  2: string
-  3: string
-  4: boolean
-}
-
-export type TeamsById = {
-  [key: string]: Team
-}
-
-export interface TeamsState {
-  isInitialized: boolean
-  isLoading: boolean
-  data: TeamsById
-}
-
-export interface Achievement {
-  id: string
-  type: CampaignType
-  address: string
-  title: TranslatableText
-  description?: TranslatableText
-  badge: string
-  points: number
-}
-
-export enum AchievementFetchStatus {
-  ERROR = 'error',
-  NOT_FETCHED = 'not-fetched',
-  FETCHING = 'fetching',
-  FETCHED = 'fetched',
-}
-
-export interface AchievementState {
-  achievements: Achievement[]
-  achievementFetchStatus: AchievementFetchStatus
-}
 
 // Block
 
@@ -281,13 +206,6 @@ export enum BetPosition {
   BULL = 'Bull',
   BEAR = 'Bear',
   HOUSE = 'House',
-}
-
-export enum PredictionStatus {
-  INITIAL = 'initial',
-  LIVE = 'live',
-  PAUSED = 'paused',
-  ERROR = 'error',
 }
 
 export interface Round {
@@ -432,40 +350,6 @@ export interface LeaderboardFilter {
   address?: string
   orderBy?: string
   timePeriod?: LeaderboardFilterTimePeriod
-}
-
-export interface PredictionsState {
-  status: PredictionStatus
-  isLoading: boolean
-  isHistoryPaneOpen: boolean
-  isChartPaneOpen: boolean
-  isFetchingHistory: boolean
-  historyFilter: HistoryFilter
-  currentEpoch: number
-  intervalSeconds: number
-  minBetAmount: string
-  bufferSeconds: number
-  lastOraclePrice: string
-  history: Bet[]
-  totalHistory: number
-  currentHistoryPage: number
-  hasHistoryLoaded: boolean
-  rounds?: RoundData
-  ledgers?: LedgerData
-  claimableStatuses: {
-    [key: string]: boolean
-  }
-  leaderboard: {
-    selectedAddress: string
-    loadingState: LeaderboardLoadingState
-    filters: LeaderboardFilter
-    skip: number
-    hasMoreResults: boolean
-    addressResults: {
-      [key: string]: PredictionUser
-    }
-    results: PredictionUser[]
-  }
 }
 
 // Voting
@@ -630,15 +514,10 @@ export type UserTicketsResponse = [ethers.BigNumber[], number[], boolean[]]
 // Global state
 
 export interface State {
-  achievements: AchievementState
   block: BlockState
   farms: SerializedFarmsState
   privatesales: SerializedPrivateSalesState
   pools: PoolsState
-  predictions: PredictionsState
-  profile: ProfileState
-  teams: TeamsState
   voting: VotingState
   lottery: LotteryState
-  nftMarket: NftMarketState
 }

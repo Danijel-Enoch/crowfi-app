@@ -8,12 +8,10 @@ import useUserAgent from 'hooks/useUserAgent'
 import useScrollOnRouteChange from 'hooks/useScrollOnRouteChange'
 import { usePollBlockNumber } from 'state/block/hooks'
 import { usePollCoreFarmData } from 'state/farms/hooks'
-import { useFetchProfile } from 'state/profile/hooks'
 import { useUserReferrer } from 'state/user/hooks'
 import { getCurrentReffererFromUrl } from 'utils'
 import { deRot13 } from 'utils/encode'
 import { DatePickerPortal } from 'components/DatePicker'
-import { nftsBaseUrl } from 'views/Nft/market/constants'
 import GlobalStyle from './style/Global'
 import Menu from './components/Menu'
 import SuspenseWithChunkError from './components/SuspenseWithChunkError'
@@ -38,26 +36,11 @@ const Home = lazy(() => import('./views/Home'))
 const Farms = lazy(() => import('./views/Farms'))
 const PrivateSales = lazy(() => import('./views/PrivateSales'))
 const Referrals = lazy(() => import('./views/Referrals'))
-const FarmAuction = lazy(() => import('./views/FarmAuction'))
-const Lottery = lazy(() => import('./views/Lottery'))
-const Ifos = lazy(() => import('./views/Ifos'))
 const NotFound = lazy(() => import('./views/NotFound'))
-const Teams = lazy(() => import('./views/Teams'))
-const Team = lazy(() => import('./views/Teams/Team'))
-const TradingCompetition = lazy(() => import('./views/TradingCompetition'))
-const Predictions = lazy(() => import('./views/Predictions'))
-const PredictionsLeaderboard = lazy(() => import('./views/Predictions/Leaderboard'))
-const Voting = lazy(() => import('./views/Voting'))
-const Proposal = lazy(() => import('./views/Voting/Proposal'))
-const CreateProposal = lazy(() => import('./views/Voting/CreateProposal'))
 const AddLiquidity = lazy(() => import('./views/AddLiquidity'))
 const Liquidity = lazy(() => import('./views/Pool'))
 const PoolFinder = lazy(() => import('./views/PoolFinder'))
 const RemoveLiquidity = lazy(() => import('./views/RemoveLiquidity'))
-const Info = lazy(() => import('./views/Info'))
-const NftMarket = lazy(() => import('./views/Nft/market'))
-const ProfileCreation = lazy(() => import('./views/ProfileCreation'))
-const PancakeSquad = lazy(() => import('./views/PancakeSquad'))
 
 // This config is required for number formatting
 BigNumber.config({
@@ -80,7 +63,6 @@ const App: React.FC = () => {
 
   usePollBlockNumber()
   useEagerConnect()
-  useFetchProfile()
   usePollCoreFarmData()
   useScrollOnRouteChange()
   useUserAgent()
@@ -110,53 +92,6 @@ const App: React.FC = () => {
             <Route path="/pools">
               <Pools />
             </Route>
-            {/* <Route path="/lottery">
-              <Lottery />
-            </Route>
-            <Route path="/ifo">
-              <Ifos />
-            </Route>
-            <Route exact path="/teams">
-              <Teams />
-            </Route>
-            <Route path="/teams/:id">
-              <Team />
-            </Route>
-            <Route path="/create-profile">
-              <ProfileCreation />
-            </Route>
-            <Route path="/competition">
-              <TradingCompetition />
-            </Route>
-            <Route exact path="/prediction">
-              <Predictions />
-            </Route>
-            <Route path="/prediction/leaderboard">
-              <PredictionsLeaderboard />
-            </Route>
-            <Route exact path="/voting">
-              <Voting />
-            </Route>
-            <Route exact path="/voting/proposal/create">
-              <CreateProposal />
-            </Route>
-            <Route path="/voting/proposal/:id">
-              <Proposal />
-            </Route> */}
-
-            {/* NFT */}
-            {/* <Route path="/nfts">
-              <NftMarket />
-            </Route> */}
-
-            {/* <Route path="/crowfi-squad">
-              <PancakeSquad />
-            </Route> */}
-
-            {/* Info pages */}
-            {/* <Route path="/info">
-              <Info />
-            </Route> */}
 
             {/* Using this format because these components use routes injected props. We need to rework them with hooks */}
             <Route exact strict path="/swap" component={Swap} />
@@ -184,14 +119,6 @@ const App: React.FC = () => {
             <Route path="/syrup">
               <Redirect to="/pools" />
             </Route>
-            {/* <Route path="/collectibles">
-              <Redirect to="/nfts" />
-            </Route>
-            <Route path="/profile">
-              <Redirect to={`${nftsBaseUrl}/profile/${account?.toLowerCase() || ''}`} />
-            </Route> */}
-
-            {/* 404 */}
             <Route component={NotFound} />
           </Switch>
         </SuspenseWithChunkError>
