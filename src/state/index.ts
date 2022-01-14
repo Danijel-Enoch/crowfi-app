@@ -4,14 +4,8 @@ import { useDispatch } from 'react-redux'
 import farmsReducer from './farms'
 import privatesalesReducer from './privatesales'
 import poolsReducer from './pools'
-import predictionsReducer from './predictions'
-import profileReducer from './profile'
-import teamsReducer from './teams'
-import achievementsReducer from './achievements'
 import blockReducer from './block'
 import votingReducer from './voting'
-import lotteryReducer from './lottery'
-import infoReducer from './info'
 import { updateVersion } from './global/actions'
 import user from './user/reducer'
 import transactions from './transactions/reducer'
@@ -20,25 +14,17 @@ import mint from './mint/reducer'
 import lists from './lists/reducer'
 import burn from './burn/reducer'
 import multicall from './multicall/reducer'
-import nftMarketReducer from './nftMarket/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'profile']
 
 const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   reducer: {
-    achievements: achievementsReducer,
     block: blockReducer,
     farms: farmsReducer,
     privatesales:privatesalesReducer,
     pools: poolsReducer,
-    predictions: predictionsReducer,
-    profile: profileReducer,
-    teams: teamsReducer,
     voting: votingReducer,
-    lottery: lotteryReducer,
-    info: infoReducer,
-    nftMarket: nftMarketReducer,
 
     // Exchange
     user,

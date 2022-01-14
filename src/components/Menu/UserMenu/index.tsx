@@ -8,7 +8,6 @@ import {
   UserMenuItem,
 } from '@pancakeswap/uikit'
 import useAuth from 'hooks/useAuth'
-import { useProfile } from 'state/profile/hooks'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import useTokenBalance, { FetchStatus, useGetBnbBalance } from 'hooks/useTokenBalance'
 import { useTranslation } from 'contexts/Localization'
@@ -23,9 +22,7 @@ const UserMenu = () => {
   const { account } = useWeb3React()
   const { logout } = useAuth()
   const { balance, fetchStatus } = useGetBnbBalance()
-  const { profile } = useProfile()
   const [onPresentWalletModal] = useModal(<WalletModal initialView={WalletView.WALLET_INFO} />)
-  const avatarSrc = profile?.nft?.image?.thumbnail
   const hasLowBnbBalance = fetchStatus === FetchStatus.SUCCESS && balance.lte(LOW_BNB_BALANCE)
   const { balance: crowBalance} = useTokenBalance(tokens.crow.address)
 
@@ -34,7 +31,7 @@ const UserMenu = () => {
   }
 
   return (
-    <UIKitUserMenu text={getFullDisplayBalance(crowBalance, 18, 3)} avatarSrc={avatarSrc}>
+    <UIKitUserMenu text={getFullDisplayBalance(crowBalance, 18, 3)}>
       <WalletUserMenuItem hasLowBnbBalance={hasLowBnbBalance} onPresentWalletModal={onPresentWalletModal} />
       <UserMenuItem as="button" onClick={logout}>
         <Flex alignItems="center" justifyContent="space-between" width="100%">

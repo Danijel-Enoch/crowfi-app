@@ -13,11 +13,9 @@ import { ConnectorNames, connectorLocalStorageKey } from '@pancakeswap/uikit'
 import { connectorsByName } from 'utils/web3React'
 import { setupNetwork } from 'utils/wallet'
 import useToast from 'hooks/useToast'
-import { profileClear } from 'state/profile'
 import { useAppDispatch } from 'state'
 import { useTranslation } from 'contexts/Localization'
 import { clearAllTransactions } from 'state/transactions/actions'
-import { resetUserNftState } from '../state/nftMarket/reducer'
 
 const useAuth = () => {
   const { t } = useTranslation()
@@ -61,8 +59,6 @@ const useAuth = () => {
   )
 
   const logout = useCallback(() => {
-    dispatch(profileClear())
-    dispatch(resetUserNftState())
     deactivate()
     // This localStorage key is set by @web3-react/walletconnect-connector
     if (window.localStorage.getItem('walletconnect')) {

@@ -168,7 +168,6 @@ export const useTVLStaked = (): BigNumber => {
       if (totalLiquidity && totalLiquidity.gt(0)) {
         totalTVL = totalTVL.plus(totalLiquidity)
       }
-      console.log('liquidity', totalLiquidity.toJSON());
     })
     return totalTVL;
   }, [farms])
