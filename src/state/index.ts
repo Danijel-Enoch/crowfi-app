@@ -3,6 +3,7 @@ import { save, load } from 'redux-localstorage-simple'
 import { useDispatch } from 'react-redux'
 import farmsReducer from './farms'
 import privatesalesReducer from './privatesales'
+import tokenFactoryReducer from './tokenFactory'
 import poolsReducer from './pools'
 import blockReducer from './block'
 import votingReducer from './voting'
@@ -25,6 +26,7 @@ const store = configureStore({
     privatesales:privatesalesReducer,
     pools: poolsReducer,
     voting: votingReducer,
+    tokenFactory: tokenFactoryReducer,
 
     // Exchange
     user,

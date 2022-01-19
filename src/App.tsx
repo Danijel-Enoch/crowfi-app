@@ -44,6 +44,7 @@ const RemoveLiquidity = lazy(() => import('./views/RemoveLiquidity'))
 const LaunchpadDashboard = lazy(() => import('./views/LaunchpadDashboard'))
 const Launchpad = lazy(() => import('./views/Launchpad'))
 const TokenFactory = lazy(() => import('./views/TokenFactory'))
+const Airdropper = lazy(() => import('./views/Airdropper'))
 const Locker = lazy(() => import('./views/Locker'))
 
 
@@ -105,6 +106,9 @@ const App: React.FC = () => {
             </Route>
             <Route path="/token-factory">
               <TokenFactory />
+            </Route>
+            <Route path="/airdropper">
+              <Airdropper />
             </Route>
             <Route path="/lockers">
               <Locker />

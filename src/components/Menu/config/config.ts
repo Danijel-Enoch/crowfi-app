@@ -70,6 +70,10 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         href: '/token-factory',
       },
       {
+        label: t('Airdropper'),
+        href: '/airdropper',
+      },
+      {
         label: t('Lockers'),
         href: '/lockers',
       },

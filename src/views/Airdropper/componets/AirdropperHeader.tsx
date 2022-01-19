@@ -1,0 +1,30 @@
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import { Flex, Heading, Text, Button } from '@pancakeswap/uikit'
+import { useTranslation } from 'contexts/Localization'
+
+export interface AirdropperHeaderProps {
+    tokens: number
+    network: string
+}
+
+const AirdropperHeader: React.FC<AirdropperHeaderProps> = ({tokens, network}) => {
+
+    const { t } = useTranslation()
+
+    return (
+        <>
+            <Flex flexDirection="column" alignItems="center">
+                <Heading color='primary' scale="xl" textAlign="center">
+                    {tokens}
+                </Heading>
+                <Text color='secondary' textAlign="center">
+                    {t('tokens airdropped')}
+                </Text>
+            </Flex>
+        </>
+    )
+    
+}
+
+export default AirdropperHeader

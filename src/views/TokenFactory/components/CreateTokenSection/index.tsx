@@ -1,10 +1,19 @@
-import React, { useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { Text, Flex, Box, Input, Heading, Button } from '@pancakeswap/uikit'
+import { ETHER } from '@pancakeswap/sdk'
+import { useTokenFactoryDeployeFee, useLiquidityTokenFactoryDeployeFee } from 'state/tokenFactory/hooks'
 import Select from 'components/Select/Select'
-import {StyledInput} from 'components/Launchpad/StyledControls'
+import {StyledInput, StyledNumericalInput, StyledTextInput, StyledIntegerInput, StyledAddressInput} from 'components/Launchpad/StyledControls'
 import useTheme from 'hooks/useTheme'
+import BigNumber from 'bignumber.js'
+import useToast from 'hooks/useToast'
+import useENS from 'hooks/ENS/useENS'
+import { escapeRegExp } from 'utils'
+import { getFullDisplayBalance } from 'utils/formatBalance'
+import { BIG_TEN } from 'utils/bigNumber'
+import { useCreateLiquidityToken, useCreateStandardToken } from '../../hooks/useCreateToken'
 import { TokenType } from '../../types'
 
 
@@ -34,7 +43,22 @@ const CreateTokenSection: React.FC = () => {
 
     const { t } = useTranslation()
     const { theme } = useTheme()
+    const { toastError } = useToast()
     const [tokenType, seteTokenType] = useState(TokenType.STANDARD)
+    const [pendingTx, setPendingTx] = useState(false)
+    const [tokenName, setTokenName] = useState('')
+    const [tokenSymbol, setTokenSymbol] = useState('')
+    const [tokenDecimals, setTokenDecimals] = useState('')
+    const [tokenTotalSupply, setTokenTotalSupply] = useState('')
+    const [txFee, setTxFee] = useState('')
+    const [lpFee, setLpFee] = useState('')
+    const [dexFee, setDexFee] = useState('')
+    const [devAddress, setDevAddress] = useState('')
+    const { address:validatedDevAddress, loading: loadingDevAddress } = useENS(devAddress)
+    const { onCreateToken: onCreateStandardToken } = useCreateStandardToken()
+    const { onCreateToken: onCreateLiquiditytoken } = useCreateLiquidityToken()
+    const deployFee = useTokenFactoryDeployeFee()
+    const liquidityDeployFee = useLiquidityTokenFactoryDeployeFee()
 
     const tokenTypes = [
         { label: t('Standard Token'), value: TokenType.STANDARD },
@@ -45,6 +69,51 @@ const CreateTokenSection: React.FC = () => {
         console.log('option', option.value)
         seteTokenType(option.value)
     }
+
+    const noWhitespaceRegex = RegExp(`^[\\d\\w].*[\\d\\w]$`)
+
+    const isInputInvalid: boolean = useMemo(() => {
+
+        const tokenTotalSupplyNumber = new BigNumber(tokenTotalSupply)
+        const tokenDecimalsNumber = new BigNumber(tokenDecimals)
+        const txFeeNumber = new BigNumber(txFee)
+        const dexFeeNumber = new BigNumber(dexFee)
+        const lpFeeNumber = new BigNumber(lpFee)
+        return !tokenDecimalsNumber.isFinite() 
+        || tokenDecimalsNumber.gt(24)
+        || !tokenTotalSupplyNumber.isFinite()
+        || tokenTotalSupplyNumber.eq(0)
+        || !tokenSymbol
+        || tokenSymbol.length < 3
+        || !tokenName
+        || tokenName.length < 3
+        || !noWhitespaceRegex.test(escapeRegExp(tokenName))
+        || (tokenType === TokenType.LIQUIDITY && (
+            !txFeeNumber.isFinite() || txFeeNumber.gt(10) ||
+            !dexFeeNumber.isFinite() || dexFeeNumber.gt(10) ||
+            !lpFeeNumber.isFinite() || lpFeeNumber.gt(10) ||
+            !validatedDevAddress
+        ))
+
+    }, [tokenName, tokenSymbol, tokenDecimals, tokenTotalSupply, noWhitespaceRegex, tokenType, txFee, dexFee, lpFee, validatedDevAddress])
+
+    const handleCreate = useCallback(async () => {
+        try {
+          setPendingTx(true)
+          if (tokenType === TokenType.STANDARD) {
+              await onCreateStandardToken(deployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).toString(), tokenDecimals)
+          } else if (tokenType === TokenType.LIQUIDITY) {
+            await onCreateLiquiditytoken(liquidityDeployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).toString(), tokenDecimals, txFee, lpFee, dexFee, validatedDevAddress)
+          }
+          
+        //   dispatch(fetchPrivateSalesUserDataAsync({ account, types: [sale.type] }))
+        } catch (e) {
+          toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+          console.error(e)
+        } finally {
+          setPendingTx(false)
+        }
+      }, [onCreateStandardToken, onCreateLiquiditytoken, deployFee, liquidityDeployFee, tokenName, tokenSymbol, tokenTotalSupply, tokenDecimals, t, toastError, tokenType, txFee, lpFee, dexFee, validatedDevAddress])
 
     return (
         <>
@@ -64,30 +133,40 @@ const CreateTokenSection: React.FC = () => {
                     <Flex flexDirection={["column", "column", "column", "row"]} maxWidth="960px" width="100%">
                         <Flex flexDirection="column" flex="1" order={[1, 1, 1, 0]}>
                             <InputWrap>
-                                <StyledInput placeholder={t('Token Name')} />
+                                <StyledTextInput value={tokenName} onUserInput={(val) => setTokenName(val)} placeholder={t('Token Name (minimum length : 3)')} />
                             </InputWrap>
                             <InputWrap>
-                                <StyledInput placeholder={t('Token Symbol')} />
+                                <StyledTextInput value={tokenSymbol} onUserInput={(val) => setTokenSymbol(val)} transform={(val) => val.toUpperCase() }placeholder={t('Token Symbol (minimum length : 3)')} />
                             </InputWrap>
                             <InputWrap>
-                                <StyledInput placeholder={t('Token Decimal')} />
+                                <StyledNumericalInput value={tokenDecimals} onUserInput={(val) => setTokenDecimals(val)} placeholder={t('Token Decimal (max 24)')} />
                             </InputWrap>
                             <InputWrap>
-                                <StyledInput placeholder={t('Token Total Supply')} />
+                                <StyledNumericalInput value={tokenTotalSupply} onUserInput={(val) => setTokenTotalSupply(val)}  placeholder={t('Token Total Supply')} />
                             </InputWrap>
                             { tokenType === TokenType.LIQUIDITY && (
                                 <>
                                 <InputWrap>
-                                    <StyledInput placeholder={t('Transaction Fee in % to generate yield')} />
+                                    <StyledIntegerInput value={txFee}
+                                    onUserInput={(val) => setTxFee(val)}  placeholder={t('Transaction Fee in % to generate yield')} />
                                 </InputWrap>
                                 <InputWrap>
-                                    <StyledInput placeholder={t('Transaction Fee in 5 to generate Liquidity ')} />
+                                    <StyledIntegerInput value={lpFee}
+                                    onUserInput={(val) => setLpFee(val)}  placeholder={t('Transaction Fee in % to generate Liquidity')} />
+                                </InputWrap>
+                                <InputWrap>
+                                    <StyledIntegerInput value={dexFee}
+                                    onUserInput={(val) => setDexFee(val)}  placeholder={t('Transaction Fee in % to dev wallet')} />
+                                </InputWrap>
+                                <InputWrap>
+                                    <StyledAddressInput value={devAddress}
+                                    onUserInput={(val) => setDevAddress(val)}  placeholder={t('Dev wallet address')} />
                                 </InputWrap>
                                 </>
                             )}
 
                             <Flex flexDirection="row" justifyContent="center" mt="12px">
-                                <Button color="primary">
+                                <Button color="primary" disabled={pendingTx || isInputInvalid} onClick={handleCreate}>
                                     {t('Create')}
                                 </Button>
                             </Flex>
@@ -114,12 +193,17 @@ const CreateTokenSection: React.FC = () => {
                                         <li>{t('Auto yield and liquidity generation (Safemoon Fork)')}</li>
                                         <li>{t('Customize fees taken to reward holders')}</li>
                                         <li>{t('Customize fees to generate liquidty')}</li>
+                                        <li>{t('Customize fees to dev wallet')}</li>
+                                        <li>{t('Customize dev wallet address')}</li>
                                         <li>{t('Whitelist functions')}</li>
                                     </StyledList>
                                     </>
                                 )
                             }
+
+                            <Text fontSize='12px' color="primary" mt="24px">{t('Deploy fee')}: {getFullDisplayBalance(deployFee, ETHER.decimals)} {ETHER.symbol}</Text>
                         </Flex>
+                        
                     </Flex>
                 </Flex>
             </Flex>

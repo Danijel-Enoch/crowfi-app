@@ -4,10 +4,8 @@ import { Heading, Text, Flex } from '@pancakeswap/uikit'
 import PageHeader from 'components/PageHeader'
 import { useTranslation } from 'contexts/Localization'
 import { usePollTokenFactoryData } from 'state/tokenFactory/hooks'
-import TokenFactoryHeader from './components/TokenFactoryHeader'
-import TokenFactoryNav from './components/TokenFactoryNav'
-import CreateTokenSection from './components/CreateTokenSection'
-import ManageTokenSection from './components/MangeTokenSection'
+import AirdropperHeader from './componets/AirdropperHeader'
+import CreateAirdropSection from './componets/CreateAirdropSection'
 
 const PageWrapper = styled(Flex)`
 `
@@ -36,36 +34,24 @@ const TokenFactory: React.FC = () => {
     usePollTokenFactoryData()
 
     const renderContent = () => {
-        if (viewMode === ViewMode.CREATE) {
-            return <CreateTokenSection/>
-        }
-        return <ManageTokenSection />
-    }
-
-    const onMenuClick = (index: number) =>  {
-        const nViewMode = index === 0 ? ViewMode.CREATE : ViewMode.MANAGE
-        if (nViewMode !== viewMode) {
-            setViewMode(nViewMode)
-        }
+        return <CreateAirdropSection/>
     }
 
     return (
         <>
             <PageHeader>
                 <Heading as="h1" scale="xl" color="secondary">
-                {t('Token Factory')}
+                {t('Airdropper')}
                 </Heading>
                 <Text color="secondary">
-                {t('Create Or Manage Your Own Token')}
+                {t('Airdrop your token to all your users with the click of a button')}
                 </Text>
             </PageHeader>
 
             <PageWrapper>
                 <StyledPageBody flexDirection="column" flex="1"margin={["12px", "12px", "12px", "24px"]}>
 
-                    <TokenFactoryHeader tokens={4} network="Cronos"/>
-
-                    <TokenFactoryNav onItemClick={onMenuClick}/>
+                    <AirdropperHeader tokens={4} network="Cronos"/>
 
                     {renderContent()}
                     

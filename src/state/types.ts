@@ -136,6 +136,21 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
 // Slices states
 
 
+export interface SerializedTokenFactoryState {
+  userDataLoaded: boolean
+
+  lockTime?: number
+  deployFee?: SerializedBigNumber
+  lpDeployFee?: SerializedBigNumber
+}
+
+export interface DeserializedTokenFactoryState {
+  userDataLoaded: boolean
+
+  lockTime?: number
+  deployFee?: BigNumber
+  lpDeployFee?: BigNumber
+}
 
 export interface SerializedPrivateSalesState {
   data: SerializedPrivateSale[]
@@ -518,6 +533,7 @@ export interface State {
   farms: SerializedFarmsState
   privatesales: SerializedPrivateSalesState
   pools: PoolsState
+  tokenFactory: SerializedTokenFactoryState
   voting: VotingState
   lottery: LotteryState
 }

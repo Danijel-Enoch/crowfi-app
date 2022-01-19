@@ -31,6 +31,8 @@ import {
   getPancakeSquadContract,
   getErc721CollectionContract,
   getPrivateSaleContract,
+  getSimpleTokenFactoryContract,
+  getTokenFactoryContract,
 } from 'utils/contractHelpers'
 import { getMulticallAddress } from 'utils/addressHelpers'
 
@@ -49,6 +51,18 @@ import { getContract } from '../utils'
 /**
  * Helper hooks to get specific contracts (by ABI)
  */
+
+
+
+export const useSimpleTokenFactory = () => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getSimpleTokenFactoryContract(library.getSigner()), [library])
+}
+
+export const useTokenFactory = () => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getTokenFactoryContract(library.getSigner()), [library])
+}
 
 export const useIfoV1Contract = (address: string) => {
   const { library } = useActiveWeb3React()

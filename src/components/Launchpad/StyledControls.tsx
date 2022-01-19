@@ -1,5 +1,25 @@
+import React from 'react'
 import { Heading, Flex, Text, Input, Card } from '@pancakeswap/uikit'
+import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
+import { escapeRegExp } from 'utils'
+
+export const StyledText = styled.textarea<{hasError?: boolean}>`
+  border-color: ${({ hasError, theme }) => (hasError ? theme.colors.failure : theme.colors.secondary)};
+  color: ${({ theme }) => theme.colors.primary}
+  width: 100%;
+  min-height: 10em;
+  resize: none;
+  padding: 8px;
+  border-radius: 12px;
+  ::placeholder {
+    color: rgba(0, 68, 117, 0.5);
+  }
+  &:focus:not(:disabled) {
+      box-shadow: 0px 0px 0px 1px rgba(0, 68, 117, 0.1), 0px 0px 0px 4px rgba(0, 68, 117, 0.1);
+      outline: unset;
+  }
+`
 
 export const StyledInput = styled(Input)`
     border-color: ${({ theme }) => theme.colors.secondary};
@@ -36,3 +56,245 @@ export const StyledInputLabel = styled(Text)`
     alpha: 0.8;
     font-size: 10px;
 `
+
+export const StyledTextarea = React.memo(function InnerTextArea({
+  value,
+  placeholder,
+  onUserInput,
+  hasError,
+  ...rest
+}: {
+  hasError?: boolean
+  value: string
+  onUserInput: (input: string) => void
+
+} & Omit<React.HTMLProps<HTMLTextAreaElement>, 'ref' | 'onChange' | 'as'>) {
+
+  const enforcer = (nextUserInput: string) => {
+    onUserInput(nextUserInput)
+  }
+
+  return (
+    <StyledText
+      {...rest}
+      hasError={hasError}
+      value={value}
+      onChange={(event) => {
+        enforcer(event.target.value)
+        // enforcer(event.target.value)
+      }}
+      // universal input options
+      placeholder={placeholder}
+      inputMode="text"
+      spellCheck="false"
+    />
+  )
+})
+
+export const StyledTextInput = React.memo(function InnerInput({
+    value,
+    onUserInput,
+    title,
+    placeholder,
+    pattern,
+    validateReg,
+    transform,
+    ...rest
+  }: {
+    value: string | number
+    onUserInput: (input: string) => void
+    title?: string
+    error?: boolean
+    fontSize?: string
+    align?: 'right' | 'left'
+    pattern?: string,
+    validateReg?:RegExp
+    transform?: (input: string) => string
+  } & Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {
+    // const pattern_ = pattern || "^[\\d\\w].*[\\d\\w]*$"
+    // const validateReg_ = validateReg || RegExp(`^[\\d\\w].*[\\d\\w]*$`)
+    const enforcer = (nextUserInput: string) => {
+      const text = transform ? transform(nextUserInput) : nextUserInput
+      if (text === '' || !validateReg || validateReg.test(escapeRegExp(text))) {
+        onUserInput(text)
+      }
+      // if (nextUserInput === '' || validateReg_.test(escapeRegExp(nextUserInput))) {
+      //   onUserInput(nextUserInput)
+      // }
+    }
+  
+    const { t } = useTranslation()
+  
+    return (
+      <StyledInput
+        {...rest}
+        value={value}
+        onChange={(event) => {
+          enforcer(event.target.value)
+          // enforcer(event.target.value)
+        }}
+        // universal input options
+        inputMode="text"
+        title={title}
+        autoComplete="off"
+        autoCorrect="off"
+        // text-specific options
+        type="text"
+        pattern={pattern}
+        placeholder={placeholder}
+        spellCheck="false"
+      />
+    )
+  })
+
+
+export const StyledAddressInput = React.memo(function InnerInput({
+  value,
+  onUserInput,
+  title,
+  placeholder,
+  pattern,
+  validateReg,
+  transform,
+  ...rest
+}: {
+  value: string | number
+  onUserInput: (input: string) => void
+  title?: string
+  error?: boolean
+  fontSize?: string
+  align?: 'right' | 'left'
+  pattern?: string,
+  validateReg?:RegExp
+  transform?: (input: string) => string
+} & Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {
+  // const pattern_ = pattern || "^[\\d\\w].*[\\d\\w]*$"
+  // const validateReg_ = validateReg || RegExp(`^[\\d\\w].*[\\d\\w]*$`)
+  const enforcer = (nextUserInput: string) => {
+    const text = transform ? transform(nextUserInput) : nextUserInput
+    if (text === '' || !validateReg || validateReg.test(escapeRegExp(text))) {
+      onUserInput(text)
+    }
+    // if (nextUserInput === '' || validateReg_.test(escapeRegExp(nextUserInput))) {
+    //   onUserInput(nextUserInput)
+    // }
+  }
+
+  const { t } = useTranslation()
+
+  return (
+    <StyledInput
+      {...rest}
+      value={value}
+      onChange={(event) => {
+        const input = event.target.value
+        const withoutSpaces = input.replace(/\s+/g, '')
+        enforcer(withoutSpaces)
+      }}
+      // universal input options
+      inputMode="text"
+      title={title}
+      autoComplete="off"
+      autoCorrect="off"
+      // text-specific options
+      type="text"
+      pattern="^(0x[a-fA-F0-9]{40})$"
+      placeholder={placeholder}
+      spellCheck="false"
+    />
+  )
+})
+const integerInputRegex = RegExp(`^\\d*$`) // match escaped "." 
+export const StyledIntegerInput = React.memo(function InnerInput({
+  value,
+  onUserInput,
+  title,
+  placeholder,
+  ...rest
+}: {
+  value: string | number
+  onUserInput: (input: string) => void
+  title?: string
+  error?: boolean
+  fontSize?: string
+  align?: 'right' | 'left'
+} & Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {
+  const enforcer = (nextUserInput: string) => {
+    if (nextUserInput === '' || integerInputRegex.test(escapeRegExp(nextUserInput))) {
+      onUserInput(nextUserInput)
+    }
+  }
+
+  const { t } = useTranslation()
+
+  return (
+    <StyledInput
+      {...rest}
+      value={value}
+      onChange={(event) => {
+        // replace commas with periods, because we exclusively uses period as the decimal separator
+        enforcer(event.target.value.replace(/,/g, ''))
+      }}
+      // universal input options
+      inputMode="decimal"
+      title={title}
+      autoComplete="off"
+      autoCorrect="off"
+      // text-specific options
+      type="text"
+      pattern="^[0-9]*$"
+      placeholder={placeholder || '0'}
+      minLength={1}
+      maxLength={10}
+      spellCheck="false"
+    />
+  )
+})
+
+const numericalInputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group
+
+export const StyledNumericalInput = React.memo(function InnerInput({
+    value,
+    onUserInput,
+    title,
+    placeholder,
+    ...rest
+  }: {
+    value: string | number
+    onUserInput: (input: string) => void
+    title?: string
+    error?: boolean
+    fontSize?: string
+    align?: 'right' | 'left'
+  } & Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {
+    const enforcer = (nextUserInput: string) => {
+      if (nextUserInput === '' || numericalInputRegex.test(escapeRegExp(nextUserInput))) {
+        onUserInput(nextUserInput)
+      }
+    }
+  
+    const { t } = useTranslation()
+  
+    return (
+      <StyledInput
+        {...rest}
+        value={value}
+        onChange={(event) => {
+          // replace commas with periods, because we exclusively uses period as the decimal separator
+          enforcer(event.target.value.replace(/,/g, '.'))
+        }}
+        // universal input options
+        inputMode="decimal"
+        title={title}
+        autoComplete="off"
+        autoCorrect="off"
+        // text-specific options
+        type="text"
+        pattern="^[0-9]*[.,]?[0-9]*$"
+        placeholder={placeholder || '0.0'}
+        minLength={1}
+        maxLength={79}
+        spellCheck="false"
+      />
+    )
+  })

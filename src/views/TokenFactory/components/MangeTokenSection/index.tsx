@@ -31,6 +31,7 @@ const ManageTokenSection: React.FC = () => {
 
     const tokens = [
         {
+            id: '1',
             name: 'Crow-Fi Token',
             symbol: 'CROW',
             decimals: 18,
@@ -39,6 +40,7 @@ const ManageTokenSection: React.FC = () => {
             type: TokenType.STANDARD
         },
         {
+            id: '2',
             name: 'Crow-Fi Token',
             symbol: 'CROW',
             decimals: 18,
@@ -47,6 +49,7 @@ const ManageTokenSection: React.FC = () => {
             type: TokenType.STANDARD
         },
         {
+            id: '3',
             name: 'Crow-Fi Token',
             symbol: 'CROW',
             decimals: 18,
@@ -55,6 +58,7 @@ const ManageTokenSection: React.FC = () => {
             type: TokenType.STANDARD
         },
         {
+            id: '4',
             name: 'Crow-Fi Token',
             symbol: 'CROW',
             decimals: 18,
@@ -63,6 +67,7 @@ const ManageTokenSection: React.FC = () => {
             type: TokenType.STANDARD
         },
         {
+            id: '5',
             name: 'Crow-Fi Token',
             symbol: 'CROW',
             decimals: 18,
@@ -89,6 +94,7 @@ const ManageTokenSection: React.FC = () => {
                 <FlexLayout>
                     { tokens.map((token) => (
                         <ManageTokenCard
+                            key={token.id}
                             name={token.name}
                             symbol={token.symbol}
                             address={token.address}
