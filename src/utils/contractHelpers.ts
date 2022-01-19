@@ -31,6 +31,7 @@ import {
   getPancakeSquadAddress,
   getSimpleTokenFactoryAddress,
   getTokenFactoryAddress,
+  getAirdropperAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -69,12 +70,17 @@ import erc721CollctionAbi from 'config/abi/erc721collection.json'
 import privateSaleAbi from 'config/abi/presale.json'
 import simpleTokenFactory from 'config/abi/crowpadTokenSimpleFactory.json'
 import crowpadTokenFactory from 'config/abi/crowpadTokenFactory.json'
+import crowpadAirdropper from 'config/abi/crowpadAirdropper.json'
 import { ERC20_ABI } from 'config/abi/erc20'
 import { ChainLinkOracleContract, FarmAuctionContract, PancakeProfileContract } from './types'
 
 const getContract = (abi: any, address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
   const signerOrProvider = signer ?? simpleRpcProvider
   return new ethers.Contract(address, abi, signerOrProvider)
+}
+
+export const getAirdropperContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(crowpadAirdropper, getAirdropperAddress(), signer)
 }
 
 export const getSimpleTokenFactoryContract = (signer?: ethers.Signer | ethers.providers.Provider) => {

@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo, useState, lazy } from 'react'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
-import { Text, Flex, Box, Input, Heading, Button } from '@pancakeswap/uikit'
-import { Token } from '@pancakeswap/sdk'
+import { useWeb3React } from '@web3-react/core'
+import { Text, Flex, Heading, Button } from '@pancakeswap/uikit'
+import { JSBI, Token, TokenAmount } from '@pancakeswap/sdk'
 import {StyledAddressInput, StyledTextarea, StyledInputLabel} from 'components/Launchpad/StyledControls'
 import useTheme from 'hooks/useTheme'
 import { useToken } from 'hooks/Tokens'
@@ -10,8 +11,12 @@ import useTokenBalance from 'hooks/useTokenBalance'
 import useToast from 'hooks/useToast'
 import { escapeRegExp } from 'utils'
 import { getFullDisplayBalance } from 'utils/formatBalance'
-import Dots from 'components/Loader/Dots'
 import Loading from 'components/Loading'
+import { getAirdropperAddress } from 'utils/addressHelpers'
+import BigNumber from 'bignumber.js'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
+import { useAirdropTokeen } from 'views/Airdropper/hooks/useAirdrop'
+import { BIG_TEN } from 'utils/bigNumber'
 
 const EasyMde = lazy(() => import('components/EasyMde'))
 const InputWrap = styled.div`
@@ -50,25 +55,21 @@ const CreateAirdopSection: React.FC = () => {
 
     const { t } = useTranslation()
     const { theme } = useTheme()
-    const { toastError } = useToast()
+    const { account } = useWeb3React()
+    const { toastError, toastSuccess } = useToast()
     const [pendingTx, setPendingTx] = useState(false)
     const [tokenAddress, setTokenAddress] = useState<string>('')
     const [airdropText, setAirdropText] = useState<string>('')
 
     const searchToken: Token = useToken(tokenAddress)
     const {balance} = useTokenBalance(searchToken ? searchToken.address : null)
+    const {onAirdropToken} = useAirdropTokeen()
 
     const airdropTextReg = RegExp(`^(0x[0-9a-fA-F]{40},\\d+\\n)*(0x[0-9a-fA-F]{40},\\d+)$`)
 
     const isAirdopInputValid: boolean = useMemo(() => {
         return airdropText.length > 0 &&  airdropTextReg.test(escapeRegExp(airdropText))
     }, [airdropTextReg, airdropText])
-
-    const isInputInvalid: boolean = useMemo(() => {
-
-        return !searchToken || !isAirdopInputValid || !balance
-
-    }, [searchToken, isAirdopInputValid, balance])
 
     const tokensAirdropping: number = useMemo(() => {
         if (isAirdopInputValid) {
@@ -82,15 +83,48 @@ const CreateAirdopSection: React.FC = () => {
         return 0
     }, [isAirdopInputValid, airdropText])
 
-    const handleEasyMdeChange = (value: string) => {
-        setAirdropText(value)
-    }
+    const tokensAirdroppingNumber = searchToken ? new BigNumber(tokensAirdropping, searchToken.decimals) : undefined
+    
+    const [approval, approveCallback] = useApproveCallback(searchToken ? new TokenAmount(searchToken, JSBI.BigInt(tokensAirdropping)) : undefined, getAirdropperAddress())
 
-    const options = useMemo(() => {
-        return {
-          hideIcons:['guide', 'fullscreen', 'preview', 'side-by-side', 'image'],
+    const handleAirdrop = useCallback(async () => {
+        try {
+            setPendingTx(true)
+            const pairs = airdropText.split("\n").map((line) => {
+                const elems = line.split(",");
+                return {receipt: elems[0], amount: new BigNumber(parseInt(elems.length > 1 ? elems[1] : '0')).multipliedBy(BIG_TEN.pow(searchToken.decimals)).toString()}
+            }).reduce((accum, pair) => {
+                return {
+                    receipts: [...accum.receipts, pair.receipt],
+                    amounts: [...accum.amounts, pair.amount]
+                }
+            }, {receipts: [], amounts: []})
+
+            await onAirdropToken(searchToken.address, pairs.receipts, pairs.amounts)
+            toastSuccess(t('Success'))
+        } catch (e) {
+          toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+          console.error(e)
+        } finally {
+          setPendingTx(false)
         }
-      }, [])
+      }, [onAirdropToken, t, toastError, toastSuccess, airdropText, searchToken])
+
+    const renderApprovalOrCreateButton = () => {
+        return approval === ApprovalState.APPROVED ? (
+          <Button
+            disabled={pendingTx || !tokensAirdroppingNumber || !tokensAirdroppingNumber.isFinite() || tokensAirdroppingNumber.eq(0) || tokensAirdroppingNumber.gt(balance)}
+            onClick={handleAirdrop}
+            width="100%"
+          >
+            {pendingTx ? t('Processing...') : t('Create')}
+          </Button>
+        ) : (
+          <Button mt="8px" width="100%" disabled={approval === ApprovalState.PENDING || approval === ApprovalState.UNKNOWN} onClick={approveCallback}>
+            {approval === ApprovalState.PENDING ? t('Approving') : t('Approve')}
+          </Button>
+        )
+      }
 
     return (
         <>
@@ -149,9 +183,7 @@ const CreateAirdopSection: React.FC = () => {
                             </Flex>
 
                             <Flex flexDirection="row" justifyContent="center" mt="12px">
-                                <Button color="primary" disabled={pendingTx || isInputInvalid}>
-                                    {t('Create')}
-                                </Button>
+                                {renderApprovalOrCreateButton()}
                             </Flex>
                         </Flex>
                         <Flex flexDirection="column" order={[0, 0, 0, 1]} margin={["0 0px 24px 0px", "0px 0px 24px 0px", "0px 0px 24px 0px", "0px 0px 0px 48px"]} maxWidth={["100%", "100%", "100%", "50%"]}>

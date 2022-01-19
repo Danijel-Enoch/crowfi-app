@@ -33,6 +33,7 @@ import {
   getPrivateSaleContract,
   getSimpleTokenFactoryContract,
   getTokenFactoryContract,
+  getAirdropperContract,
 } from 'utils/contractHelpers'
 import { getMulticallAddress } from 'utils/addressHelpers'
 
@@ -52,7 +53,11 @@ import { getContract } from '../utils'
  * Helper hooks to get specific contracts (by ABI)
  */
 
+export const useAirdropperContract = () => {
 
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getAirdropperContract(library.getSigner()), [library])
+}
 
 export const useSimpleTokenFactory = () => {
   const { library } = useActiveWeb3React()

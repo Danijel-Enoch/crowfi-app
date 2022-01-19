@@ -7,6 +7,10 @@ export const getAddress = (address: Address): string => {
   return address[chainId] ? address[chainId] : address[ChainId.MAINNET]
 }
 
+export const getAirdropperAddress = () => {
+  return getAddress(addresses.airdropper)
+}
+
 export const getSimpleTokenFactoryAddress = () => {
   return getAddress(addresses.tokenSimpleFactory)
 }
