@@ -13,7 +13,7 @@ export const BASE_BSC_SCAN_URLS = {
   [ChainId.MAINNET]: 'https://bscscan.com',
   [ChainId.TESTNET]: 'https://testnet.bscscan.com',
   [ChainId.CRONOSTESTNET]: 'https://cronos.crypto.org/explorer/testnet3',
-  [ChainId.CRONOS]: 'https://cronos.crypto.org/explorer',
+  [ChainId.CRONOS]: 'https://cronoscan.com',
 }
 
 // CAKE_PER_BLOCK details
