@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 import { Flex, Heading, Text, Button } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 
@@ -20,7 +19,7 @@ const Hero = () => {
                     {t('Tokens created here will be verified and published on explorer websites.')}
                 </Text>
                 <Flex flexDirection="row" justifyContent="center" mt="12px">
-                    <Button as="a" href="/token-factory">
+                    <Button as="a" href="/launchpad/token-factory">
                         {t('Create Now')}
                     </Button>
                 </Flex>

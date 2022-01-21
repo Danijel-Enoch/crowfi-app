@@ -135,6 +135,7 @@ const CreateAirdopSection: React.FC = () => {
 
     const showConfirm = useCallback(async() => {
         setErrorMessage(undefined)
+        setTxHash(undefined)
         const pairs = airdropText.split("\n").map((line) => {
             const elems = line.split(",");
             return {receipt: elems[0], amount: new BigNumber(parseInt(elems.length > 1 ? elems[1] : '0')).multipliedBy(BIG_TEN.pow(searchToken.decimals)).toString()}

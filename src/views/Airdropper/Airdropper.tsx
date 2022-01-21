@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { Heading, Text, Flex } from '@pancakeswap/uikit'
 import PageHeader from 'components/PageHeader'
+import { PageBGWrapper } from 'components/Launchpad/StyledControls'
 import { useTranslation } from 'contexts/Localization'
 import { usePollTokenFactoryData } from 'state/tokenFactory/hooks'
 import AirdropperHeader from './componets/AirdropperHeader'
@@ -39,11 +40,12 @@ const TokenFactory: React.FC = () => {
 
     return (
         <>
+            <PageBGWrapper />
             <PageHeader>
-                <Heading as="h1" scale="xl" color="secondary">
+                <Heading as="h1" scale="xl" color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
                 {t('Airdropper')}
                 </Heading>
-                <Text color="secondary">
+                <Text color="white" style={{textShadow:"1px 2px rgba(255,255,255,0.2)"}}>
                 {t('Airdrop your token to all your users with the click of a button')}
                 </Text>
             </PageHeader>

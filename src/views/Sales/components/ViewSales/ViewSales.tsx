@@ -1,33 +1,13 @@
-import React, { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styled, { useTheme } from 'styled-components'
-import { Heading, Flex, Text, Input } from '@pancakeswap/uikit'
+import React, {useMemo, useState } from 'react'
+import { useTheme } from 'styled-components'
+import { Flex } from '@pancakeswap/uikit'
 import { Token } from '@pancakeswap/sdk'
 import BigNumber from 'bignumber.js'
 import tokens from 'config/constants/tokens'
 import { useTranslation } from 'contexts/Localization'
 import BoxButtonMenu from 'components/BoxButtonMenu'
-import { StyledInput } from 'components/Launchpad/StyledControls'
-import PageHeader from 'components/PageHeader'
 import FlexLayout from 'components/Layout/Flex'
-import useDebounce from 'hooks/useDebounce'
-import { isAddress } from 'utils'
 import SaleCard from './SaleCard'
-
-const PageWrapper = styled(Flex)`
-`
-
-const StyledPageBody = styled(Flex)`
-    filter: ${({ theme }) => theme.card.dropShadow};
-    border-radius: ${({ theme }) => theme.radii.default};
-    padding: 24px;
-    background: white;
-    width: 100%;
-    z-index: 1;
-`
-
-const SearchInput = styled(StyledInput)`
-    width: min(100%, 500px);
-`
 
 interface Sale {
     id: string
@@ -45,7 +25,7 @@ export enum ViewMode {
     OTHERS = 'OTHERS'
 }
 
-const ManageSales: React.FC = () => {
+const ViewSales: React.FC = () => {
 
     const theme = useTheme()
     const { t } = useTranslation()
@@ -131,21 +111,15 @@ const ManageSales: React.FC = () => {
 
     return (
         <>
-            {/* <PageHeader>
-            </PageHeader> */}
+            <Flex flexDirection="column">
 
-            <PageWrapper>
-                <StyledPageBody flexDirection="column" flex="1"margin={["12px", "12px", "12px", "24px"]}>
+            <BoxButtonMenu onItemClick={onMenuClick} items={menuItems} mobileItems={menuItemsOnMobile}/>
 
-                    <BoxButtonMenu onItemClick={onMenuClick} items={menuItems} mobileItems={menuItemsOnMobile}/>
+            {renderContent()}
 
-                    {renderContent()}
-                    
-                </StyledPageBody>
-                
-            </PageWrapper>
+            </Flex>
         </>
     )
 }
 
-export default ManageSales
+export default ViewSales

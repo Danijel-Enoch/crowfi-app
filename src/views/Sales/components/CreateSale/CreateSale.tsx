@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Text, Flex, Box, Input, Heading, Button, Radio, useModal } from '@pancakeswap/uikit'
 import { Token } from '@pancakeswap/sdk'
 import Select from 'components/Select/Select'
-import { StyledInput, StyledInputStyles, StyledInputLabel } from 'components/Launchpad/StyledControls'
+import { StyledInput, StyledInputStyles, StyledIntegerInput, StyledInputLabel, StyledAddressInput, StyledNumericalInput } from 'components/Launchpad/StyledControls'
 import useTheme from 'hooks/useTheme'
 import { useToken } from 'hooks/Tokens'
 import useTokenBalance from 'hooks/useTokenBalance'
@@ -45,33 +45,35 @@ const StyledList = styled.ul`
     }
 `
 
-const CreateSale: React.FC = () => {
+interface CreateProps {
+    onDisagree: () => void
+}
+
+const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
 
     const { t } = useTranslation()
     const { theme } = useTheme()
     const history = useHistory()
     const [ agreed, setAgreed ] = useState<boolean>(false)
     const [ presentedDesclaimer, setPresentedDesclaimer ] = useState<boolean>(false)
-    const [unlockType, setUnlockType] = useState<UnlockType>(UnlockType.LINEAR)
-    const [ownerType, setOwnerType] = useState<OwnerType>(OwnerType.ME)
+    const [ rate, setRate ] = useState<string>('')
+    const [ softCap, setSoftCap ] = useState<string>('')
+    const [ hardCap, setHardCap ] = useState<string>('')
+    const [ contributionLimit, setContributionLimit ] = useState<string>('')
+    const [ lpPercent, setLpPercent ] = useState<string>('')
+    const [ swapRate, setSwapRate ] = useState<string>('')
     const [startDate, setStartDate] = useState<Date|null>(null)
+    const [endDate, setEndDate] = useState<Date|null>(null)
+    const [lockDate, setLockDate] = useState<Date|null>(null)
 
     const [tokenAddress, setTokenAddress] = useState<string>('')
     const searchToken: Token = useToken(tokenAddress)
     const {balance} = useTokenBalance(searchToken ? searchToken.address : null)
 
-    const handleInputAddress = useCallback((event) => {
-      const input = event.target.value
-      const checksummedInput = isAddress(input)
-      setTokenAddress(checksummedInput || input)
-    }, [])
-
     const [onPresentDesclaimer] = useModal(
         <DesclaimerModal onAgree={() => {
             setAgreed(true)
-        }} onCancel={() => {
-            history.replace('/sales')
-        }}/>,
+        }} onCancel={onDisagree}/>,
         false,
         false
     )
@@ -84,9 +86,16 @@ const CreateSale: React.FC = () => {
         
     }, [agreed, presentedDesclaimer, onPresentDesclaimer])
 
-    const handleDateChange = (date: Date, event) => {
+    const handleStartDateChange = (date: Date, event) => {
         setStartDate(date)
-        console.log('date', date)
+    }
+
+    const handleEndDateChange = (date: Date, event) => {
+        setEndDate(date)
+    }
+
+    const handleLockDateChange = (date: Date, event) => {
+        setLockDate(date)
     }
 
     return (
@@ -96,10 +105,10 @@ const CreateSale: React.FC = () => {
                     <Flex flexDirection={["column", "column", "column", "row"]} maxWidth="960px" width="100%">
                         <Flex flexDirection="column" flex="1" order={[1, 1, 1, 0]}>
                             <InputWrap>
-                                <StyledInput 
+                                <StyledAddressInput 
                                     value={tokenAddress} 
                                     placeholder={t('Token Address')}
-                                    onChange={handleInputAddress} />
+                                    onUserInput={(value) => setTokenAddress(value)} />
                             </InputWrap>
                             { searchToken && (
                                 <>
@@ -126,15 +135,15 @@ const CreateSale: React.FC = () => {
                                 </>
                             )}
                             <InputWrap>
-                                <StyledInput placeholder={t('Presale Rate, ex. 0.5 CRO')} />
+                                <StyledNumericalInput placeholder={t('Presale Rate, ex. 0.5 CRO')} value={rate} onUserInput={(value) => setRate(value)}/>
                                 <StyledInputLabel>
                                     {t('Enter your presale price in CRO: (If I pay 1 CRO, how many tokens do I get?)')}
                                 </StyledInputLabel>
                             </InputWrap>
                             <InputWrap>
                                 <Flex>
-                                    <StyledInput placeholder={t('Soft Cap ex.50')} style={{marginRight: "4px"}}/>
-                                    <StyledInput placeholder={t('Hard Cap ex.100')} style={{marginLeft: "4px"}}/>
+                                    <StyledNumericalInput placeholder={t('Soft Cap ex.50')} style={{marginRight: "4px"}} value={softCap} onUserInput={(value) => setSoftCap(value)}/>
+                                    <StyledNumericalInput placeholder={t('Hard Cap ex.100')} style={{marginLeft: "4px"}} value={hardCap} onUserInput={(value) => setHardCap(value)}/>
                                 </Flex>
                                 <StyledInputLabel>
                                     {t('Enter your desired softcap and hardcap: [soft,hard] (For a small or near 0 soft cap set your softcap to 0.001)')}
@@ -142,39 +151,39 @@ const CreateSale: React.FC = () => {
                                 
                             </InputWrap>
                             <InputWrap>
-                                <StyledInput placeholder={t('Contribution Limits')} />
+                                <StyledIntegerInput placeholder={t('Contribution Limits')} value={contributionLimit} onUserInput={(value) => setContributionLimit(value)} />
                                 <StyledInputLabel>
                                     {t('Enter the maximum amounts each wallet can contribute: (max)')}
                                 </StyledInputLabel>
                             </InputWrap>
                             <InputWrap>
-                                <StyledInput placeholder={t('CrowFi Swap Liquidity, ex. 60')} />
+                                <StyledIntegerInput placeholder={t('CrowFi Swap Liquidity, ex. 60')} value={lpPercent} onUserInput={(value) => setLpPercent(value)}/>
                                 <StyledInputLabel>
                                     {t('Enter the percentage of raised funds that should be allocated to Liquidity on CrowFi Swap (Min 51%)')}
                                 </StyledInputLabel>
                             </InputWrap>
                             <InputWrap>
-                                <StyledInput placeholder={t('CrowFi Swap Rate ex.400')} />
+                                <StyledNumericalInput placeholder={t('CrowFi Swap Rate ex.400')} value={swapRate} onUserInput={(value) => setSwapRate(value)} />
                                 <StyledInputLabel>
-                                    {t('Enter CrowFi Swap listing price in CRO: (If I buy 1 CRO worth onPhoton Swaphow many tokens do I get?)')}
+                                    {t('Enter CrowFi Swap listing price in CRO: (If I buy 1 CRO worth on CrowFi Swap how many tokens do I get?)')}
                                 </StyledInputLabel>
                             </InputWrap>
                             <InputWrap>
                                 <DateTimePikcer 
-                                onChange={handleDateChange}
+                                onChange={handleStartDateChange}
                                 selected={startDate}
                                 placeholderText="Presale Start Time"/>
                             </InputWrap>
                             <InputWrap>
                                 <DateTimePikcer 
-                                onChange={handleDateChange}
-                                selected={startDate}
+                                onChange={handleEndDateChange}
+                                selected={endDate}
                                 placeholderText="Presale End Time"/>
                             </InputWrap>
                             <InputWrap>
                                 <DateTimePikcer 
-                                onChange={handleDateChange}
-                                selected={startDate}
+                                onChange={handleLockDateChange}
+                                selected={lockDate}
                                 placeholderText="Liquidity Lockup Time"/>
                             </InputWrap>
 
@@ -190,7 +199,7 @@ const CreateSale: React.FC = () => {
                             </Heading>
                             <StyledList>
                                 <li>
-                                {t('This process is entirely decentralized, we cannot be held reponsible for incorrect entry of information or be held liable for anything related to your use of our platform.')}
+                                {t('This process is entirely decentralized, we cannot be held responsible for incorrect entry of information or be held liable for anything related to your use of our platform.')}
                                 </li>
                                 
                             </StyledList>

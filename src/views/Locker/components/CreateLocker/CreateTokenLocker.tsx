@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Text, Flex, Box, Input, Heading, Button, Radio } from '@pancakeswap/uikit'
 import { Token } from '@pancakeswap/sdk'
 import Select from 'components/Select/Select'
-import { StyledInput, StyledInputStyles } from 'components/Launchpad/StyledControls'
+import { StyledInput, StyledAddressInput } from 'components/Launchpad/StyledControls'
 import useTheme from 'hooks/useTheme'
 import { useToken } from 'hooks/Tokens'
 import useTokenBalance from 'hooks/useTokenBalance'
@@ -50,20 +50,30 @@ const CreateTokenLocker: React.FC = () => {
     const [unlockType, setUnlockType] = useState<UnlockType>(UnlockType.LINEAR)
     const [ownerType, setOwnerType] = useState<OwnerType>(OwnerType.ME)
     const [startDate, setStartDate] = useState<Date|null>(null)
+    const [endDate, setEndDate] = useState<Date|null>(null)
+    const [amount, setAmount] = useState<string|null>(null)
 
+    const [otherAddress, setOtherAddress] = useState<string>('')
     const [tokenAddress, setTokenAddress] = useState<string>('')
     const searchToken: Token = useToken(tokenAddress)
     const {balance} = useTokenBalance(searchToken ? searchToken.address : null)
 
-    const handleInputAddress = useCallback((event) => {
-      const input = event.target.value
-      const checksummedInput = isAddress(input)
-      setTokenAddress(checksummedInput || input)
-    }, [])
-
-    const handleDateChange = (date: Date, event) => {
+    const handleStartDateChange = (date: Date, event) => {
         setStartDate(date)
-        console.log('date', date)
+    }
+
+    const handleEndDateChange = (date: Date, event) => {
+        setEndDate(date)
+    }
+
+    const onPercentClick = (percent: number) => {
+        if (balance && searchToken) {
+            if (percent === 100) {
+                setAmount(getFullDisplayBalance(balance, searchToken.decimals, searchToken.decimals))
+            } else {
+                setAmount(getFullDisplayBalance(balance.multipliedBy(percent).div(100), searchToken.decimals, searchToken.decimals))
+            }
+        }
     }
 
     return (
@@ -73,10 +83,10 @@ const CreateTokenLocker: React.FC = () => {
                     <Flex flexDirection={["column", "column", "column", "row"]} maxWidth="960px" width="100%">
                         <Flex flexDirection="column" flex="1" order={[1, 1, 1, 0]}>
                             <InputWrap>
-                                <StyledInput 
+                                <StyledAddressInput 
                                     value={tokenAddress} 
                                     placeholder={t('Enter Token Address')}
-                                    onChange={handleInputAddress} />
+                                    onUserInput={(value) => setTokenAddress(value)} />
                             </InputWrap>
                             { searchToken && (
                                 <>
@@ -114,7 +124,7 @@ const CreateTokenLocker: React.FC = () => {
                             { unlockType === UnlockType.LINEAR && (
                                 <InputWrap>
                                     <DateTimePikcer 
-                                    onChange={handleDateChange}
+                                    onChange={handleStartDateChange}
                                     selected={startDate}
                                     placeholderText="Unlock Start Time"/>
                                 </InputWrap>
@@ -122,12 +132,26 @@ const CreateTokenLocker: React.FC = () => {
                             
                             <InputWrap>
                                 <DateTimePikcer 
-                                onChange={handleDateChange}
-                                selected={startDate}
+                                onChange={handleEndDateChange}
+                                selected={endDate}
                                 placeholderText="Full Unlock Time"/>
                             </InputWrap>
                             <InputWrap>
-                                <StyledInput placeholder={t('Enter amount of token to lock')} />
+                                <StyledInput placeholder={t('Enter amount of token to lock')} value={amount}/>
+                                <Flex justifyContent="space-between" mt="4px">
+                                    <Button disabled={!balance || !searchToken} scale="sm" variant="tertiary" onClick={() => onPercentClick(25)}>
+                                        25%
+                                    </Button>
+                                    <Button disabled={!balance || !searchToken} scale="sm" variant="tertiary" onClick={() => onPercentClick(50)}>
+                                        50%
+                                    </Button>
+                                    <Button disabled={!balance || !searchToken} scale="sm" variant="tertiary" onClick={() => onPercentClick(75)}>
+                                        75%
+                                    </Button>
+                                    <Button disabled={!balance || !searchToken} scale="sm" variant="tertiary" onClick={() => onPercentClick(100)}>
+                                        MAX
+                                    </Button>
+                                </Flex>
                             </InputWrap>
                             <InputWrap>
                                 <Flex flexDirection="column">
@@ -147,7 +171,10 @@ const CreateTokenLocker: React.FC = () => {
                                 </Flex>
                                 { ownerType === OwnerType.OTHER && (
                                     <InputWrap>
-                                        <StyledInput placeholder={t('Enter owner wallet address')} />
+                                        <StyledAddressInput 
+                                            value={otherAddress} 
+                                            placeholder={t('Enter owner wallet address')}
+                                            onUserInput={(value) => setOtherAddress(value)} />
                                     </InputWrap>
                                 )}
                                 

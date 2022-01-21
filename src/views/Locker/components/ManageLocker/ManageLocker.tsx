@@ -7,23 +7,11 @@ import tokens from 'config/constants/tokens'
 import { useTranslation } from 'contexts/Localization'
 import BoxButtonMenu from 'components/BoxButtonMenu'
 import { StyledInput } from 'components/Launchpad/StyledControls'
-import PageHeader from 'components/PageHeader'
 import FlexLayout from 'components/Layout/Flex'
 import useDebounce from 'hooks/useDebounce'
 import { isAddress } from 'utils'
 import LockerCard from './LockerCard'
 
-const PageWrapper = styled(Flex)`
-`
-
-const StyledPageBody = styled(Flex)`
-    filter: ${({ theme }) => theme.card.dropShadow};
-    border-radius: ${({ theme }) => theme.radii.default};
-    padding: 24px;
-    background: white;
-    width: 100%;
-    z-index: 1;
-`
 
 const SearchInput = styled(StyledInput)`
     width: min(100%, 500px);
@@ -189,39 +177,33 @@ const ManageLocker: React.FC = () => {
 
     return (
         <>
-            {/* <PageHeader>
-            </PageHeader> */}
+            <Flex flexDirection="column" flex="1"margin={["12px", "12px", "12px", "24px"]}>
+                <Flex flexDirection="column" alignItems="center">
+                    <Heading color='primary' scale="xl" textAlign="center">
+                        {2}
+                    </Heading>
+                    <Text color='secondary' textAlign="center">
+                        {t('lockers created')}
+                    </Text>
+                </Flex>
 
-            <PageWrapper>
-                <StyledPageBody flexDirection="column" flex="1"margin={["12px", "12px", "12px", "24px"]}>
-                    <Flex flexDirection="column" alignItems="center">
-                        <Heading color='primary' scale="xl" textAlign="center">
-                            {2}
-                        </Heading>
-                        <Text color='secondary' textAlign="center">
-                            {t('lockers created')}
-                        </Text>
-                    </Flex>
+                <BoxButtonMenu onItemClick={onMenuClick} items={menuItems} mobileItems={menuItemsOnMobile}/>
 
-                    <BoxButtonMenu onItemClick={onMenuClick} items={menuItems} mobileItems={menuItemsOnMobile}/>
+                <Flex justifyContent="center" mb="24px">
+                    <SearchInput
+                        id="token-search-input"
+                        placeholder={t('Search by Token Address, name or symbol')}
+                        scale="lg"
+                        autoComplete="off"
+                        value={searchQuery}
+                        ref={inputRef as RefObject<HTMLInputElement>}
+                        onChange={handleInput}
+                    />
+                </Flex>
 
-                    <Flex justifyContent="center" mb="24px">
-                        <SearchInput
-                            id="token-search-input"
-                            placeholder={t('Search by Token Address, name or symbol')}
-                            scale="lg"
-                            autoComplete="off"
-                            value={searchQuery}
-                            ref={inputRef as RefObject<HTMLInputElement>}
-                            onChange={handleInput}
-                        />
-                    </Flex>
-
-                    {renderContent()}
-                    
-                </StyledPageBody>
+                {renderContent()}
                 
-            </PageWrapper>
+            </Flex>
         </>
     )
 }

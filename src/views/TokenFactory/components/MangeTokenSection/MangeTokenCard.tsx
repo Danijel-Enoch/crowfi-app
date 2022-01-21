@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { Card, Flex, Text, Button, LinkExternal } from '@pancakeswap/uikit'

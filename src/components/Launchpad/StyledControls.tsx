@@ -3,6 +3,21 @@ import { Heading, Flex, Text, Input, Card } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { escapeRegExp } from 'utils'
+import useENS from 'hooks/ENS/useENS'
+
+
+export const PageBGWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-image: url(/images/bg2.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: -1;
+`
 
 export const StyledText = styled.textarea<{hasError?: boolean}>`
   border-color: ${({ hasError, theme }) => (hasError ? theme.colors.failure : theme.colors.secondary)};
@@ -21,8 +36,8 @@ export const StyledText = styled.textarea<{hasError?: boolean}>`
   }
 `
 
-export const StyledInput = styled(Input)`
-    border-color: ${({ theme }) => theme.colors.secondary};
+export const StyledInput = styled(Input)<{hasError?: boolean}>`
+    border-color: ${({ hasError, theme }) => (hasError ? theme.colors.failure : theme.colors.secondary)};
     font-size: 14px;
     
     color: ${({ theme }) => theme.colors.primary}
@@ -158,7 +173,7 @@ export const StyledAddressInput = React.memo(function InnerInput({
   transform,
   ...rest
 }: {
-  value: string | number
+  value: string
   onUserInput: (input: string) => void
   title?: string
   error?: boolean
@@ -173,12 +188,16 @@ export const StyledAddressInput = React.memo(function InnerInput({
   const enforcer = (nextUserInput: string) => {
     const text = transform ? transform(nextUserInput) : nextUserInput
     if (text === '' || !validateReg || validateReg.test(escapeRegExp(text))) {
-      onUserInput(text)
+      const withoutSpaces = text.replace(/\s+/g, '')
+      onUserInput(withoutSpaces)
     }
     // if (nextUserInput === '' || validateReg_.test(escapeRegExp(nextUserInput))) {
     //   onUserInput(nextUserInput)
     // }
   }
+
+  const { address, loading, name } = useENS(value)
+  const error = Boolean(value.length > 0 && !loading && !address)
 
   const { t } = useTranslation()
 
@@ -196,9 +215,10 @@ export const StyledAddressInput = React.memo(function InnerInput({
       title={title}
       autoComplete="off"
       autoCorrect="off"
+      hasError={error}
       // text-specific options
       type="text"
-      pattern="^(0x[a-fA-F0-9]{40})$"
+      // pattern="^(0x[a-fA-F0-9]{40})$"
       placeholder={placeholder}
       spellCheck="false"
     />

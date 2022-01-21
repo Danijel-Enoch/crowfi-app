@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { Route, useRouteMatch } from 'react-router-dom'
 import styled from 'styled-components'
-import { Flex, Heading, Text } from '@pancakeswap/uikit'
+import { Flex, Heading, SubMenuItems, Text, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
-import { PageBGWrapper } from 'components/Launchpad/StyledControls'
 import PageHeader from 'components/PageHeader'
+import { PageBGWrapper } from 'components/Launchpad/StyledControls'
 import { TabToggle2, TabToggleGroup2 } from 'components/TabToggle2'
-import ManageLocker from './components/ManageLocker/ManageLocker'
-import CreateLocker from './components/CreateLocker/CreateLocker'
+import ViewSales from './components/ViewSales/ViewSales'
+import CreateOrManageSale from './components/CreateSale/CreateOrManageSale'
 
 const PageWrapper = styled(Flex)`
 `
@@ -21,21 +21,22 @@ const StyledPageBody = styled(Flex)`
 `
 
 
+
 export enum ViewMode {
     CREATE = 'CREATE',
     VIEW = 'VIEW',
 }
 
-const Locker: React.FC = () => {
+const Sales: React.FC = () => {
 
     const { t } = useTranslation()
     const [ viewMode, setViewMode ] = useState(ViewMode.VIEW)
     
     const renderContent = () => {
         if (viewMode === ViewMode.CREATE) {
-            return <CreateLocker />
+            return <CreateOrManageSale onDisagree={() => setViewMode(ViewMode.VIEW)}/>
         }
-        return <ManageLocker />
+        return <ViewSales/>
     }
 
     return (
@@ -43,7 +44,7 @@ const Locker: React.FC = () => {
             <PageBGWrapper />
             <PageHeader>
                 <Heading as="h1" scale="xl" color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
-                {t('Lockers')}
+                {t('Sales')}
                 </Heading>
                 <Text color="white" style={{textShadow:"1px 2px rgba(255,255,255,0.2)"}}>
                 {t('Use Locker to lock your tokens or liquidity and earn grater trust within your community!')}
@@ -54,10 +55,10 @@ const Locker: React.FC = () => {
                 <StyledPageBody flexDirection="column" flex="1"margin={["12px", "12px", "12px", "24px"]}>
                     <TabToggleGroup2>
                         <TabToggle2 isActive={viewMode === ViewMode.VIEW} onClick={() => setViewMode(ViewMode.VIEW)}>
-                            <Text>{t('View Lockers')}</Text>
+                            <Text>{t('Sales')}</Text>
                         </TabToggle2>
                         <TabToggle2 isActive={viewMode === ViewMode.CREATE} onClick={() => setViewMode(ViewMode.CREATE)}>
-                            <Text>{t('Create Locker')}</Text>
+                            <Text>{t('Create or Manage')}</Text>
                         </TabToggle2>
                     </TabToggleGroup2>
 
@@ -69,4 +70,4 @@ const Locker: React.FC = () => {
     )
 }
 
-export default Locker
+export default Sales

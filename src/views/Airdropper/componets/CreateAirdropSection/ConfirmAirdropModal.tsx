@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import { Token } from '@pancakeswap/sdk'
-import { InjectedModalProps, Text } from '@pancakeswap/uikit'
+import { InjectedModalProps } from '@pancakeswap/uikit'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'contexts/Localization'
 import { getFullDisplayBalance } from 'utils/formatBalance'

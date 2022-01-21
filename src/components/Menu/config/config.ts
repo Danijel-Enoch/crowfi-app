@@ -61,22 +61,22 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         label: t('Launchpad'),
         href: '/launchpad',
       },
-      {
-        label: t('Launches'),
-        href: '/sales',
-      },
-      {
-        label: t('Token Factory'),
-        href: '/token-factory',
-      },
-      {
-        label: t('Airdropper'),
-        href: '/airdropper',
-      },
-      {
-        label: t('Lockers'),
-        href: '/lockers',
-      },
+      // {
+      //   label: t('Launches'),
+      //   href: '/sales',
+      // },
+      // {
+      //   label: t('Token Factory'),
+      //   href: '/token-factory',
+      // },
+      // {
+      //   label: t('Airdropper'),
+      //   href: '/airdropper',
+      // },
+      // {
+      //   label: t('Lockers'),
+      //   href: '/lockers',
+      // },
       {
         type: DropdownMenuItemType.DIVIDER,
       },

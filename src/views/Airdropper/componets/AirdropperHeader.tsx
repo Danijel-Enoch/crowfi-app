@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { Flex, Heading, Text, Button } from '@pancakeswap/uikit'
+import React from 'react'
+import { Flex, Heading, Text } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 
 export interface AirdropperHeaderProps {

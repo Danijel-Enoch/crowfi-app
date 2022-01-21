@@ -41,11 +41,11 @@ const AddLiquidity = lazy(() => import('./views/AddLiquidity'))
 const Liquidity = lazy(() => import('./views/Pool'))
 const PoolFinder = lazy(() => import('./views/PoolFinder'))
 const RemoveLiquidity = lazy(() => import('./views/RemoveLiquidity'))
-const LaunchpadDashboard = lazy(() => import('./views/LaunchpadDashboard'))
 const Launchpad = lazy(() => import('./views/Launchpad'))
-const TokenFactory = lazy(() => import('./views/TokenFactory'))
-const Airdropper = lazy(() => import('./views/Airdropper'))
-const Locker = lazy(() => import('./views/Locker'))
+// const Sales = lazy(() => import('./views/Sales'))
+// const TokenFactory = lazy(() => import('./views/TokenFactory'))
+// const Airdropper = lazy(() => import('./views/Airdropper'))
+// const Locker = lazy(() => import('./views/Locker'))
 
 
 // This config is required for number formatting
@@ -99,9 +99,9 @@ const App: React.FC = () => {
               <Pools />
             </Route>
             <Route path="/launchpad">
-              <LaunchpadDashboard />
+              <Launchpad />
             </Route>
-            <Route path="/sales">
+            {/* <Route path="/sales">
               <Launchpad />
             </Route>
             <Route path="/token-factory">
@@ -112,7 +112,7 @@ const App: React.FC = () => {
             </Route>
             <Route path="/lockers">
               <Locker />
-            </Route>
+            </Route> */}
             {/* Using this format because these components use routes injected props. We need to rework them with hooks */}
             <Route exact strict path="/swap" component={Swap} />
             <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
