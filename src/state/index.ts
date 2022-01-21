@@ -14,6 +14,7 @@ import mint from './mint/reducer'
 import lists from './lists/reducer'
 import burn from './burn/reducer'
 import multicall from './multicall/reducer'
+import infoReducer from './info'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'profile']
 
@@ -25,6 +26,7 @@ const store = configureStore({
     privatesales:privatesalesReducer,
     pools: poolsReducer,
     voting: votingReducer,
+    info: infoReducer,
 
     // Exchange
     user,

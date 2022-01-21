@@ -41,6 +41,7 @@ const AddLiquidity = lazy(() => import('./views/AddLiquidity'))
 const Liquidity = lazy(() => import('./views/Pool'))
 const PoolFinder = lazy(() => import('./views/PoolFinder'))
 const RemoveLiquidity = lazy(() => import('./views/RemoveLiquidity'))
+const Info = lazy(() => import('./views/Info'))
 
 // This config is required for number formatting
 BigNumber.config({
@@ -91,6 +92,9 @@ const App: React.FC = () => {
             </Route>
             <Route path="/pools">
               <Pools />
+            </Route>
+            <Route path="/info">
+              <Info />
             </Route>
 
             {/* Using this format because these components use routes injected props. We need to rework them with hooks */}
