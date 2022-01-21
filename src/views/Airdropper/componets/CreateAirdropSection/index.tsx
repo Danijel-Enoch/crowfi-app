@@ -2,21 +2,24 @@ import React, { useCallback, useMemo, useState, lazy } from 'react'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
-import { Text, Flex, Heading, Button } from '@pancakeswap/uikit'
+import { Text, Flex, Heading, Button, useModal } from '@pancakeswap/uikit'
 import { JSBI, Token, TokenAmount } from '@pancakeswap/sdk'
 import {StyledAddressInput, StyledTextarea, StyledInputLabel} from 'components/Launchpad/StyledControls'
+import ConnectWalletButton from 'components/ConnectWalletButton'
+import Loading from 'components/Loading'
+import Dots from 'components/Loader/Dots'
 import useTheme from 'hooks/useTheme'
 import { useToken } from 'hooks/Tokens'
 import useTokenBalance from 'hooks/useTokenBalance'
 import useToast from 'hooks/useToast'
 import { escapeRegExp } from 'utils'
 import { getFullDisplayBalance } from 'utils/formatBalance'
-import Loading from 'components/Loading'
 import { getAirdropperAddress } from 'utils/addressHelpers'
 import BigNumber from 'bignumber.js'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useAirdropTokeen } from 'views/Airdropper/hooks/useAirdrop'
 import { BIG_TEN } from 'utils/bigNumber'
+import ConfirmAirdropModal from './ConfirmAirdropModal'
 
 const EasyMde = lazy(() => import('components/EasyMde'))
 const InputWrap = styled.div`
@@ -60,6 +63,12 @@ const CreateAirdopSection: React.FC = () => {
     const [pendingTx, setPendingTx] = useState(false)
     const [tokenAddress, setTokenAddress] = useState<string>('')
     const [airdropText, setAirdropText] = useState<string>('')
+    const [errorMessage, setErrorMessage] = useState<string|undefined>(undefined)
+
+    const [txHash, setTxHash] = useState<string|undefined>(undefined)
+    const [receipts, setReceipts] = useState(null)
+    const [amounts, setAmounts] = useState(null)
+    const [totalAirdropAmount, setTotalAirdropAmount] = useState(0)
 
     const searchToken: Token = useToken(tokenAddress)
     const {balance} = useTokenBalance(searchToken ? searchToken.address : null)
@@ -100,24 +109,55 @@ const CreateAirdopSection: React.FC = () => {
                 }
             }, {receipts: [], amounts: []})
 
-            await onAirdropToken(searchToken.address, pairs.receipts, pairs.amounts)
-            toastSuccess(t('Success'))
+            const hash = await onAirdropToken(searchToken.address, pairs.receipts, pairs.amounts)
+            setTxHash(hash)
         } catch (e) {
-          toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+            setErrorMessage(t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
           console.error(e)
         } finally {
           setPendingTx(false)
         }
-      }, [onAirdropToken, t, toastError, toastSuccess, airdropText, searchToken])
+      }, [onAirdropToken, t, airdropText, searchToken])
+
+    const [onPresentConfirmModal] = useModal(
+        <ConfirmAirdropModal
+            token={searchToken}
+            receipts={receipts}
+            amounts={amounts}
+            onConfirm={handleAirdrop}
+            txHash={txHash}
+            attemptingTxn={pendingTx}
+        />,
+        true,
+        true,
+        'confirmAirdopModal'
+    )
+
+    const showConfirm = useCallback(async() => {
+        setErrorMessage(undefined)
+        const pairs = airdropText.split("\n").map((line) => {
+            const elems = line.split(",");
+            return {receipt: elems[0], amount: new BigNumber(parseInt(elems.length > 1 ? elems[1] : '0')).multipliedBy(BIG_TEN.pow(searchToken.decimals)).toString()}
+        }).reduce((accum, pair) => {
+            return {
+                receipts: [...accum.receipts, pair.receipt],
+                amounts: [...accum.amounts, pair.amount]
+            }
+        }, {receipts: [], amounts: []})
+        setReceipts(pairs.receipts)
+        setAmounts(pairs.amounts)
+
+        onPresentConfirmModal()
+    }, [airdropText, onPresentConfirmModal, searchToken])
 
     const renderApprovalOrCreateButton = () => {
         return approval === ApprovalState.APPROVED ? (
           <Button
             disabled={pendingTx || !tokensAirdroppingNumber || !tokensAirdroppingNumber.isFinite() || tokensAirdroppingNumber.eq(0) || tokensAirdroppingNumber.gt(balance)}
-            onClick={handleAirdrop}
+            onClick={showConfirm}
             width="100%"
           >
-            {pendingTx ? t('Processing...') : t('Create')}
+            {pendingTx ? (<Dots>{t('Processing...')}</Dots>)  : t('Create')}
           </Button>
         ) : (
           <Button mt="8px" width="100%" disabled={approval === ApprovalState.PENDING || approval === ApprovalState.UNKNOWN} onClick={approveCallback}>
@@ -183,7 +223,7 @@ const CreateAirdopSection: React.FC = () => {
                             </Flex>
 
                             <Flex flexDirection="row" justifyContent="center" mt="12px">
-                                {renderApprovalOrCreateButton()}
+                            {!account ? <ConnectWalletButton mt="8px" width="100%" /> : renderApprovalOrCreateButton()}
                             </Flex>
                         </Flex>
                         <Flex flexDirection="column" order={[0, 0, 0, 1]} margin={["0 0px 24px 0px", "0px 0px 24px 0px", "0px 0px 24px 0px", "0px 0px 0px 48px"]} maxWidth={["100%", "100%", "100%", "50%"]}>

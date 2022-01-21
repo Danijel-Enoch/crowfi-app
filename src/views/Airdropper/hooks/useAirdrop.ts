@@ -18,7 +18,7 @@ export const useAirdropTokeen = () => {
 
       const tx = await callWithEstimateGas(airdropContract, 'airdropToken', args, { gasPrice})
       const receipt = await tx.wait()
-      return receipt.status
+      return receipt.transactionHash
     },
     [airdropContract],
   )

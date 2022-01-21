@@ -5,6 +5,7 @@ import { Text, Flex, Box, Input, Heading, Button } from '@pancakeswap/uikit'
 import { ETHER } from '@pancakeswap/sdk'
 import { useTokenFactoryDeployeFee, useLiquidityTokenFactoryDeployeFee } from 'state/tokenFactory/hooks'
 import Select from 'components/Select/Select'
+import Dots from 'components/Loader/Dots'
 import {StyledInput, StyledNumericalInput, StyledTextInput, StyledIntegerInput, StyledAddressInput} from 'components/Launchpad/StyledControls'
 import useTheme from 'hooks/useTheme'
 import BigNumber from 'bignumber.js'
@@ -43,7 +44,7 @@ const CreateTokenSection: React.FC = () => {
 
     const { t } = useTranslation()
     const { theme } = useTheme()
-    const { toastError } = useToast()
+    const { toastError, toastSuccess } = useToast()
     const [tokenType, seteTokenType] = useState(TokenType.STANDARD)
     const [pendingTx, setPendingTx] = useState(false)
     const [tokenName, setTokenName] = useState('')
@@ -105,6 +106,7 @@ const CreateTokenSection: React.FC = () => {
           } else if (tokenType === TokenType.LIQUIDITY) {
             await onCreateLiquiditytoken(liquidityDeployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).toString(), tokenDecimals, txFee, lpFee, dexFee, validatedDevAddress)
           }
+          toastSuccess(t('Success'), t('Your token has been created successfully!'))
           
         //   dispatch(fetchPrivateSalesUserDataAsync({ account, types: [sale.type] }))
         } catch (e) {
@@ -113,7 +115,7 @@ const CreateTokenSection: React.FC = () => {
         } finally {
           setPendingTx(false)
         }
-      }, [onCreateStandardToken, onCreateLiquiditytoken, deployFee, liquidityDeployFee, tokenName, tokenSymbol, tokenTotalSupply, tokenDecimals, t, toastError, tokenType, txFee, lpFee, dexFee, validatedDevAddress])
+      }, [onCreateStandardToken, onCreateLiquiditytoken, deployFee, liquidityDeployFee, tokenName, tokenSymbol, tokenTotalSupply, tokenDecimals, t, toastError, toastSuccess, tokenType, txFee, lpFee, dexFee, validatedDevAddress])
 
     return (
         <>
@@ -167,7 +169,9 @@ const CreateTokenSection: React.FC = () => {
 
                             <Flex flexDirection="row" justifyContent="center" mt="12px">
                                 <Button color="primary" disabled={pendingTx || isInputInvalid} onClick={handleCreate}>
-                                    {t('Create')}
+                                    {pendingTx ? (
+                                        <Dots>{t('Processing')}</Dots>
+                                    ): t('Create')}
                                 </Button>
                             </Flex>
                         </Flex>
