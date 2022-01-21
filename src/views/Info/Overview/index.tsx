@@ -105,8 +105,8 @@ const Overview: React.FC = () => {
 
   return (
     <Page2>
-      <Heading scale="lg" mb="16px" id="info-overview-title" color="white">
-        {t('PancakeSwap Info & Analytics')}
+      <Heading scale="lg" mb="16px" id="info-overview-title" color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
+        {t('CrowFi Info & Analytics')}
       </Heading>
       <ChartCardsContainer>
         <Card>
@@ -150,15 +150,15 @@ const Overview: React.FC = () => {
           </Box>
         </Card>
       </ChartCardsContainer>
-      <Heading scale="lg" mt="40px" mb="16px">
+      <Heading scale="lg" mt="40px" mb="16px" color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
         {t('Top Tokens')}
       </Heading>
       <TokenTable tokenDatas={formattedTokens} />
-      <Heading scale="lg" mt="40px" mb="16px">
+      <Heading scale="lg" mt="40px" mb="16px" color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
         {t('Top Pools')}
       </Heading>
       <PoolTable poolDatas={poolDatas} loading={somePoolsAreLoading} />
-      <Heading scale="lg" mt="40px" mb="16px">
+      <Heading scale="lg" mt="40px" mb="16px" color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
         {t('Transactions')}
       </Heading>
       <TransactionTable transactions={transactions} />

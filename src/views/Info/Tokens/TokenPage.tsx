@@ -16,8 +16,9 @@ import {
   Spinner,
   Image,
   useMatchBreakpoints,
+  ChevronRightIcon,
 } from '@pancakeswap/uikit'
-import Page from 'components/Layout/Page'
+import Page2 from 'components/Layout/Page2'
 import { getBscScanLink } from 'utils'
 import truncateHash from 'utils/truncateHash'
 import useCMCLink from 'views/Info/hooks/useCMCLink'
@@ -60,6 +61,17 @@ const StyledCMCLink = styled(UIKitLink)`
     opacity: 0.8;
   }
 `
+
+const TextWithShadow = styled(Text)`
+  color: white;
+  text-shadow: rgba(255, 255, 255, 0.2) 1px 2px;
+`
+
+const TitleWithShadow = styled(Text)`
+  color: white;
+  text-shadow: rgba(255, 255, 255, 0.2) 2px 3px;
+`
+
 const DEFAULT_TIME_WINDOW: Duration = { weeks: 1 }
 
 const TokenPage: React.FC<RouteComponentProps<{ address: string }>> = ({
@@ -108,12 +120,12 @@ const TokenPage: React.FC<RouteComponentProps<{ address: string }>> = ({
   const [watchlistTokens, addWatchlistToken] = useWatchlistTokens()
 
   return (
-    <Page symbol={tokenData?.symbol}>
+    <Page2 symbol={tokenData?.symbol}>
       {tokenData ? (
         !tokenData.exists ? (
           <Card>
             <Box p="16px">
-              <Text>
+              <Text color="white">
                 {t('No pool has been created with this token yet. Create one')}
                 <Link style={{ display: 'inline', marginLeft: '6px' }} to={`/add/${address}`}>
                   {t('here.')}
@@ -125,24 +137,24 @@ const TokenPage: React.FC<RouteComponentProps<{ address: string }>> = ({
           <>
             {/* Stuff on top */}
             <Flex justifyContent="space-between" mb="24px" flexDirection={['column', 'column', 'row']}>
-              <Breadcrumbs mb="32px">
+              <Breadcrumbs mb="32px" separator={<ChevronRightIcon color="white" width="24px" />}>
                 <Link to="/info">
-                  <Text color="primary">{t('Info')}</Text>
+                  <TextWithShadow color="primary">{t('Info')}</TextWithShadow>
                 </Link>
                 <Link to="/info/tokens">
-                  <Text color="primary">{t('Tokens')}</Text>
+                  <TextWithShadow color="primary">{t('Tokens')}</TextWithShadow>
                 </Link>
                 <Flex>
-                  <Text mr="8px">{tokenData.symbol}</Text>
-                  <Text>{`(${truncateHash(address)})`}</Text>
+                  <TextWithShadow mr="8px">{tokenData.symbol}</TextWithShadow>
+                  <TextWithShadow>{`(${truncateHash(address)})`}</TextWithShadow>
                 </Flex>
               </Breadcrumbs>
               <Flex justifyContent={[null, null, 'flex-end']} mt={['8px', '8px', 0]}>
-                <LinkExternal mr="8px" color="primary" href={getBscScanLink(address, 'address')}>
+                <LinkExternal mr="8px" color="white" href={getBscScanLink(address, 'address')}>
                   {t('View on BscScan')}
                 </LinkExternal>
                 {cmcLink && (
-                  <StyledCMCLink href={cmcLink} rel="noopener noreferrer nofollow" target="_blank">
+                  <StyledCMCLink href={cmcLink} rel="noopener noreferrer nofollow" target="_blank" color="white">
                     <Image src="/images/CMC-logo.svg" height={22} width={22} alt={t('View token on CoinMarketCap')} />
                   </StyledCMCLink>
                 )}
@@ -153,7 +165,7 @@ const TokenPage: React.FC<RouteComponentProps<{ address: string }>> = ({
               <Flex flexDirection="column" mb={['8px', null]}>
                 <Flex alignItems="center">
                   <CurrencyLogo size="32px" address={address} />
-                  <Text
+                  <TextWithShadow
                     ml="12px"
                     bold
                     lineHeight="0.7"
@@ -161,21 +173,21 @@ const TokenPage: React.FC<RouteComponentProps<{ address: string }>> = ({
                     id="info-token-name-title"
                   >
                     {tokenData.name}
-                  </Text>
-                  <Text ml="12px" lineHeight="1" color="textSubtle" fontSize={isXs || isSm ? '14px' : '20px'}>
+                  </TextWithShadow>
+                  <TextWithShadow ml="12px" lineHeight="1" color="textSubtle" fontSize={isXs || isSm ? '14px' : '20px'}>
                     ({tokenData.symbol})
-                  </Text>
+                  </TextWithShadow>
                 </Flex>
                 <Flex mt="8px" ml="46px" alignItems="center">
-                  <Text mr="16px" bold fontSize="24px">
+                  <TextWithShadow mr="16px" bold fontSize="24px">
                     ${formatAmount(tokenData.priceUSD, { notation: 'standard' })}
-                  </Text>
+                  </TextWithShadow>
                   <Percent value={tokenData.priceUSDChange} fontWeight={600} />
                 </Flex>
               </Flex>
               <Flex>
                 <Link to={`/add/${address}`}>
-                  <Button mr="8px" variant="secondary">
+                  <Button mr="8px">
                     {t('Add Liquidity')}
                   </Button>
                 </Link>
@@ -230,13 +242,13 @@ const TokenPage: React.FC<RouteComponentProps<{ address: string }>> = ({
             </ContentLayout>
 
             {/* pools and transaction tables */}
-            <Heading scale="lg" mb="16px" mt="40px">
+            <Heading scale="lg" mb="16px" mt="40px" color="white" style={{textShadow:"2px 3px rgba(0,0,0,0.2)"}}>
               {t('Pools')}
             </Heading>
 
             <PoolTable poolDatas={poolDatas} />
 
-            <Heading scale="lg" mb="16px" mt="40px">
+            <Heading scale="lg" mb="16px" mt="40px" color="white" style={{textShadow:"2px 3px rgba(0,0,0,0.2)"}}>
               {t('Transactions')}
             </Heading>
 
@@ -248,7 +260,7 @@ const TokenPage: React.FC<RouteComponentProps<{ address: string }>> = ({
           <Spinner />
         </Flex>
       )}
-    </Page>
+    </Page2>
   )
 }
 

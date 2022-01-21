@@ -16,9 +16,11 @@ import {
   ButtonMenuItem,
   HelpIcon,
   useTooltip,
+  ChevronRightIcon,
 } from '@pancakeswap/uikit'
 import styled from 'styled-components'
 import Page from 'components/Layout/Page'
+import Page2 from 'components/Layout/Page2'
 import { getBscScanLink } from 'utils'
 import { CurrencyLogo, DoubleCurrencyLogo } from 'views/Info/components/CurrencyLogo'
 import { formatAmount } from 'views/Info/utils/formatInfoNumbers'
@@ -61,6 +63,16 @@ const LockedTokensContainer = styled(Flex)`
   max-width: 280px;
 `
 
+const TextWithShadow = styled(Text)`
+  color: white;
+  text-shadow: rgba(255, 255, 255, 0.2) 1px 2px;
+`
+
+const TitleWithShadow = styled(Text)`
+  color: white;
+  text-shadow: rgba(255, 255, 255, 0.2) 2px 3px;
+`
+
 const PoolPage: React.FC<RouteComponentProps<{ address: string }>> = ({
   match: {
     params: { address: routeAddress },
@@ -89,23 +101,23 @@ const PoolPage: React.FC<RouteComponentProps<{ address: string }>> = ({
   const [watchlistPools, addPoolToWatchlist] = useWatchlistPools()
 
   return (
-    <Page symbol={poolData ? `${poolData?.token0.symbol} / ${poolData?.token1.symbol}` : null}>
+    <Page2 symbol={poolData ? `${poolData?.token0.symbol} / ${poolData?.token1.symbol}` : null}>
       {poolData ? (
         <>
           <Flex justifyContent="space-between" mb="16px" flexDirection={['column', 'column', 'row']}>
-            <Breadcrumbs mb="32px">
+            <Breadcrumbs mb="32px" separator={<ChevronRightIcon color="white" width="24px" />}>
               <Link to="/info">
-                <Text color="primary">{t('Info')}</Text>
+                <TextWithShadow>{t('Info')}</TextWithShadow>
               </Link>
               <Link to="/info/pools">
-                <Text color="primary">{t('Pools')}</Text>
+                <TextWithShadow>{t('Pools')}</TextWithShadow>
               </Link>
               <Flex>
-                <Text mr="8px">{`${poolData.token0.symbol} / ${poolData.token1.symbol}`}</Text>
+                <TextWithShadow mr="8px">{`${poolData.token0.symbol} / ${poolData.token1.symbol}`}</TextWithShadow>
               </Flex>
             </Breadcrumbs>
             <Flex justifyContent={[null, null, 'flex-end']} mt={['8px', '8px', 0]}>
-              <LinkExternal mr="8px" href={getBscScanLink(address, 'address')}>
+              <LinkExternal mr="8px" href={getBscScanLink(address, 'address')} color="white">
                 {t('View on BscScan')}
               </LinkExternal>
               <SaveIcon fill={watchlistPools.includes(address)} onClick={() => addPoolToWatchlist(address)} />
@@ -114,43 +126,43 @@ const PoolPage: React.FC<RouteComponentProps<{ address: string }>> = ({
           <Flex flexDirection="column">
             <Flex alignItems="center" mb={['8px', null]}>
               <DoubleCurrencyLogo address0={poolData.token0.address} address1={poolData.token1.address} size={32} />
-              <Text
+              <TitleWithShadow
                 ml="38px"
                 bold
                 fontSize={isXs || isSm ? '24px' : '40px'}
                 id="info-pool-pair-title"
-              >{`${poolData.token0.symbol} / ${poolData.token1.symbol}`}</Text>
+              >{`${poolData.token0.symbol} / ${poolData.token1.symbol}`}</TitleWithShadow>
             </Flex>
             <Flex justifyContent="space-between" flexDirection={['column', 'column', 'column', 'row']}>
               <Flex flexDirection={['column', 'column', 'row']} mb={['8px', '8px', null]}>
                 <Link to={`/info/token/${poolData.token0.address}`}>
                   <TokenButton>
                     <CurrencyLogo address={poolData.token0.address} size="24px" />
-                    <Text fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width="fit-content">
+                    <TextWithShadow fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width="fit-content">
                       {`1 ${poolData.token0.symbol} =  ${formatAmount(poolData.token1Price, {
                         notation: 'standard',
                         displayThreshold: 0.001,
                         tokenPrecision: true,
                       })} ${poolData.token1.symbol}`}
-                    </Text>
+                    </TextWithShadow>
                   </TokenButton>
                 </Link>
                 <Link to={`/info/token/${poolData.token1.address}`}>
                   <TokenButton ml={[null, null, '10px']}>
                     <CurrencyLogo address={poolData.token1.address} size="24px" />
-                    <Text fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width="fit-content">
+                    <TextWithShadow fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width="fit-content">
                       {`1 ${poolData.token1.symbol} =  ${formatAmount(poolData.token0Price, {
                         notation: 'standard',
                         displayThreshold: 0.001,
                         tokenPrecision: true,
                       })} ${poolData.token0.symbol}`}
-                    </Text>
+                    </TextWithShadow>
                   </TokenButton>
                 </Link>
               </Flex>
               <Flex>
                 <Link to={`/add/${poolData.token0.address}/${poolData.token1.address}`}>
-                  <Button mr="8px" variant="secondary">
+                  <Button mr="8px" variant="subtle">
                     {t('Add Liquidity')}
                   </Button>
                 </Link>
@@ -259,7 +271,7 @@ const PoolPage: React.FC<RouteComponentProps<{ address: string }>> = ({
             </Box>
             <ChartCard variant="pool" chartData={chartData} />
           </ContentLayout>
-          <Heading mb="16px" mt="40px" scale="lg">
+          <Heading mb="16px" mt="40px" scale="lg" color="white" style={{textShadow:"2px 3px rgba(0,0,0,0.2)"}}>
             {t('Transactions')}
           </Heading>
           <TransactionTable transactions={transactions} />
@@ -269,7 +281,7 @@ const PoolPage: React.FC<RouteComponentProps<{ address: string }>> = ({
           <Spinner />
         </Flex>
       )}
-    </Page>
+    </Page2>
   )
 }
 

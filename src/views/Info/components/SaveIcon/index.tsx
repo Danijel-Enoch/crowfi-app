@@ -20,7 +20,7 @@ const SaveIcon: React.FC<{ fill: boolean } & HTMLAttributes<HTMLDivElement>> = (
       {fill ? (
         <StarFillIcon stroke={theme.colors.warning} color={theme.colors.warning} />
       ) : (
-        <StarLineIcon stroke={theme.colors.textDisabled} />
+        <StarLineIcon stroke="white" color="white"/>
       )}
     </HoverIcon>
   )

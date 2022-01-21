@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Text, Heading, Card } from '@pancakeswap/uikit'
-import Page from 'components/Layout/Page'
+import Page2 from 'components/Layout/Page2'
 import PoolTable from 'views/Info/components/InfoTables/PoolsTable'
 import { useAllPoolData, usePoolDatas } from 'state/info/hooks'
 import { useWatchlistPools } from 'state/user/hooks'
@@ -21,8 +21,8 @@ const PoolsOverview: React.FC = () => {
   const watchlistPools = usePoolDatas(savedPools)
 
   return (
-    <Page>
-      <Heading scale="lg" mb="16px">
+    <Page2>
+      <Heading scale="lg" mb="16px" color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
         {t('Your Watchlist')}
       </Heading>
       <Card>
@@ -34,11 +34,11 @@ const PoolsOverview: React.FC = () => {
           </Text>
         )}
       </Card>
-      <Heading scale="lg" mt="40px" mb="16px" id="info-pools-title">
+      <Heading scale="lg" mt="40px" mb="16px" id="info-pools-title"  color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
         {t('All Pools')}
       </Heading>
       <PoolTable poolDatas={poolDatas} />
-    </Page>
+    </Page2>
   )
 }
 

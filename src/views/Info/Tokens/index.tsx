@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect } from 'react'
 import { Text, Heading, Card } from '@pancakeswap/uikit'
-import Page from 'components/Layout/Page'
+import Page2 from 'components/Layout/Page2'
 import TokenTable from 'views/Info/components/InfoTables/TokensTable'
 import { useAllTokenData, useTokenDatas } from 'state/info/hooks'
 import { useWatchlistTokens } from 'state/user/hooks'
@@ -25,8 +25,8 @@ const TokensOverview: React.FC = () => {
   const watchListTokens = useTokenDatas(savedTokens)
 
   return (
-    <Page>
-      <Heading scale="lg" mb="16px">
+    <Page2>
+      <Heading scale="lg" mb="16px" color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
         {t('Your Watchlist')}
       </Heading>
       {savedTokens.length > 0 ? (
@@ -39,11 +39,11 @@ const TokensOverview: React.FC = () => {
         </Card>
       )}
       <TopTokenMovers />
-      <Heading scale="lg" mt="40px" mb="16px" id="info-tokens-title">
+      <Heading scale="lg" mt="40px" mb="16px" id="info-tokens-title" color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
         {t('All Tokens')}
       </Heading>
       <TokenTable tokenDatas={formattedTokens} />
-    </Page>
+    </Page2>
   )
 }
 
