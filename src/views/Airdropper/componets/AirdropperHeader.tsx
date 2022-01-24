@@ -18,7 +18,7 @@ const AirdropperHeader: React.FC<AirdropperHeaderProps> = ({tokens, network}) =>
                     {tokens}
                 </Heading>
                 <Text color='secondary' textAlign="center">
-                    {t('tokens airdropped')}
+                    {t('Tokens Airdropped')}
                 </Text>
             </Flex>
         </>

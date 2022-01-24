@@ -5,6 +5,7 @@ import { Flex, Text, LinkExternal } from '@pancakeswap/uikit'
 import { Token } from '@pancakeswap/sdk'
 import { useTranslation } from 'contexts/Localization'
 import { StyledCard } from 'components/Launchpad/StyledControls'
+import { LinkWrapper } from 'views/Launchpad/styled'
 import CardHeading from './CardHeading'
 import Timer from './Timer'
 
@@ -52,6 +53,8 @@ const SaleCard: React.FC<SaleCardProps> = ({token, usdPrice, marketCapUsd, soldU
   const { t } = useTranslation()
 
   return (
+    <LinkWrapper to="/presale/1234">
+
     <StyledCard background="white" borderBackground="rgba(150,150,150,0.1)">
         <CardInnerContainer>
             <CardHeading
@@ -123,6 +126,7 @@ const SaleCard: React.FC<SaleCardProps> = ({token, usdPrice, marketCapUsd, soldU
             
         </CardInnerContainer>
     </StyledCard>
+    </LinkWrapper>
   )
 }
 

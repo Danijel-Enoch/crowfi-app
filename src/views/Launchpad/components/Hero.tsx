@@ -19,7 +19,7 @@ const Hero = () => {
                     {t('Tokens created here will be verified and published on explorer websites.')}
                 </Text>
                 <Flex flexDirection="row" justifyContent="center" mt="12px">
-                    <Button as="a" href="/launchpad/token-factory">
+                    <Button as="a" href="/utilities/token-factory">
                         {t('Create Now')}
                     </Button>
                 </Flex>

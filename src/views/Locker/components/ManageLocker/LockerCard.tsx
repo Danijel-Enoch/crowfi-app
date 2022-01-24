@@ -7,6 +7,7 @@ import { useTranslation } from 'contexts/Localization'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import { StyledCard } from 'components/Launchpad/StyledControls'
 import TokenAddress from 'components/TokenAddress'
+import { LinkWrapper } from 'views/Launchpad/styled'
 import CardHeading from './CardHeading'
 import Timer from './Timer'
 
@@ -30,6 +31,7 @@ const LockerCard: React.FC<LockerCardProps> = ({token, totalSupply, lockedAmount
   const { t } = useTranslation()
 
   return (
+    <LinkWrapper to="/utilities/lockers/123">
     <StyledCard background="white" borderBackground="rgba(150,150,150,0.1)">
         <CardInnerContainer>
             <CardHeading
@@ -74,6 +76,7 @@ const LockerCard: React.FC<LockerCardProps> = ({token, totalSupply, lockedAmount
             
         </CardInnerContainer>
     </StyledCard>
+    </LinkWrapper>
   )
 }
 

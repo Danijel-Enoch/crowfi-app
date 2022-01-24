@@ -6,6 +6,8 @@ import Sales from 'views/Sales'
 import TokenFactory from 'views/TokenFactory'
 import Airdropper from 'views/Airdropper'
 import Locker from 'views/Locker'
+import SalePage from 'views/Sales/components/SalePage/SalePage'
+import LockerPage from 'views/Locker/components/LockerPage/LockerPage'
 import LaunchpadDashboard from './LaunchpadDashboard'
 
 export enum ViewMode {
@@ -18,69 +20,49 @@ const Launchpad: React.FC = () => {
     const { t } = useTranslation()
     const { path, url, isExact } = useRouteMatch()
     const { isMobile } = useMatchBreakpoints()
-    const isSales = useRouteMatch(['/launchpad/sales'])
-    const isTokenFactory = useRouteMatch(['/launchpad/token-factory'])
-    const isAirdropper = useRouteMatch(['/launchpad/airdropper'])
-    const isLocker = useRouteMatch(['/launchpad/lockers'])
+    const isTokenFactory = useRouteMatch(['/utilities/token-factory'])
+    const isAirdropper = useRouteMatch(['/utilities/airdropper'])
+    const isLocker = useRouteMatch(['/utilities/lockers'])
     const mainPath = path
-    const salesPath = `${path}/sales`
     const tokenFactoryPath = `${path}/token-factory`
     const airdropperPath = `${path}/airdropper`
     const lockerPath = `${path}/lockers`
     const menuItems = [
         {
-            label: "Overview",
-            href: mainPath,
-        },
-        {
             label: "Token Factory",
             href: tokenFactoryPath,
         },
         {
-            label: "Airdropper",
-            href: airdropperPath,
-        },
-        {
-            label: "Sales",
-            href: salesPath,
-        },
-        {
             label: "Lockers",
             href: lockerPath,
+        },
+        {
+            label: "Airdropper",
+            href: airdropperPath,
         },
     ]
     const mobileMenuItems = [
         {
-            label: "Overview",
-            href: mainPath,
-        },
-        {
             label: "Token Factory",
             href: tokenFactoryPath,
         },
         {
-            label: "Airdropper",
-            href: airdropperPath,
-        },
-        {
-            label: "Sales",
-            href: salesPath,
-        },
-        {
             label: "Lockers",
             href: lockerPath,
+        },
+        {
+            label: "Airdropper",
+            href: airdropperPath,
         },
     ]
 
     let activeIndex = 0
     if (isTokenFactory) {
+        activeIndex = 0
+    } else if (isLocker) {
         activeIndex = 1
     } else if (isAirdropper) {
         activeIndex = 2
-    } else if (isSales) {
-        activeIndex = 3
-    } else if (isLocker) {
-        activeIndex = 4
     }
 
     return (
@@ -92,18 +74,16 @@ const Launchpad: React.FC = () => {
                 <Route exact path={mainPath}>
                 <LaunchpadDashboard />
                 </Route>
-                <Route path={salesPath}>
-                <Sales />
-                </Route>
                 <Route path={tokenFactoryPath}>
                 <TokenFactory />
                 </Route>
                 <Route path={airdropperPath}>
                 <Airdropper />
                 </Route>
-                <Route path={lockerPath}>
+                <Route exact path={lockerPath}>
                 <Locker />
                 </Route>
+                <Route exact path={['/utilities/lockers/:address']} component={LockerPage} />
             </Flex>
         </>
     )

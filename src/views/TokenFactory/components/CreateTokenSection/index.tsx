@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
-import { Text, Flex, Box, Heading, Button } from '@pancakeswap/uikit'
+import { Text, Flex, Box, Heading, Button, useModal } from '@pancakeswap/uikit'
 import { ETHER } from '@pancakeswap/sdk'
 import { useTokenFactoryDeployeFee, useLiquidityTokenFactoryDeployeFee } from 'state/tokenFactory/hooks'
 import Select from 'components/Select/Select'
@@ -15,6 +15,7 @@ import { escapeRegExp } from 'utils'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import { useCreateLiquidityToken, useCreateStandardToken } from '../../hooks/useCreateToken'
 import { TokenType } from '../../types'
+import SuccessModal from './SuccessModal'
 
 
 const InputWrap = styled.div`
@@ -54,6 +55,7 @@ const CreateTokenSection: React.FC = () => {
     const [lpFee, setLpFee] = useState('')
     const [dexFee, setDexFee] = useState('')
     const [devAddress, setDevAddress] = useState('')
+    const [tokenAddress, setTokenAddress] = useState('')
     const { address:validatedDevAddress, loading: loadingDevAddress } = useENS(devAddress)
     const { onCreateToken: onCreateStandardToken } = useCreateStandardToken()
     const { onCreateToken: onCreateLiquiditytoken } = useCreateLiquidityToken()
@@ -69,6 +71,25 @@ const CreateTokenSection: React.FC = () => {
         console.log('option', option.value)
         seteTokenType(option.value)
     }
+
+    const clearForm = () => {
+        setTokenName('')
+        setTokenSymbol('')
+        setTokenDecimals('')
+        setTokenTotalSupply('')
+        setTokenAddress('')
+        setTxFee('')
+        setLpFee('')
+        setDexFee('')
+        setDevAddress('')
+    }
+    
+    const [onPresentSuccess] = useModal(
+        <SuccessModal tokenAddress={tokenAddress} customOnDismiss={clearForm}/>,
+        false,
+        true,
+        "CreateTokenSuccessModal"
+      )
 
     const noWhitespaceRegex = RegExp(`^[\\d\\w].*[\\d\\w]$`)
 
@@ -101,20 +122,21 @@ const CreateTokenSection: React.FC = () => {
         try {
           setPendingTx(true)
           if (tokenType === TokenType.STANDARD) {
-              await onCreateStandardToken(deployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).toString(), tokenDecimals)
+              const res = await onCreateStandardToken(deployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).toString(), tokenDecimals)
+              setTokenAddress(res)
+              onPresentSuccess()
           } else if (tokenType === TokenType.LIQUIDITY) {
-            await onCreateLiquiditytoken(liquidityDeployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).toString(), tokenDecimals, txFee, lpFee, dexFee, validatedDevAddress)
+            const res = await onCreateLiquiditytoken(liquidityDeployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).toString(), tokenDecimals, txFee, lpFee, dexFee, validatedDevAddress)
+            setTokenAddress(res)
+            onPresentSuccess()
           }
-          toastSuccess(t('Success'), t('Your token has been created successfully!'))
-          
-        //   dispatch(fetchPrivateSalesUserDataAsync({ account, types: [sale.type] }))
         } catch (e) {
           toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
           console.error(e)
         } finally {
           setPendingTx(false)
         }
-      }, [onCreateStandardToken, onCreateLiquiditytoken, deployFee, liquidityDeployFee, tokenName, tokenSymbol, tokenTotalSupply, tokenDecimals, t, toastError, toastSuccess, tokenType, txFee, lpFee, dexFee, validatedDevAddress])
+      }, [onCreateStandardToken, onCreateLiquiditytoken, deployFee, liquidityDeployFee, tokenName, tokenSymbol, tokenTotalSupply, tokenDecimals, t, toastError, tokenType, txFee, lpFee, dexFee, validatedDevAddress, onPresentSuccess])
 
     return (
         <>
@@ -204,7 +226,7 @@ const CreateTokenSection: React.FC = () => {
                                 )
                             }
 
-                            <Text fontSize='12px' color="primary" mt="24px">{t('Deploy fee')}: {getFullDisplayBalance(deployFee, ETHER.decimals)} {ETHER.symbol}</Text>
+                            <Text fontSize='12px' color="secondary" mt="24px">{t('Deploy fee')}: {getFullDisplayBalance(deployFee, ETHER.decimals)} {ETHER.symbol}</Text>
                         </Flex>
                         
                     </Flex>

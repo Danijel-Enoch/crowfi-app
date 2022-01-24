@@ -47,7 +47,7 @@ const Sales: React.FC = () => {
                 {t('Sales')}
                 </Heading>
                 <Text color="white" style={{textShadow:"1px 2px rgba(255,255,255,0.2)"}}>
-                {t('Use Locker to lock your tokens or liquidity and earn grater trust within your community!')}
+                {t('Use Locker to lock your tokens or liquidity and earn greater trust within your community!')}
                 </Text>
             </PageHeader>
             <PageWrapper>

@@ -14,7 +14,7 @@ const PresaleSection = () => {
     return (
         <>
             <Flex flexDirection="column" alignItems="center">
-                <LinkWrapper to="/launchpad/sales">
+                <LinkWrapper to="/utilities/sales">
                     <IconCard {...cardData} mr={[null, null, null, '16px']} mt={['32px', null, null, '0']} style={{flex: 1, height:'fit-content'}} background='rgba(255, 255, 255, 0.7)'>
                         <Flex flexDirection="column" alignItems="center">
                             <Heading color='primary' scale="xl" textAlign="center">

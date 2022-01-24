@@ -42,6 +42,8 @@ const Liquidity = lazy(() => import('./views/Pool'))
 const PoolFinder = lazy(() => import('./views/PoolFinder'))
 const RemoveLiquidity = lazy(() => import('./views/RemoveLiquidity'))
 const Launchpad = lazy(() => import('./views/Launchpad'))
+const Sales = lazy(() => import('./views/Sales'))
+const SalePage = lazy(() => import('./views/Sales/components/SalePage/SalePage'))
 // const Sales = lazy(() => import('./views/Sales'))
 // const TokenFactory = lazy(() => import('./views/TokenFactory'))
 // const Airdropper = lazy(() => import('./views/Airdropper'))
@@ -98,9 +100,13 @@ const App: React.FC = () => {
             <Route path="/pools">
               <Pools />
             </Route>
-            <Route path="/launchpad">
+            <Route path="/utilities">
               <Launchpad />
             </Route>
+            <Route exact path="/presale">
+              <Sales />
+            </Route>
+            <Route exact strict path="/presale/:address" component={SalePage} />
             {/* <Route path="/sales">
               <Launchpad />
             </Route>

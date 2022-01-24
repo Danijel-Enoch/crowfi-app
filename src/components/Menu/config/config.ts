@@ -34,12 +34,22 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         label: t('Pools'),
         href: '/pools',
       },
+      {
+        label: t('Referrals'),
+        href: '/referrals',
+      },
     ],
   },
   {
-    label: t('Referrals'),
-    href: '/referrals',
+    label: t('Presale'),
+    href: '/presale',
     icon: 'Groups',
+    items: []
+  },
+  {
+    label: t('Utilities'),
+    href: '/utilities/token-factory',
+    icon: 'Launchpad',
     items: []
   },
   {
@@ -51,32 +61,9 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     showItemsOnMobile: true,
     items: [
       {
-        label: t('Private Sales'),
+        label: t('Claim'),
         href: '/privatesales',
       },
-      {
-        type: DropdownMenuItemType.DIVIDER,
-      },
-      {
-        label: t('Launchpad'),
-        href: '/launchpad',
-      },
-      // {
-      //   label: t('Launches'),
-      //   href: '/sales',
-      // },
-      // {
-      //   label: t('Token Factory'),
-      //   href: '/token-factory',
-      // },
-      // {
-      //   label: t('Airdropper'),
-      //   href: '/airdropper',
-      // },
-      // {
-      //   label: t('Lockers'),
-      //   href: '/lockers',
-      // },
       {
         type: DropdownMenuItemType.DIVIDER,
       },

@@ -21,7 +21,7 @@ const TokenFactorySection = () => {
                                 {t('20')}
                             </Heading>
                             <Text color='secondary' textAlign="center" mt="12px">
-                                {t('Tokens created')}
+                                {t('Tokens Created')}
                             </Text>
                         </Flex>
                     </IconCard>
@@ -33,7 +33,7 @@ const TokenFactorySection = () => {
                     {t('Token Factory allows anyone to create tokens without any coding experience.')}
                 </Text>
                 <Text color='secondary' textAlign="center" mt="12px">
-                    {t('simple and cheap way, while being 100% decentralized!')}
+                    {t('Simple and cheap way, while being 100% decentralized!')}
                 </Text>
             </Flex>
         </>

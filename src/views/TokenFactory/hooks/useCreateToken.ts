@@ -11,8 +11,8 @@ export const useCreateStandardToken = () => {
 
   const handleCreateToken = useCallback(
     async (feeAmount, tokenName, symbol, supply, decimals) => {
-      const txHash = await createStandardToken(tokenFactory, feeAmount, tokenName, symbol, decimals, supply, ROUTER_ADDRESS, account)
-      console.info(txHash)
+      const contractAddress = await createStandardToken(tokenFactory, feeAmount, tokenName, symbol, decimals, supply, ROUTER_ADDRESS, account)
+      return contractAddress
     },
     [tokenFactory, account],
   )
@@ -27,8 +27,8 @@ export const useCreateLiquidityToken = () => {
 
   const handleCreateToken = useCallback(
     async (feeAmount, tokenName, symbol, supply, decimals, txFee, lpFee, dexFee, devAddress) => {
-      const txHash = await createLiquidityToken(tokenFactory, feeAmount, tokenName, symbol, decimals, supply, txFee, lpFee, dexFee, ROUTER_ADDRESS, devAddress, account)
-      console.info(txHash)
+      const contractAddress = await createLiquidityToken(tokenFactory, feeAmount, tokenName, symbol, decimals, supply, txFee, lpFee, dexFee, ROUTER_ADDRESS, devAddress, account)
+      return contractAddress
     },
     [tokenFactory, account],
   )

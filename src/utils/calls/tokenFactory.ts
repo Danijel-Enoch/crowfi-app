@@ -13,11 +13,24 @@ const options = {
 export const createStandardToken = async (tokenFactory, feeAmount, tokenName, symbol, decimals, supply, routerAddress, tokenOwner) => {
   const gasPrice = getGasPrice()
 
-  const args = [tokenName, symbol, decimals, supply, routerAddress, tokenOwner];
-
   const tx = await callWithEstimateGas(tokenFactory, 'deployNewInstance', [tokenName, symbol, decimals, supply, routerAddress, tokenOwner], { gasPrice}, 1000, feeAmount)
   const receipt = await tx.wait()
-  return receipt.status
+  if (receipt.status === 1) {
+    /* eslint-disable dot-notation */
+    const ev = Array.from(receipt["events"]).filter((v) =>  {
+      return v["event"] === "ContractDeployed"
+    });
+
+    console.log('events', ev)
+
+    if (ev.length > 0) {
+      const resArgs = ev[0]["args"];
+
+      return resArgs['deployed'];
+    }
+    /* eslint-enable dot-notation */
+  }
+  return null
 }
 
 export const createLiquidityToken = async (tokenFactory, feeAmount, tokenName, symbol, decimals, supply, txFee, lpFee, dexFee, routerAddress, feeAddress, tokenOwner) => {
@@ -27,5 +40,20 @@ export const createLiquidityToken = async (tokenFactory, feeAmount, tokenName, s
 
   const tx = await callWithEstimateGas(tokenFactory, 'deployNewInstance', args, { gasPrice}, 1000, feeAmount)
   const receipt = await tx.wait()
-  return receipt.status
+  if (receipt.status === 1) {
+    /* eslint-disable dot-notation */
+    const ev = Array.from(receipt["events"]).filter((v) =>  {
+      return v["event"] === "ContractDeployed"
+    });
+
+    console.log('events', ev)
+
+    if (ev.length > 0) {
+      const resArgs = ev[0]["args"];
+
+      return resArgs['deployed'];
+    }
+    /* eslint-enable dot-notation */
+  }
+  return null
 }

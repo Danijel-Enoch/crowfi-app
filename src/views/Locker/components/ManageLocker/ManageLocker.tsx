@@ -183,7 +183,7 @@ const ManageLocker: React.FC = () => {
                         {2}
                     </Heading>
                     <Text color='secondary' textAlign="center">
-                        {t('lockers created')}
+                        {t('Lockers Created')}
                     </Text>
                 </Flex>
 
