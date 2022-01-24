@@ -140,7 +140,7 @@ const CreateLiquidityLocker: React.FC = () => {
                                 {t('CrowFi Liquidity Locker:')}
                             </Heading>
                             <Text color="secondary" fontSize="14px" mt="8px">
-                                {t('- Use the CrowFiLiquidity Locker to lock your LP tokens to show your investors proof of locked liquidity!')}
+                                {t('- Use the CrowFi Liquidity Locker to lock your LP tokens to show your investors proof of locked liquidity!')}
                             </Text>
                             <Text color="secondary" fontSize="14px" mt="4px">
                                 {t('- Token Locker Fees: 0% amount of tokens to be locked and 0 CRO')}

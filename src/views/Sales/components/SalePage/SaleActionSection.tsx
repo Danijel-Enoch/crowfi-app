@@ -26,15 +26,15 @@ const SaleActionSection: React.FC = () => {
                     <Progress primaryStep={70} />
                     <Flex justifyContent="space-between">
                         <Text fontSize="12px">
-                            15 BNB
+                            15 CRO
                         </Text>
                         <Text fontSize="12px">
-                            20 BNB
+                            20 CRO
                         </Text>
                     </Flex>
                 </Flex>
                 <Text fontSize="14px" fontStyle="bold" mt="8px">
-                    {t('Amount (max: %amount% %currency%)', {amount: 2, currency:'BNB'})}
+                    {t('Amount (max: %amount% %currency%)', {amount: 2, currency:'CRO'})}
                 </Text>
                 <Flex position="relative">
                     <StyledNumericalInput
