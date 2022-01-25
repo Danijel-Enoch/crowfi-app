@@ -1,9 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react'
+import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
-import { Text, Flex, Box, Heading, Button, useModal } from '@pancakeswap/uikit'
+import { Text, Flex, Box, Heading, Button, useModal, Skeleton } from '@pancakeswap/uikit'
 import { ETHER } from '@pancakeswap/sdk'
+import { useAppDispatch } from 'state'
 import { useTokenFactoryDeployeFee, useLiquidityTokenFactoryDeployeFee } from 'state/tokenFactory/hooks'
+import { fetchTokenFactoryPublicDataAsync, fetchTokenFactoryUserDataAsync } from 'state/tokenFactory'
 import Select from 'components/Select/Select'
 import Dots from 'components/Loader/Dots'
 import { StyledNumericalInput, StyledTextInput, StyledIntegerInput, StyledAddressInput} from 'components/Launchpad/StyledControls'
@@ -12,6 +15,7 @@ import BigNumber from 'bignumber.js'
 import useToast from 'hooks/useToast'
 import useENS from 'hooks/ENS/useENS'
 import { escapeRegExp } from 'utils'
+import { BIG_TEN } from 'utils/bigNumber'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import { useCreateLiquidityToken, useCreateStandardToken } from '../../hooks/useCreateToken'
 import { TokenType } from '../../types'
@@ -45,6 +49,8 @@ const CreateTokenSection: React.FC = () => {
     const { t } = useTranslation()
     const { theme } = useTheme()
     const { toastError, toastSuccess } = useToast()
+    const dispatch = useAppDispatch()
+    const { account } = useWeb3React()
     const [tokenType, seteTokenType] = useState(TokenType.STANDARD)
     const [pendingTx, setPendingTx] = useState(false)
     const [tokenName, setTokenName] = useState('')
@@ -70,6 +76,30 @@ const CreateTokenSection: React.FC = () => {
     const handleTokenTypeChange = (option) =>  {
         console.log('option', option.value)
         seteTokenType(option.value)
+    }
+
+    const renderDeployFee = () => {
+        if (tokenType === TokenType.STANDARD) {
+            if (deployFee) {
+                return (
+                    <Text fontSize='12px' color="secondary">
+                        ${getFullDisplayBalance(deployFee, ETHER.decimals)} ${ETHER.symbol}
+                    </Text>
+                )
+            } 
+
+            return <Skeleton width="100px" height="30px" />
+        }
+
+        if (liquidityDeployFee) {
+            return (
+                <Text fontSize='12px' color="secondary">
+                    ${getFullDisplayBalance(liquidityDeployFee, ETHER.decimals)} ${ETHER.symbol}
+                </Text>
+            )
+        } 
+
+        return <Skeleton width="100px" height="30px" />
     }
 
     const clearForm = () => {
@@ -122,11 +152,15 @@ const CreateTokenSection: React.FC = () => {
         try {
           setPendingTx(true)
           if (tokenType === TokenType.STANDARD) {
-              const res = await onCreateStandardToken(deployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).toString(), tokenDecimals)
+              const res = await onCreateStandardToken(deployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).multipliedBy(BIG_TEN.pow(tokenDecimals)).toString(), tokenDecimals)
               setTokenAddress(res)
+              dispatch(fetchTokenFactoryPublicDataAsync)
+              if (account) {
+                dispatch(fetchTokenFactoryUserDataAsync({account}))
+              }
               onPresentSuccess()
           } else if (tokenType === TokenType.LIQUIDITY) {
-            const res = await onCreateLiquiditytoken(liquidityDeployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).toString(), tokenDecimals, txFee, lpFee, dexFee, validatedDevAddress)
+            const res = await onCreateLiquiditytoken(liquidityDeployFee.toString(), tokenName, tokenSymbol, new BigNumber(tokenTotalSupply).multipliedBy(BIG_TEN.pow(tokenDecimals)).toString(), tokenDecimals, txFee, lpFee, dexFee, validatedDevAddress)
             setTokenAddress(res)
             onPresentSuccess()
           }
@@ -136,7 +170,7 @@ const CreateTokenSection: React.FC = () => {
         } finally {
           setPendingTx(false)
         }
-      }, [onCreateStandardToken, onCreateLiquiditytoken, deployFee, liquidityDeployFee, tokenName, tokenSymbol, tokenTotalSupply, tokenDecimals, t, toastError, tokenType, txFee, lpFee, dexFee, validatedDevAddress, onPresentSuccess])
+      }, [onCreateStandardToken, onCreateLiquiditytoken, deployFee, liquidityDeployFee, tokenName, tokenSymbol, tokenTotalSupply, tokenDecimals, t, toastError, tokenType, txFee, lpFee, dexFee, validatedDevAddress, onPresentSuccess, dispatch, account])
 
     return (
         <>
@@ -189,7 +223,7 @@ const CreateTokenSection: React.FC = () => {
                             )}
 
                             <Flex flexDirection="row" justifyContent="center" mt="12px">
-                                <Button color="primary" disabled={pendingTx || isInputInvalid} onClick={handleCreate}>
+                                <Button color="primary" disabled={!account || pendingTx || isInputInvalid} onClick={handleCreate}>
                                     {pendingTx ? (
                                         <Dots>{t('Processing')}</Dots>
                                     ): t('Create')}
@@ -226,7 +260,10 @@ const CreateTokenSection: React.FC = () => {
                                 )
                             }
 
-                            <Text fontSize='12px' color="secondary" mt="24px">{t('Deploy fee')}: {getFullDisplayBalance(deployFee, ETHER.decimals)} {ETHER.symbol}</Text>
+                            <Flex mt="24px" alignItems="center">
+                                <Text fontSize='12px' color="secondary" mr="12px">{t('Deploy fee')}</Text>
+                                {renderDeployFee()}
+                            </Flex>
                         </Flex>
                         
                     </Flex>

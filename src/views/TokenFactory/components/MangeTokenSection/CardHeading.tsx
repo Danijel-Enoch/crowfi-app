@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import { Tag, Flex, Heading, Text } from '@pancakeswap/uikit'
 import { TokenImage } from 'components/TokenImage'
 import tokens from 'config/constants/tokens'
+import { Token } from '@pancakeswap/sdk'
 
 export interface CardHeadingProps {
-  name: string,
-  symbol: string
+  token?: Token
 }
 
 const Wrapper = styled(Flex)`
@@ -19,14 +19,14 @@ const MultiplierTag = styled(Tag)`
   margin-left: 4px;
 `
 
-const CardHeading: React.FC<CardHeadingProps> = ({ name, symbol }) => {
+const CardHeading: React.FC<CardHeadingProps> = ({ token }) => {
   const crowToken = tokens.crow
   return (
     <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
       <TokenImage token={crowToken} width={64} height={64}/>
       <Flex flexDirection="column" alignItems="flex-end">
-        <Heading mb="4px">{symbol}</Heading>
-        <Text mb="4px">{name}</Text>
+        <Heading mb="4px">{token ? token.symbol : ''}</Heading>
+        <Text mb="4px">{token ? token.name : ''}</Text>
       </Flex>
     </Wrapper>
   )

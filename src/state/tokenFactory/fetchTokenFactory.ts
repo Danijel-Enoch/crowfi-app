@@ -1,57 +1,51 @@
 import BigNumber from 'bignumber.js'
-import SimpleTokenFactoryABI from 'config/abi/crowpadTokenSimpleFactory.json'
-import tokenFactoryABI from 'config/abi/crowpadTokenFactory.json'
-import { getSimpleTokenFactoryAddress, getTokenFactoryAddress } from 'utils/addressHelpers'
-import multicall from 'utils/multicall'
+import { getSimpleTokenFactoryContract, getTokenFactoryContract, getTokenFactoryManagerContract } from 'utils/contractHelpers'
 
 export interface PublicTokenFactoryData {
-    lockTime: number
     deployFee: SerializedBigNumber
     lpDeployFee: SerializedBigNumber
+    totalTokens: SerializedBigNumber
+}
+
+export interface PublicTokenData {
+    address: string
+    type: number
+}
+
+export const fetchTokenFactoryUserData = async (account: string): Promise<PublicTokenData[]> => {
+
+    const contract = getTokenFactoryManagerContract()
+
+    const [tokens, types] = await contract.getAllTokens(account)
+
+    const res = tokens.map((token, index) => {
+        return {
+            address: token, type: types[index]
+        }
+    })
+
+    return res
 }
 
 export const fetchTokenFactoryPublicData = async (): Promise<PublicTokenFactoryData> => {
-    const tokenFactoryAddress = getSimpleTokenFactoryAddress()
 
-    const calls = [
-        {
-          address: tokenFactoryAddress,
-          name: '_lockTime',
-          params: [],
-        },
-        {
-          address: tokenFactoryAddress,
-          name: 'deployFee',
-          params: [],
-        },
-    ]
 
-    const [
-        _lockTime, 
-        _deployFee,
-    ] = await multicall(SimpleTokenFactoryABI, calls)
+    const standardTokenFactory = getSimpleTokenFactoryContract()
+    const _deployFee = await standardTokenFactory.flatFee()
 
-    const lpTokenFactoryAddress = getTokenFactoryAddress()
+    const lpTokenFactory = getTokenFactoryContract()
+    const _lpDeployFee = await lpTokenFactory.flatFee()
 
-    const calls2 = [
-        {
-          address: lpTokenFactoryAddress,
-          name: 'deployFee',
-          params: [],
-        },
-    ]
+    const tokenFactoryManagerContract = getTokenFactoryManagerContract()
+    const _totalTokens = await tokenFactoryManagerContract.totalTokens()
 
-    const [
-        _lpDeployFee,
-    ] = await multicall(tokenFactoryABI, calls2)
-
-    const lockTime = new BigNumber(_lockTime).toNumber()
-    const deployFee = new BigNumber(_deployFee).toJSON()
-    const lpDeployFee = new BigNumber(_lpDeployFee).toJSON()
+    const deployFee = new BigNumber(_deployFee._hex).toJSON()
+    const lpDeployFee = new BigNumber(_lpDeployFee._hex).toJSON()
+    const totalTokens = new BigNumber(_totalTokens._hex).toJSON()
 
     return {
-        lockTime,
         deployFee,
-        lpDeployFee
+        lpDeployFee,
+        totalTokens,
     }
 }

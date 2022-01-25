@@ -48,9 +48,22 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
   },
   {
     label: t('Utilities'),
-    href: '/utilities/token-factory',
+    href: '/token-factory',
     icon: 'Launchpad',
-    items: []
+    items: [
+      {
+        label: t('Token Factory'),
+        href: '/token-factory',
+      },
+      {
+        label: t('Lockers'),
+        href: '/lockers',
+      },
+      {
+        label: t('Airdropper'),
+        href: '/airdropper',
+      },
+    ]
   },
   {
     label: '',

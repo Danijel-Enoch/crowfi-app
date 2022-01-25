@@ -4,7 +4,14 @@ import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { escapeRegExp } from 'utils'
 import useENS from 'hooks/ENS/useENS'
+import { Link } from 'react-router-dom'
 
+export const LinkWrapper = styled(Link)`
+text-decoration: none;
+:hover {
+  cursor: pointer;
+  opacity: 0.7;
+}`
 
 export const PageBGWrapper = styled.div`
   position: absolute;

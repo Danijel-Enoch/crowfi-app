@@ -41,8 +41,11 @@ const AddLiquidity = lazy(() => import('./views/AddLiquidity'))
 const Liquidity = lazy(() => import('./views/Pool'))
 const PoolFinder = lazy(() => import('./views/PoolFinder'))
 const RemoveLiquidity = lazy(() => import('./views/RemoveLiquidity'))
-const Launchpad = lazy(() => import('./views/Launchpad'))
 const Sales = lazy(() => import('./views/Sales'))
+const TokenFactory = lazy(() => import('./views/TokenFactory/TokenFactory'))
+const Locker = lazy(() => import('./views/Locker/Locker'))
+const LockerPage = lazy(() => import('./views/Locker/components/LockerPage/LockerPage'))
+const Airdropper = lazy(() => import('./views/Airdropper/Airdropper'))
 const SalePage = lazy(() => import('./views/Sales/components/SalePage/SalePage'))
 // const Sales = lazy(() => import('./views/Sales'))
 // const TokenFactory = lazy(() => import('./views/TokenFactory'))
@@ -100,13 +103,20 @@ const App: React.FC = () => {
             <Route path="/pools">
               <Pools />
             </Route>
-            <Route path="/utilities">
-              <Launchpad />
-            </Route>
             <Route exact path="/presale">
               <Sales />
             </Route>
             <Route exact strict path="/presale/:address" component={SalePage} />
+            <Route exact path="/token-factory">
+              <TokenFactory />
+            </Route>
+            <Route exact path="/lockers">
+              <Locker />
+            </Route>
+            <Route exact strict path="/lockers/:address" component={LockerPage} />
+            <Route exact path="/airdropper">
+              <Airdropper />
+            </Route>
             {/* <Route path="/sales">
               <Launchpad />
             </Route>

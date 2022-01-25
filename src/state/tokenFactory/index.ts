@@ -1,7 +1,8 @@
 import salesConfig from 'config/constants/privatesales'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { SerializedTokenFactoryState } from 'state/types'
-import { fetchTokenFactoryPublicData, PublicTokenFactoryData } from './fetchTokenFactory'
+import { SerializedTokenFactoryState, TokenFactoryToken } from 'state/types'
+import { fetchTokenFactoryPublicData, fetchTokenFactoryUserData, PublicTokenData, PublicTokenFactoryData } from './fetchTokenFactory'
+import { fetchStandardTokens } from './fetchTokens'
 
   
 const initialState: SerializedTokenFactoryState = {
@@ -15,6 +16,16 @@ async () => {
     const data = await fetchTokenFactoryPublicData()
     return data
 },
+)
+
+export const fetchTokenFactoryUserDataAsync = createAsyncThunk<TokenFactoryToken[], {
+  account: string
+}>(
+    'tokenFactory/fetchTokenFactoryUserDataAsync',
+async ({account}) => {
+    const data = await fetchTokenFactoryUserData(account)
+    return data
+  },
 )
 
 export const tokenFactorySlices = createSlice({
@@ -33,9 +44,13 @@ export const tokenFactorySlices = createSlice({
   
       // Update privatesales with user data
       builder.addCase(fetchTokenFactoryPublicDataAsync.fulfilled, (state, action) => {
-        state.lockTime = action.payload.lockTime
+        state.totalTokens = action.payload.totalTokens
         state.deployFee = action.payload.deployFee
         state.lpDeployFee = action.payload.lpDeployFee
+      })
+
+      builder.addCase(fetchTokenFactoryUserDataAsync.fulfilled, (state, action) => {
+        state.userTokens = action.payload
       })
     },
   })

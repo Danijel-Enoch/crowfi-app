@@ -63,7 +63,7 @@ const TokenFactory: React.FC = () => {
             </PageHeader>
 
             <PageWrapper>
-                <StyledPageBody flexDirection="column" flex="1"margin={["12px", "12px", "12px", "24px"]}>
+                <StyledPageBody flexDirection="column" flex="1" margin={["0px 12px 24px 12px", null, null, "0px 24px 24px 24px"]}>
 
                     <TokenFactoryHeader tokens={4} network="Cronos"/>
 

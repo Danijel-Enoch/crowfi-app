@@ -31,6 +31,7 @@ import {
   getPancakeSquadAddress,
   getSimpleTokenFactoryAddress,
   getTokenFactoryAddress,
+  getTokenFactoryManagerAddress,
   getAirdropperAddress,
 } from 'utils/addressHelpers'
 
@@ -68,8 +69,11 @@ import nftSaleAbi from 'config/abi/nftSale.json'
 import pancakeSquadAbi from 'config/abi/crowfiSquad.json'
 import erc721CollctionAbi from 'config/abi/erc721collection.json'
 import privateSaleAbi from 'config/abi/presale.json'
-import simpleTokenFactory from 'config/abi/crowpadTokenSimpleFactory.json'
-import crowpadTokenFactory from 'config/abi/crowpadTokenFactory.json'
+import tokenFactoryManagerAbi from 'config/abi/tokenFactoryManager.json'
+import standardTokenFactoryAbi from 'config/abi/standardTokenFactory.json'
+import lpTokenFactoryAbi from 'config/abi/lpGeneratorTokenFactory.json'
+import standardTokenAbi from 'config/abi/standardToken.json'
+import lpGeneratorTokenAbi from 'config/abi/liquidityGeneratorToken.json'
 import crowpadAirdropper from 'config/abi/crowpadAirdropper.json'
 import { ERC20_ABI } from 'config/abi/erc20'
 import { ChainLinkOracleContract, FarmAuctionContract, PancakeProfileContract } from './types'
@@ -83,12 +87,23 @@ export const getAirdropperContract = (signer?: ethers.Signer | ethers.providers.
   return getContract(crowpadAirdropper, getAirdropperAddress(), signer)
 }
 
+export const getTokenFactoryManagerContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(tokenFactoryManagerAbi, getTokenFactoryManagerAddress(), signer)
+}
+
 export const getSimpleTokenFactoryContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
-  return getContract(simpleTokenFactory, getSimpleTokenFactoryAddress(), signer)
+  return getContract(standardTokenFactoryAbi, getSimpleTokenFactoryAddress(), signer)
 }
 
 export const getTokenFactoryContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
-  return getContract(crowpadTokenFactory, getTokenFactoryAddress(), signer)
+  return getContract(lpTokenFactoryAbi, getTokenFactoryAddress(), signer)
+}
+
+export const getStandardTokenContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(standardTokenAbi, address, signer)
+}
+export const getLiquidityGeneratorTokenContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(lpGeneratorTokenAbi, address, signer)
 }
 
 export const getBep20Contract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {

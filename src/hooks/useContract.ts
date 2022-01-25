@@ -34,6 +34,8 @@ import {
   getSimpleTokenFactoryContract,
   getTokenFactoryContract,
   getAirdropperContract,
+  getStandardTokenContract,
+  getLiquidityGeneratorTokenContract,
 } from 'utils/contractHelpers'
 import { getMulticallAddress } from 'utils/addressHelpers'
 
@@ -68,6 +70,16 @@ export const useSimpleTokenFactory = () => {
 export const useTokenFactory = () => {
   const { library } = useActiveWeb3React()
   return useMemo(() => getTokenFactoryContract(library.getSigner()), [library])
+}
+
+export const useStandardTokenContract = (address: string) => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getStandardTokenContract(address, library.getSigner()), [address, library])
+}
+
+export const useLiquidityGeneratorTokenContract = (address: string) =>  {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getLiquidityGeneratorTokenContract(address, library.getSigner()), [address, library])
 }
 
 export const useIfoV1Contract = (address: string) => {

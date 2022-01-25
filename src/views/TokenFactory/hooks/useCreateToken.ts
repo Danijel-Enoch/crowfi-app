@@ -23,14 +23,13 @@ export const useCreateStandardToken = () => {
 
 export const useCreateLiquidityToken = () => {
   const tokenFactory = useTokenFactory()
-  const { account } = useWeb3React()
 
   const handleCreateToken = useCallback(
     async (feeAmount, tokenName, symbol, supply, decimals, txFee, lpFee, dexFee, devAddress) => {
-      const contractAddress = await createLiquidityToken(tokenFactory, feeAmount, tokenName, symbol, decimals, supply, txFee, lpFee, dexFee, ROUTER_ADDRESS, devAddress, account)
+      const contractAddress = await createLiquidityToken(tokenFactory, feeAmount, tokenName, symbol, decimals, supply, txFee, lpFee, dexFee, ROUTER_ADDRESS, devAddress)
       return contractAddress
     },
-    [tokenFactory, account],
+    [tokenFactory],
   )
 
   return { onCreateToken: handleCreateToken }

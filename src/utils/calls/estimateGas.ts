@@ -13,15 +13,15 @@ export const estimateGas = async (
   methodName: string,
   methodArgs: any[],
   gasMarginPer10000: number,
-  value?: BigNumberish
+  value?: BigNumberish,
+  from?: string
 ) => {
   if (!contract[methodName]) {
     throw new Error(`Method ${methodName} doesn't exist on ${contract.address}`)
   }
-  const options = value ? { value } : {}
-  if (value) {
-    console.log('value', methodArgs, value, methodName)
-  }
+  let options = {}
+  if (value) options = {...options, value}
+  if (from) options = {...options, from}
   const rawGasEstimation = await contract.estimateGas[methodName](...methodArgs, options)
   // By convention, ethers.BigNumber values are multiplied by 1000 to avoid dealing with real numbers
   const gasEstimation = rawGasEstimation
@@ -44,13 +44,17 @@ export const callWithEstimateGas = async (
   methodArgs: any[] = [],
   overrides: Overrides = {},
   gasMarginPer10000 = 1000,
-  value?: BigNumberish
+  value?: BigNumberish,
+  from?: string
 ): Promise<ethers.providers.TransactionResponse> => {
-  const gasEstimation = estimateGas(contract, methodName, methodArgs, gasMarginPer10000, value)
+  const gasEstimation = estimateGas(contract, methodName, methodArgs, gasMarginPer10000, value, from)
+  let extra = {}
+  if (value) extra = {...extra, value}
+  if (from) extra = {...extra, from}
   const tx = await contract[methodName](...methodArgs, {
     gasLimit: gasEstimation,
     ...overrides,
-    ...value ? { value } : { },
+    ...extra
   })
   return tx
 }
