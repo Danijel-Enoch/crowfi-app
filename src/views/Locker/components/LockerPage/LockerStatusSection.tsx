@@ -17,7 +17,7 @@ const LockerStatusSection: React.FC = () => {
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Sale Type')}</InfoLabel>
-                        <InfoValue>{t('Public')})</InfoValue>
+                        <InfoValue>{t('Public')}</InfoValue>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Minimum Buy')}</InfoLabel>
@@ -25,7 +25,7 @@ const LockerStatusSection: React.FC = () => {
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Maximum Buy')}</InfoLabel>
-                        <InfoValue>2 BNB</InfoValue>
+                        <InfoValue>2 CROW</InfoValue>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Total Contributors')}</InfoLabel>
