@@ -11,11 +11,10 @@ import { AutoRow } from 'components/Layout/Row'
 import { useToken } from 'hooks/Tokens'
 import useTotalSupply from 'hooks/useTotalSupply'
 import useENS from 'hooks/ENS/useENS'
+import { DeserializedTokenData, TokenType } from 'state/types'
 import { BIG_TEN, BIG_ZERO } from 'utils/bigNumber'
-import { TokenType } from '../../types'
 import CardHeading from './CardHeading'
 import ConfirmBurnModal from './ConfirmBurnModal'
-import { useLPTokenFees } from '../../hooks/useTokens'
 import ConfirmWhitelistModal from './ConfirmWhitelistModal'
 
 const StyledCard = styled(Card)`
@@ -46,31 +45,24 @@ const StyledButton = styled(Button)`
 `
 
 export interface ManageTokenCardProps {
-    address?: string
-    type: TokenType
+  tokenData?: DeserializedTokenData
 }
 
-const ManageTokenCard: React.FC<ManageTokenCardProps> = ({address, type}) => {
+const ManageTokenCard: React.FC<ManageTokenCardProps> = ({tokenData}) => {
   const { t } = useTranslation()
 
-  const token = useToken(address)
-  const totalSupply = useTotalSupply(token)
-  const [taxFee, lpFee] = useLPTokenFees(address)
   const [burnAmount, setBurnAmount] = useState('')
   const [whitelistAddress, setWhitelistAddress] = useState('')
   const { address:validatedWhitelistAddress, loading: loadingWhitelistAddress } = useENS(whitelistAddress)
 
-  const totalSupplyNumber = token && totalSupply ? new BigNumber(totalSupply.toExact()).multipliedBy(BIG_TEN.pow(token.decimals)) : undefined
-  const burnAmountNumber = token ? new BigNumber(burnAmount).multipliedBy(BIG_TEN.pow(token.decimals)) : undefined
+  const burnAmountNumber = new BigNumber(burnAmount).multipliedBy(BIG_TEN.pow(tokenData.decimals))
 
   const handleChangePercent = (percent: number) => {
-    if (totalSupplyNumber && totalSupply && token) {
-      if (percent === 100) {
-        setBurnAmount(totalSupply.toExact())
-      } else {
-        const amount = totalSupplyNumber.multipliedBy(percent).div(100)
-        setBurnAmount(getFullDisplayBalanceExact(amount, token.decimals))
-      }
+    if (percent === 100) {
+      setBurnAmount(getFullDisplayBalanceExact(tokenData.totalSupply, tokenData.decimals))
+    } else {
+      const amount = tokenData.totalSupply.multipliedBy(percent).div(100)
+      setBurnAmount(getFullDisplayBalanceExact(amount, tokenData.decimals))
     }
   }
 
@@ -80,7 +72,7 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({address, type}) => {
 
   const [onPresentConfirmBurnModal] = useModal(
     <ConfirmBurnModal
-      token={token}
+      token={tokenData}
       amount={burnAmountNumber}
       onComplete={handleBurnComplete}
     />,
@@ -91,7 +83,7 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({address, type}) => {
 
   const [onPresentAddToWhitelistModal] = useModal(
     <ConfirmWhitelistModal
-      token={token}
+      token={tokenData}
       address={validatedWhitelistAddress}
       isAdd
     />,
@@ -102,7 +94,7 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({address, type}) => {
 
   const [onPresentRemoveFromWhitelistModal] = useModal(
     <ConfirmWhitelistModal
-      token={token}
+      token={tokenData}
       address={validatedWhitelistAddress}
       isAdd={false}
     />,
@@ -144,7 +136,7 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({address, type}) => {
           {t('Max')}
         </StyledButton>
       </Flex>
-      <Button mt="8px" width="100%" disabled={!burnAmountNumber || !burnAmountNumber.isFinite() || burnAmountNumber.eq(0) || !totalSupplyNumber || !totalSupplyNumber.isFinite() || totalSupplyNumber.eq(0) || burnAmountNumber.gt(totalSupplyNumber)} onClick={showConfirmBurn}>
+      <Button mt="8px" width="100%" disabled={!burnAmountNumber || !burnAmountNumber.isFinite() || burnAmountNumber.eq(0) || !tokenData.totalSupply.isFinite() || tokenData.totalSupply.eq(0) || burnAmountNumber.gt(tokenData.totalSupply)} onClick={showConfirmBurn}>
         {t('Burn')}
       </Button>
     </Flex>
@@ -186,37 +178,33 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({address, type}) => {
   return (
     <StyledCard>
         <CardInnerContainer>
-            <CardHeading token={token}/>
+            <CardHeading symbol={tokenData.symbol} name={tokenData.name}/>
             <Flex justifyContent="space-between" alignItems="center">
                 <Text>{t('Type')}:</Text>
                 <Text bold style={{ display: 'flex', alignItems: 'center' }}>
-                  {type === TokenType.STANDARD ? 'Standard' : 'Liquidity Generator'}
+                  {tokenData.type === TokenType.STANDARD ? 'Standard' : 'Liquidity Generator'}
                 </Text>
             </Flex>
             <Flex justifyContent="space-between" alignItems="center">
                 <Text>{t('Decimals')}:</Text>
                 <Text bold style={{ display: 'flex', alignItems: 'center' }}>
-                  { token ? token.decimals : ''}
+                  { tokenData.decimals }
                 </Text>
             </Flex>
             <Flex justifyContent="space-between" alignItems="center">
                 <Text>{t('Supply')}:</Text>
-                { totalSupply ? (
-                  <Text bold style={{ display: 'flex', alignItems: 'center' }}>
-                    {totalSupply.toExact()} {token ? token.symbol : ''}
-                  </Text>
-                ) : (
-                  <Skeleton height="22px" width="60px" />
-                )}
+                <Text bold style={{ display: 'flex', alignItems: 'center' }}>
+                  {getFullDisplayBalanceExact(tokenData.totalSupply, tokenData.decimals)}
+                </Text>
             </Flex>
             {
-              type === TokenType.LIQUIDITY && (
+              tokenData.type === TokenType.LIQUIDITY && (
                 <>
                 <Flex justifyContent="space-between" alignItems="center">
                   <Text>{t('Holder Reward Fee')}:</Text>
-                  { taxFee ? (
+                  { tokenData.taxFee ? (
                     <Text bold style={{ display: 'flex', alignItems: 'center' }}>
-                      {taxFee} %
+                      {tokenData.taxFee.toNumber() / 100} %
                     </Text>
                   ) : (
                     <Skeleton height="22px" width="60px" />
@@ -224,9 +212,9 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({address, type}) => {
                 </Flex>
                 <Flex justifyContent="space-between" alignItems="center">
                   <Text>{t('Liquidity Fee')}:</Text>
-                  { lpFee ? (
+                  { tokenData.lpFee ? (
                     <Text bold style={{ display: 'flex', alignItems: 'center' }}>
-                      {lpFee} %
+                      {tokenData.lpFee.toNumber() / 100} %
                     </Text>
                   ) : (
                     <Skeleton height="22px" width="60px" />
@@ -237,17 +225,17 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({address, type}) => {
             }
             <Flex justifyContent="space-between" alignItems="center">
                 <Text>{t('Address')}:</Text>
-                <TokenAddress address={address} />
+                <TokenAddress address={tokenData.address} />
             </Flex>
             { 
-              type === TokenType.STANDARD && (
+              tokenData.type === TokenType.STANDARD && (
                 <>
                 {renderBurnSection()}
                 </>
               )
             }
             {
-              type === TokenType.LIQUIDITY && (
+              tokenData.type === TokenType.LIQUIDITY && (
                 <>
                 {renderWhitelistSection()}
                 </>

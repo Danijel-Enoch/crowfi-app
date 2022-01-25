@@ -6,7 +6,8 @@ import tokens from 'config/constants/tokens'
 import { Token } from '@pancakeswap/sdk'
 
 export interface CardHeadingProps {
-  token?: Token
+  symbol: string
+  name: string
 }
 
 const Wrapper = styled(Flex)`
@@ -19,14 +20,14 @@ const MultiplierTag = styled(Tag)`
   margin-left: 4px;
 `
 
-const CardHeading: React.FC<CardHeadingProps> = ({ token }) => {
+const CardHeading: React.FC<CardHeadingProps> = ({ symbol, name }) => {
   const crowToken = tokens.crow
   return (
     <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
       <TokenImage token={crowToken} width={64} height={64}/>
       <Flex flexDirection="column" alignItems="flex-end">
-        <Heading mb="4px">{token ? token.symbol : ''}</Heading>
-        <Text mb="4px">{token ? token.name : ''}</Text>
+        <Heading mb="4px">{symbol}</Heading>
+        <Text mb="4px">{name}</Text>
       </Flex>
     </Wrapper>
   )

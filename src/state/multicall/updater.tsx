@@ -164,7 +164,7 @@ export default function Updater(): null {
         const { cancel, promise } = retry(() => fetchChunk(multicallContract, chunk, currentBlock), {
           n: Infinity,
           minWait: 2500,
-          maxWait: 3500,
+          maxWait: 4500,
         })
         promise
           .then(({ results: returnData, blockNumber: fetchBlockNumber }) => {

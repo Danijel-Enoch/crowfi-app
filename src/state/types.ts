@@ -135,9 +135,31 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
 
 // Slices states
 
-export interface TokenFactoryToken {
-  address: string
+export enum TokenType {
+  STANDARD = "STANDARD",
+  LIQUIDITY = "LIQUIDITY"
+}
+
+export interface SerializedTokenData {
   type: number
+  address: string
+  name: string
+  symbol: string
+  decimals: number
+  totalSupply: SerializedBigNumber
+  taxFee?: SerializedBigNumber
+  lpFee?: SerializedBigNumber
+}
+
+export interface DeserializedTokenData {
+  type: TokenType
+  address: string
+  name: string
+  symbol: string
+  decimals: number
+  totalSupply: BigNumber
+  taxFee?: BigNumber
+  lpFee?: BigNumber
 }
 
 export interface SerializedTokenFactoryState {
@@ -147,7 +169,7 @@ export interface SerializedTokenFactoryState {
   lpDeployFee?: SerializedBigNumber
   totalTokens?: SerializedBigNumber
 
-  userTokens?: TokenFactoryToken[]
+  userTokens?: SerializedTokenData[]
 }
 
 export interface DeserializedTokenFactoryState {
@@ -157,7 +179,7 @@ export interface DeserializedTokenFactoryState {
   lpDeployFee?: BigNumber
   totalTokens?: BigNumber
   
-  userTokens?: TokenFactoryToken[]
+  userTokens?: DeserializedTokenData[]
 }
 
 export interface SerializedPrivateSalesState {

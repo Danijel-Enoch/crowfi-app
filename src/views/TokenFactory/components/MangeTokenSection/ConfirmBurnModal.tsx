@@ -4,6 +4,7 @@ import { Flex, Text, InjectedModalProps, LinkExternal } from '@pancakeswap/uikit
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'contexts/Localization'
 import { getBscScanLink } from 'utils'
+import { DeserializedTokenData } from 'state/types'
 import { getFullDisplayBalance, getFullDisplayBalanceExact } from 'utils/formatBalance'
 import TransactionConfirmationModal, { ConfirmationModalContent, TransactionErrorContent } from 'components/TransactionConfirmationModal'
 import ConfirmModalFooter from './ConfirmModalFooter'
@@ -12,7 +13,7 @@ import { useBurnStandardToken } from '../../hooks/useStandardToken'
 
 
 interface ConfirmBurnModalProps {
-  token?: Token
+  token?: DeserializedTokenData
   amount?: BigNumber
   onComplete?: () => void
 }

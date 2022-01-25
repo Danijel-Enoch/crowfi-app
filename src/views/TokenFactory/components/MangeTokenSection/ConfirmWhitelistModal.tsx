@@ -4,6 +4,7 @@ import { Flex, Text, InjectedModalProps, LinkExternal } from '@pancakeswap/uikit
 import { useTranslation } from 'contexts/Localization'
 import { getBscScanLink } from 'utils'
 import truncateHash from 'utils/truncateHash'
+import { DeserializedTokenData } from 'state/types'
 import TransactionConfirmationModal, { ConfirmationModalContent, TransactionErrorContent } from 'components/TransactionConfirmationModal'
 import ConfirmModalFooter from './ConfirmModalFooter'
 import { useLPGeneratorTokenWhitelistAddress } from '../../hooks/useLPGeneratorToken'
@@ -11,7 +12,7 @@ import { useLPGeneratorTokenWhitelistAddress } from '../../hooks/useLPGeneratorT
 
 
 interface ConfirmWhitelistModalProps {
-  token?: Token
+  token?: DeserializedTokenData
   address?: string
   isAdd: boolean
 }
