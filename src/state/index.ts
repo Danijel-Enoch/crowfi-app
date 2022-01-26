@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import farmsReducer from './farms'
 import privatesalesReducer from './privatesales'
 import tokenFactoryReducer from './tokenFactory'
+import lockerReducer from './locker'
 import poolsReducer from './pools'
 import blockReducer from './block'
 import votingReducer from './voting'
@@ -27,6 +28,7 @@ const store = configureStore({
     pools: poolsReducer,
     voting: votingReducer,
     tokenFactory: tokenFactoryReducer,
+    locker: lockerReducer,
 
     // Exchange
     user,

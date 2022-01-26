@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import BigNumber from 'bignumber.js'
 import { Card, Flex, Text, Button, LinkExternal, Skeleton } from '@pancakeswap/uikit'
-import { Token } from '@pancakeswap/sdk'
 import { useTranslation } from 'contexts/Localization'
+import { DeserializedLock } from 'state/types'
+import { usePairToken, useToken } from 'hooks/Tokens'
+import { BIG_ZERO } from 'utils/bigNumber'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import { StyledCard, LinkWrapper } from 'components/Launchpad/StyledControls'
 import TokenAddress from 'components/TokenAddress'
@@ -18,24 +19,24 @@ const CardInnerContainer = styled(Flex)`
 `
 
 export interface LockerCardProps {
-  token?: Token
-  totalSupply: BigNumber
-  lockedAmount: BigNumber
-  unlockAt?: number
-  owner?: string
-  unlocked?: boolean
+  lock: DeserializedLock
 }
 
-const LockerCard: React.FC<LockerCardProps> = ({token, totalSupply, lockedAmount, unlockAt, owner, unlocked = false}) => {
+const LockerCard: React.FC<LockerCardProps> = ({lock}) => {
   const { t } = useTranslation()
+  const token = useToken(lock.tokenAddress)
+  const pair = usePairToken(lock.tokenAddress)
+  const token0 = useToken(pair ? pair.token0Address : null)
+  const token1 = useToken(pair ? pair.token1Address : null)
+  const unlocked = lock.amount.eq(BIG_ZERO)
 
   return (
-    <LinkWrapper to="/lockers/123">
     <StyledCard background="white" borderBackground="rgba(150,150,150,0.1)">
         <CardInnerContainer>
             <CardHeading
-                symbol={token.symbol}
-                name={token.name} 
+                token={token}
+                token0={token0}
+                token1={token1}
             />
             { unlocked ? (
               <Flex justifyContent="center" alignItems="center">
@@ -44,38 +45,37 @@ const LockerCard: React.FC<LockerCardProps> = ({token, totalSupply, lockedAmount
             ) : (
               <>
               <Text color="secondary" textAlign="center" fontSize="14px">
-                {t('Ends')}: {new Date(unlockAt * 1000).toLocaleDateString()}
+                {t('Ends')}: {new Date(lock.unlockDate * 1000).toLocaleDateString()}
               </Text>
               <Flex justifyContent="center" alignItems="center" mt="16px">
-                <Timer target={unlockAt} />
+                <Timer target={lock.unlockDate} />
               </Flex>
               </>
             )}
             <Flex flexDirection="column" alignItems="center">
                 <Text color="secondary" fontSize='12px'>{t('Locked amount')}</Text>
-                { lockedAmount ? (
+                { token ? (
                   <Text bold color="primary">
-                      {getFullDisplayBalance(lockedAmount, token.decimals)}
+                      {getFullDisplayBalance(lock.amount, token.decimals)} {token.symbol}
                   </Text>
                 ) : (
-                  <Skeleton width="80px" height="48px" />
+                  <Skeleton width="80px" height="20px" />
                 )}
             </Flex>
             <Flex flexDirection="column" alignItems="center" mt="16px">
                 <Text color="secondary" fontSize='12px'>{t('Address')}:</Text>
-                <TokenAddress address={token.address} />
+                <TokenAddress address={lock.tokenAddress} />
             </Flex>
-            { owner && (
-              <Flex flexDirection="column" alignItems="center" mt="16px">
-                <Text color="secondary" fontSize='12px'>{t('Owner')}:</Text>
-                <TokenAddress address={owner} />
-              </Flex>
-            )}
-
-            
+            <Flex flexDirection="column" alignItems="center" mt="16px">
+              <Text color="secondary" fontSize='12px'>{t('Owner')}:</Text>
+              <TokenAddress address={lock.owner} />
+            </Flex>
+            <Button as="a" href={`/lockers/${lock.id}`} mt="12px">
+              {t('View')}
+            </Button>
         </CardInnerContainer>
+
     </StyledCard>
-    </LinkWrapper>
   )
 }
 

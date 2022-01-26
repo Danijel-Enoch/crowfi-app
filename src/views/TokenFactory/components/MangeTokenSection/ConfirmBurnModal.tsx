@@ -63,7 +63,6 @@ const ConfirmBurnModal: React.FC<InjectedModalProps & ConfirmBurnModalProps> = (
       setTxHash(res)
       onComplete()
     } catch (e) {
-      console.log('exception', e)
       setErrorMessage(t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
     } finally {
       setPendingTx(false)

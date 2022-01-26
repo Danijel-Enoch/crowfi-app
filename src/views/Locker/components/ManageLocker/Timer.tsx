@@ -24,7 +24,8 @@ const NumberText = styled(Text)`
     background: ${({ theme }) => theme.colors.backgroundAlt};
     border-radius: 8px;
     font-size: 16px;
-    width: 40px;
+    min-width: 40px;
+    padding: 0px 4px;
     height: 40px;
     margin: 4px;
     
@@ -79,16 +80,22 @@ const Timer: React.FC<TimerProps> = ({ target }) => {
   return (
     <Wrapper justifyContent="center" alignItems="center" mb="12px">
       <Flex alignItems="center">
-        <NumberText>{days}</NumberText>
-        <NumberText>{hours}</NumberText>
-        <NumberText>{minutes}</NumberText>
-        <NumberText>{seconds}</NumberText>
-      </Flex>
-      <Flex alignItems="center">
-        <LabelText>{t('Days')}</LabelText>
-        <LabelText>{t('Hours')}</LabelText>
-        <LabelText>{t('Minutes')}</LabelText>
-        <LabelText>{t('Seconds')}</LabelText>
+        <Flex flexDirection="column" alignItems="center">
+          <NumberText>{days}</NumberText>
+          <LabelText>{t('Days')}</LabelText>
+        </Flex>
+        <Flex flexDirection="column" alignItems="center">
+          <NumberText>{hours}</NumberText>
+          <LabelText>{t('Hours')}</LabelText>
+        </Flex>
+        <Flex flexDirection="column" alignItems="center">
+          <NumberText>{minutes}</NumberText>
+          <LabelText>{t('Minutes')}</LabelText>
+        </Flex>
+        <Flex flexDirection="column" alignItems="center">
+          <NumberText>{seconds}</NumberText>
+          <LabelText>{t('Seconds')}</LabelText>
+        </Flex>
       </Flex>
     </Wrapper>
   )

@@ -1,30 +1,24 @@
 import React, { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
-import { Heading, Flex, Text, Input } from '@pancakeswap/uikit'
-import { Token } from '@pancakeswap/sdk'
-import BigNumber from 'bignumber.js'
-import tokens from 'config/constants/tokens'
+import { Heading, Flex, Text, Input, Skeleton } from '@pancakeswap/uikit'
+import { useAppDispatch } from 'state'
+import { useWeb3React } from '@web3-react/core'
+import { useMyLiquidityLockCount, useMyLPLocks, useMyNormalLocks, useMyNormalLockCount, useTotalLockCount } from 'state/locker/hooks'
+import { DeserializedLock } from 'state/types'
 import { useTranslation } from 'contexts/Localization'
+import useENS from 'hooks/ENS/useENS'
 import BoxButtonMenu from 'components/BoxButtonMenu'
-import { StyledInput } from 'components/Launchpad/StyledControls'
+import { StyledAddressInput, StyledInput } from 'components/Launchpad/StyledControls'
 import FlexLayout from 'components/Layout/Flex'
 import useDebounce from 'hooks/useDebounce'
 import { isAddress } from 'utils'
 import LockerCard from './LockerCard'
+import { findLocks, getLocks, getMyLocks } from '../../hooks/getLocks'
 
 
 const SearchInput = styled(StyledInput)`
     width: min(100%, 500px);
 `
-
-interface Locker {
-    token: Token
-    owner?: string
-    unlockAt: number
-    totalSupply: BigNumber
-    lockedAmount: BigNumber
-    unlocked: boolean
-}
 
 export enum ViewMode {
     MYTOKEN = 'MYTOKEN',
@@ -32,17 +26,30 @@ export enum ViewMode {
     ALL = 'ALL',
 }
 
+export interface PageData {
+    totalCount: number
+    page: number
+    data?: DeserializedLock[]
+}
+
 const ManageLocker: React.FC = () => {
 
-    const theme = useTheme()
     const { t } = useTranslation()
+    const itemPerPage = 100;
+    const { account } = useWeb3React()
+    const dispatch = useAppDispatch()
     const [ viewMode, setViewMode ] = useState(ViewMode.MYTOKEN)
     const [searchQuery, setSearchQuery] = useState<string>('')
-    const debouncedQuery = useDebounce(searchQuery, 200)
-    const inputRef = useRef<HTMLInputElement>()
-    useEffect(() => {
-        inputRef.current.focus()
-    }, [])
+    const [isLoading, setIsLoading] = useState(true)
+    const [pageData, setPageData] = useState<PageData>({
+        totalCount: 0,
+        page: 0,
+        data: null
+    })
+    const { address: searchTokenAddress } = useENS(searchQuery)
+    const totalLockCount = useTotalLockCount()
+    const myNormalLockCount = useMyNormalLockCount()
+    const myLPLockCount = useMyLiquidityLockCount()
 
     const menuItems = ['My Token Locker', 'My Liquidity Locker', 'View All Lockers']
     const menuItemsOnMobile = ['Token', 'Liquidity', 'All']
@@ -54,134 +61,80 @@ const ManageLocker: React.FC = () => {
             setViewMode(nViewMode)
         }
     }
-
-    const handleInput = useCallback((event) => {
-        const input = event.target.value
-        const checksummedInput = isAddress(input)
-        setSearchQuery(checksummedInput || input)
-      }, [])
     
-    // const handleEnter = useCallback(
-    //     (e: KeyboardEvent<HTMLInputElement>) => {
-    //         if (e.key === 'Enter') {
-    //         const s = debouncedQuery.toLowerCase().trim()
-    //         if (s === 'cro') {
-    //             handleCurrencySelect(ETHER)
-    //         } else if (filteredSortedTokens.length > 0) {
-    //             if (
-    //             filteredSortedTokens[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
-    //             filteredSortedTokens.length === 1
-    //             ) {
-    //             handleCurrencySelect(filteredSortedTokens[0])
-    //             }
-    //         }
-    //         }
-    //     },
-    //     [filteredSortedTokens, handleCurrencySelect, debouncedQuery],
-    // )
+    useEffect(() => {
 
-    const myLockers: Locker[] = useMemo(() => {
-        return [
-            {
-                token: tokens.crow,
-                totalSupply: new BigNumber(100000000000000000000000),
-                lockedAmount: new BigNumber(100000000000000000000),
-                unlockAt: 1647096309,
-                unlocked: false,
-            },
-            {
-                token: tokens.crow,
-                totalSupply: new BigNumber(100000000000000000000000),
-                lockedAmount: new BigNumber(100000000000000000000),
-                unlockAt: 1647096309,
-                unlocked: false,
-            },
-            {
-                token: tokens.crow,
-                totalSupply: new BigNumber(100000000000000000000000),
-                lockedAmount: new BigNumber(100000000000000000000),
-                unlockAt: 1647096309,
-                unlocked: false,
+        const fetchLocks = async() =>  {
+            try {
+                setIsLoading(true)
+                if (searchTokenAddress) {
+                    const data = await findLocks(searchTokenAddress)
+                    setPageData({data, page: 0, totalCount: myNormalLockCount})
+                } else if (viewMode === ViewMode.MYTOKEN) {
+                    if (account && myNormalLockCount > 0) {
+                        const data = await getMyLocks(account, false, 0, Math.min(itemPerPage, myNormalLockCount))
+                        setPageData({data, page: 0, totalCount: myNormalLockCount})
+                    } else {
+                        setPageData({data: undefined, page: 0, totalCount: 0})
+                    }
+                } else if (viewMode === ViewMode.MYLIQUIDITY) {
+                    if (account && myLPLockCount > 0) {
+                        const data = await getMyLocks(account, true, 0, Math.min(itemPerPage, myLPLockCount))
+                        setPageData({data, page: 0, totalCount: myLPLockCount})
+                    } else {
+                        setPageData({data: undefined, page: 0, totalCount: 0})
+                    }
+                } else if (totalLockCount > 0) {
+                        const data = await getLocks(0, Math.min(itemPerPage, totalLockCount))
+                        setPageData({data, page: 0, totalCount: totalLockCount})
+                } else {
+                    setPageData({data: undefined, page: 0, totalCount: 0})
+                }
+            } catch (e) {
+                console.log('e', e)
+            } finally {
+                setIsLoading(false)
             }
-        ]
-    }, [])
+        }
 
-    const allLockers: Locker[] = useMemo(() => {
-        return [
+        fetchLocks()
+
+    }, [dispatch, account, viewMode, totalLockCount, myNormalLockCount, myLPLockCount, pageData.page, itemPerPage, searchQuery, searchTokenAddress])
+
+    const renderContent = () => {
+        if (isLoading) {
+            return (
+                <Skeleton width="100%" height="300px" animation="waves"/>
+            )
+        }
+
+        return (
+            <FlexLayout>
             {
-                token: tokens.crow,
-                totalSupply: new BigNumber(100000000000000000000000),
-                lockedAmount: new BigNumber(100000000000000000000),
-                unlockAt: 1647096309,
-                unlocked: false,
-            },
-            {
-                token: tokens.crow,
-                totalSupply: new BigNumber(100000000000000000000000),
-                lockedAmount: new BigNumber(100000000000000000000),
-                unlockAt: 1647096309,
-                unlocked: false,
-                owner: '0xA2c8e14B7Cc468131C2c1d409b58Be9E344701e4'
-            },
-            {
-                token: tokens.crow,
-                totalSupply: new BigNumber(100000000000000000000000),
-                lockedAmount: new BigNumber(100000000000000000000),
-                unlockAt: 1647096309,
-                unlocked: false,
-            },
-            {
-                token: tokens.crow,
-                totalSupply: new BigNumber(100000000000000000000000),
-                lockedAmount: new BigNumber(100000000000000000000),
-                unlockAt: 1647096309,
-                unlocked: false,
+                pageData.data ? pageData.data.map((lock) => (
+                    <LockerCard 
+                        key={lock.id}
+                        lock={lock}
+                    />
+                )) 
+                : null
             }
-        ]
-    }, [])
-
-    const viewModeLockers: Locker[] = useMemo(() => {
-        if (viewMode === ViewMode.MYTOKEN) {
-            return myLockers
-        }
-        if (viewMode === ViewMode.MYLIQUIDITY) {
-            return myLockers
-        }
-        return allLockers
-    }, [myLockers, allLockers, viewMode])
-
-    const filteredLockers: Locker[] = useMemo(() => {
-        return viewModeLockers.filter((locker) => {
-            return locker.token.address.toLowerCase().startsWith(debouncedQuery.toLowerCase())
-                || locker.token.name.toLowerCase().includes(debouncedQuery.toLowerCase())
-                || locker.token.symbol.toLowerCase().includes(debouncedQuery.toLowerCase())
-        })
-    }, [viewModeLockers, debouncedQuery])
-
-    const renderContent = () => (
-        <FlexLayout>
-        {
-            filteredLockers.map((locker) => (
-                <LockerCard 
-                    token={locker.token} 
-                    owner={locker.owner}
-                    unlockAt={locker.unlockAt}
-                    unlocked={locker.unlocked}
-                    lockedAmount={locker.lockedAmount}
-                    totalSupply={locker.totalSupply}
-                />
-            ))
-        }
-        </FlexLayout>
-    )
+            </FlexLayout>
+        )
+    }
 
     return (
         <>
             <Flex flexDirection="column" flex="1"margin={["12px", "12px", "12px", "24px"]}>
                 <Flex flexDirection="column" alignItems="center">
-                    <Heading color='primary' scale="xl" textAlign="center">
-                        {2}
-                    </Heading>
+                    {totalLockCount >= 0 ? (
+                        <Heading color='primary' scale="xl" textAlign="center">
+                            {totalLockCount}
+                        </Heading>
+                    ): (
+                        <Skeleton width="100px" height="40px"/>
+                    )}
+                    
                     <Text color='secondary' textAlign="center">
                         {t('Lockers Created')}
                     </Text>
@@ -190,15 +143,12 @@ const ManageLocker: React.FC = () => {
                 <BoxButtonMenu onItemClick={onMenuClick} items={menuItems} mobileItems={menuItemsOnMobile}/>
 
                 <Flex justifyContent="center" mb="24px">
-                    <SearchInput
-                        id="token-search-input"
-                        placeholder={t('Search by Token Address, name or symbol')}
-                        scale="lg"
-                        autoComplete="off"
-                        value={searchQuery}
-                        ref={inputRef as RefObject<HTMLInputElement>}
-                        onChange={handleInput}
-                    />
+                    <Flex width="600px" maxWidth="calc(90vw - 20px)">
+                        <StyledAddressInput 
+                            value={searchQuery} 
+                            placeholder={t('Search by  Token or LP Token Address')}
+                            onUserInput={(value) => setSearchQuery(value)} />
+                    </Flex>
                 </Flex>
 
                 {renderContent()}

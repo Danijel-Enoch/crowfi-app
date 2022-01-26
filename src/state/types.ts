@@ -135,6 +135,68 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
 
 // Slices states
 
+export enum LockType {
+  NORMAL = "NORMAL",
+  LIQUIDITY = "LIQUIDITY",
+  UNKNOWN = "UNKNOWN"
+}
+
+export interface SerializedLock {
+  type: LockType
+  id: string
+  tokenAddress: string
+  owner: string
+  amount: SerializedBigNumber
+  lockDate: number
+  unlockDate: number
+}
+
+export interface DeserializedLock {
+  type: LockType
+  id: string
+  tokenAddress: string
+  owner: string
+  amount: BigNumber
+  lockDate: number
+  unlockDate: number
+}
+
+export interface SerializedLockerUserData {
+  normalLockCount: number
+  lpLockCount: number
+
+  normalLocks?: SerializedLock[]
+  lpLocks?: SerializedLock[]
+}
+
+export interface DeserializedLockerUserData {
+  normalLockCount: number
+  lpLockCount: number
+
+  normalLocks?: DeserializedLock[]
+  lpLocks?: DeserializedLock[]
+}
+
+export interface SerializedLockerState {
+  userDataLoaded: boolean
+
+  toalLockCount?: number
+  totalTokenLockedCount?: number
+  fee?: SerializedBigNumber
+
+  userData?: SerializedLockerUserData
+}
+
+export interface DeserializedLockerState {
+  userDataLoaded: boolean
+
+  toalLockCount: number
+  totalTokenLockedCount: number
+  fee: BigNumber
+
+  userData?: DeserializedLockerUserData
+}
+
 export enum TokenType {
   STANDARD = "STANDARD",
   LIQUIDITY = "LIQUIDITY"
@@ -564,6 +626,7 @@ export interface State {
   privatesales: SerializedPrivateSalesState
   pools: PoolsState
   tokenFactory: SerializedTokenFactoryState
+  locker: SerializedLockerState
   voting: VotingState
   lottery: LotteryState
 }

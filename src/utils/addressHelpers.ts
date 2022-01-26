@@ -11,6 +11,10 @@ export const getAirdropperAddress = () => {
   return getAddress(addresses.airdropper)
 }
 
+export const getLockerAddress = () => {
+  return getAddress(addresses.locker)
+}
+
 export const getTokenFactoryManagerAddress = () => {
   return getAddress(addresses.tokenFactoryManager)
 }

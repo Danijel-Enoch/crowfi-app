@@ -43,10 +43,10 @@ const UnlockTimer: React.FC<{ endTime: number }> = ({ endTime }) => {
       setMinutes(m < 10 ? `0${m}`:`${m}`)
       setSeconds(s < 10 ? `0${s}`:`${s}`)
     } else {
-      setDays('')
-      setHours('')
-      setMinutes('')
-      setSeconds('')
+      setDays('00')
+      setHours('00')
+      setMinutes('00')
+      setSeconds('00')
     }
   }, 1000)
   return (

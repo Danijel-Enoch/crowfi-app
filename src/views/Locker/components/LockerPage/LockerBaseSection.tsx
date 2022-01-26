@@ -1,8 +1,13 @@
 import React from 'react'
+import { format } from 'date-fns'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
-import { Flex, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints } from '@pancakeswap/uikit'
+import { Flex, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton } from '@pancakeswap/uikit'
+import { Token } from '@pancakeswap/sdk'
+import { DeserializedLock } from 'state/types'
+import useTotalSupply from 'hooks/useTotalSupply'
 import { getBscScanLink } from 'utils'
+import { getFullDisplayBalance } from 'utils/formatBalance'
 import truncateHash from 'utils/truncateHash'
 import { InfoRow, InfoLabel, InfoValue, SectionTitle } from './styled'
 
@@ -16,11 +21,17 @@ const LogoWrapper = styled.div`
     }
 `
 
-const LockerBaseSection: React.FC = () => {
+export interface LockerBaseSectionProps {
+    lock?: DeserializedLock
+    token?: Token
+}
+
+const LockerBaseSection: React.FC<LockerBaseSectionProps> = ({token, lock}) => {
 
     const { t } = useTranslation()
     const { isMobile } = useMatchBreakpoints()
     const address = '0x852c75bd104b928BBF54e6Ab94F274B9F8Fa6536'
+    const totalSupply = useTotalSupply(token)
 
     return (
         <>
@@ -31,43 +42,73 @@ const LockerBaseSection: React.FC = () => {
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Name')}</InfoLabel>
-                        <InfoValue>CrowFi Token</InfoValue>
+                        { token ? (
+                            <InfoValue>{token ? token.name : ''}</InfoValue>
+                        ) : (
+                            <Skeleton width="60px" height="20px"/>
+                        ) }
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Symobl')}</InfoLabel>
-                        <InfoValue>CROW</InfoValue>
+                        { token ? (
+                            <InfoValue>{token ? token.symbol : ''}</InfoValue>
+                        ) : (
+                            <Skeleton width="60px" height="20px"/>
+                        ) }
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Supply')}</InfoLabel>
-                        <InfoValue>10000927768.707496731568030234</InfoValue>
+                        { totalSupply ? (
+                            <InfoValue>{totalSupply.toExact() }</InfoValue>
+                        ) : (
+                            <Skeleton width="60px" height="20px"/>
+                        ) }
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Address')}</InfoLabel>
                         <Flex alignItems="center">
-                            <LinkExternal href={getBscScanLink(address, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(address) : address }</LinkExternal>
+                            { lock ? (
+                                <LinkExternal href={getBscScanLink(lock.tokenAddress, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(lock.tokenAddress) : lock.tokenAddress }</LinkExternal>
+                            ) : (
+                                <Skeleton width="60px" height="20px"/>
+                            )}
+                            
                         </Flex>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Locker Owner')}</InfoLabel>
                         <Flex alignItems="center">
-                            <LinkExternal href={getBscScanLink(address, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(address) : address }</LinkExternal>
+                            { lock ? (
+                                <LinkExternal href={getBscScanLink(lock.owner, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(lock.owner) : lock.owner }</LinkExternal>
+                            ) : (
+                                <Skeleton width="60px" height="20px"/>
+                            )}
                         </Flex>
                     </InfoRow>
                     <InfoRow>
-                        <InfoLabel>{t('Token in Locker')}</InfoLabel>
-                        <InfoValue>9965</InfoValue>
-                    </InfoRow>
-                    <InfoRow>
-                        <InfoLabel>{t('Withdrawable Amount')}</InfoLabel>
-                        <InfoValue>9965</InfoValue>
+                        <InfoLabel>{t('Locked Amount')}</InfoLabel>
+                        { lock && token ? (
+                            <InfoValue>{getFullDisplayBalance(lock.amount, token.decimals)}</InfoValue>
+                        ) : (
+                            <Skeleton width="60px" height="20px"/>
+                        )}
+                        
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Lock Date')}</InfoLabel>
-                        <InfoValue>2022/01/08 05:00:00 UTC</InfoValue>
+                        { lock ? (
+                        <InfoValue>{format(new Date(lock.lockDate * 1000), 'MM/dd/yyyy hh:mm aa')}</InfoValue>
+                        ): (
+                            <Skeleton width="60px" height="20px"/>
+                        )}
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Unlock Date')}</InfoLabel>
-                        <InfoValue>2022/02/03 05:00:00 UTC</InfoValue>
+                        { lock ? (
+                        <InfoValue>{format(new Date(lock.unlockDate * 1000), 'MM/dd/yyyy hh:mm aa')}</InfoValue>
+                        ): (
+                            <Skeleton width="60px" height="20px"/>
+                        )}
                     </InfoRow>
                 </Flex>
             </Flex>

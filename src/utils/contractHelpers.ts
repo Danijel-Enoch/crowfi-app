@@ -33,6 +33,7 @@ import {
   getTokenFactoryAddress,
   getTokenFactoryManagerAddress,
   getAirdropperAddress,
+  getLockerAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -75,6 +76,7 @@ import lpTokenFactoryAbi from 'config/abi/lpGeneratorTokenFactory.json'
 import standardTokenAbi from 'config/abi/standardToken.json'
 import lpGeneratorTokenAbi from 'config/abi/liquidityGeneratorToken.json'
 import crowpadAirdropper from 'config/abi/crowpadAirdropper.json'
+import crowLockABI from 'config/abi/crowLock.json'
 import { ERC20_ABI } from 'config/abi/erc20'
 import { ChainLinkOracleContract, FarmAuctionContract, PancakeProfileContract } from './types'
 
@@ -85,6 +87,10 @@ const getContract = (abi: any, address: string, signer?: ethers.Signer | ethers.
 
 export const getAirdropperContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
   return getContract(crowpadAirdropper, getAirdropperAddress(), signer)
+}
+
+export const getLockerContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(crowLockABI, getLockerAddress(), signer)
 }
 
 export const getTokenFactoryManagerContract = (signer?: ethers.Signer | ethers.providers.Provider) => {

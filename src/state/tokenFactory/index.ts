@@ -39,8 +39,6 @@ async ({account}) => {
       }
     })
 
-    console.log('here', standardTokenDatas, lpGeneratorTokenDatas)
-
     return [...standardTokenDatas, ...lpGeneratorTokenDatas]
   },
 )

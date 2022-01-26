@@ -3,6 +3,7 @@ import { Route, useRouteMatch } from 'react-router-dom'
 import styled from 'styled-components'
 import { Flex, Heading, Text } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
+import { usePollLockerData } from 'state/locker/hooks'
 import { PageBGWrapper } from 'components/Launchpad/StyledControls'
 import PageHeader from 'components/PageHeader'
 import { TabToggle2, TabToggleGroup2 } from 'components/TabToggle2'
@@ -30,6 +31,8 @@ const Locker: React.FC = () => {
 
     const { t } = useTranslation()
     const [ viewMode, setViewMode ] = useState(ViewMode.VIEW)
+
+    usePollLockerData()
     
     const renderContent = () => {
         if (viewMode === ViewMode.CREATE) {

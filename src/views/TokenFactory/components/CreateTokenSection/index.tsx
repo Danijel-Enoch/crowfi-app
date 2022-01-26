@@ -74,7 +74,6 @@ const CreateTokenSection: React.FC = () => {
     ]
 
     const handleTokenTypeChange = (option) =>  {
-        console.log('option', option.value)
         seteTokenType(option.value)
     }
 

@@ -36,7 +36,6 @@ const CreateLiquidityLocker: React.FC = () => {
 
     const onPercentClick = (percent: number) => {
         if (searchPair && searchPair.totalSupply) {
-            // console.log('total supply', searchPair.totalSupply)
             if (percent === 100) {
                 setAmount(getFullDisplayBalance(searchPair.totalSupply, searchPair.decimals, searchPair.decimals))
             } else {
