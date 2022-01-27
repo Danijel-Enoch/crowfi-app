@@ -1,10 +1,15 @@
 import React from 'react'
 import { useTranslation } from 'contexts/Localization'
+import { format } from 'date-fns'
 import styled from 'styled-components'
-import { Flex, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints } from '@pancakeswap/uikit'
+import { Flex, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton } from '@pancakeswap/uikit'
 import { getBscScanLink } from 'utils'
 import truncateHash from 'utils/truncateHash'
+import { getFullDisplayBalance } from 'utils/formatBalance'
+import { useToken } from 'hooks/Tokens'
+import useTotalSupply from 'hooks/useTotalSupply'
 import { InfoRow, InfoLabel, InfoValue } from './styled'
+import { PublicSaleData } from '../../types'
 
 const LogoWrapper = styled.div`
     width: 80px;
@@ -16,11 +21,16 @@ const LogoWrapper = styled.div`
     }
 `
 
-const SaleBaseSection: React.FC = () => {
+export interface SaleBaseSectionProps {
+    sale: PublicSaleData
+}
+
+const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({sale}) => {
 
     const { t } = useTranslation()
     const { isMobile } = useMatchBreakpoints()
-    const address = '0x852c75bd104b928BBF54e6Ab94F274B9F8Fa6536'
+    const token = useToken(sale.token)
+    const totalSupply = useTotalSupply(token)
 
     return (
         <>
@@ -32,7 +42,7 @@ const SaleBaseSection: React.FC = () => {
                         </LogoWrapper>
                         <Flex flexDirection="column">
                             <Heading>
-                                VitCoin Presale
+                                {token ? token.name : ''} Presale
                             </Heading>
                             <Flex flexDirection="row">
                                 <IconButton variant="text" scale="sm" disabled mr="8px">
@@ -55,56 +65,62 @@ const SaleBaseSection: React.FC = () => {
                     <InfoRow>
                         <InfoLabel>{t('Presale Address')}</InfoLabel>
                         <Flex alignItems="center">
-                            <LinkExternal href={getBscScanLink(address, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(address) : address }</LinkExternal>
+                            <LinkExternal href={getBscScanLink(sale.address, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(sale.address) : sale.address }</LinkExternal>
+                        </Flex>
+                    </InfoRow>
+                    <InfoRow>
+                        <InfoLabel>{t('Presale Owner')}</InfoLabel>
+                        <Flex alignItems="center">
+                            <LinkExternal href={getBscScanLink(sale.owner, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(sale.owner) : sale.owner }</LinkExternal>
                         </Flex>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Name')}</InfoLabel>
-                        <InfoValue>VitCoin</InfoValue>
+                        { token ? (
+                            <InfoValue>{token.name}</InfoValue>
+                        ) : (
+                            <Skeleton width="60px" height="30px"/>
+                        )}
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Symobl')}</InfoLabel>
-                        <InfoValue>VTC</InfoValue>
+                        { token ? (
+                            <InfoValue>{token.symbol}</InfoValue>
+                        ) : (
+                            <Skeleton width="40px" height="30px"/>
+                        )}
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Decimals')}</InfoLabel>
-                        <InfoValue>18</InfoValue>
+                        { token ? (
+                            <InfoValue>{token.decimals}</InfoValue>
+                        ) : (
+                            <Skeleton width="40px" height="30px"/>
+                        )}
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Address')}</InfoLabel>
-                        <LinkExternal href={getBscScanLink(address, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(address) : address }</LinkExternal>
+                        <LinkExternal href={getBscScanLink(sale.token, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(sale.token) : sale.token }</LinkExternal>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Total Supply')}</InfoLabel>
-                        <InfoValue>21,000.00 VTC</InfoValue>
-                    </InfoRow>
-                    <InfoRow>
-                        <InfoLabel>{t('Tokens for Presale')}</InfoLabel>
-                        <InfoValue>12,500.00 VTC</InfoValue>
-                    </InfoRow>
-                    <InfoRow>
-                        <InfoLabel>{t('Tokens for Liquidity')}</InfoLabel>
-                        <InfoValue>6,900.00 VTC</InfoValue>
+                        { totalSupply ? (
+                            <InfoValue>{totalSupply.toExact()} {token.symbol}</InfoValue>
+                        ) : (
+                            <Skeleton width="60px" height="30px"/>
+                        )}
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Presale Rate')}</InfoLabel>
-                        <InfoValue>1 CRO = 625.00 VTC</InfoValue>
-                    </InfoRow>
-                    <InfoRow>
-                        <InfoLabel>{t('Listing Rate')}</InfoLabel>
-                        <InfoValue>1 CRO = 575.00 VTC</InfoValue>
-                    </InfoRow>
-                    <InfoRow>
-                        <InfoLabel>{t('Initial Market Cap(estimate)')}</InfoLabel>
-                        <InfoValue>$12,686</InfoValue>
+                        <InfoValue>1 CRO = {sale.rate.toJSON()} {token ? token.symbol : ''}</InfoValue>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Soft Cap')}</InfoLabel>
-                        <InfoValue>10 CRO</InfoValue>
+                        <InfoValue>{getFullDisplayBalance(sale.goal)} CRO</InfoValue>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Hard Cap')}</InfoLabel>
-                        <InfoValue>20 CRO</InfoValue>
+                        <InfoValue>{getFullDisplayBalance(sale.cap)} CRO</InfoValue>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Unsold Tokens')}</InfoLabel>
@@ -112,11 +128,11 @@ const SaleBaseSection: React.FC = () => {
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Presale Start Time')}</InfoLabel>
-                        <InfoValue>2022/01/22 18:00</InfoValue>
+                        <InfoValue>{ format(sale.openingTime * 1000, 'yyyy/MM/dd hh:mm aa')}</InfoValue>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Presale End Time')}</InfoLabel>
-                        <InfoValue>2022/01/22 18:00</InfoValue>
+                        <InfoValue>{ format(sale.closingTime * 1000, 'yyyy/MM/dd hh:mm aa')}</InfoValue>
                     </InfoRow>
                 </Flex>
             </Flex>

@@ -34,6 +34,7 @@ import {
   getTokenFactoryManagerAddress,
   getAirdropperAddress,
   getLockerAddress,
+  getCrowpadSaleFactoryAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -77,12 +78,22 @@ import standardTokenAbi from 'config/abi/standardToken.json'
 import lpGeneratorTokenAbi from 'config/abi/liquidityGeneratorToken.json'
 import crowpadAirdropper from 'config/abi/crowpadAirdropper.json'
 import crowLockABI from 'config/abi/crowLock.json'
+import crowpadSaleFactoryABI from 'config/abi/crowpadSaleFactory.json'
+import crowpadSaleABI from 'config/abi/crowpadSale.json'
 import { ERC20_ABI } from 'config/abi/erc20'
 import { ChainLinkOracleContract, FarmAuctionContract, PancakeProfileContract } from './types'
 
 const getContract = (abi: any, address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
   const signerOrProvider = signer ?? simpleRpcProvider
   return new ethers.Contract(address, abi, signerOrProvider)
+}
+
+export const getCrowpadSaleContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(crowpadSaleABI, address, signer)
+}
+
+export const getCrowpadSaleFactoryContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(crowpadSaleFactoryABI, getCrowpadSaleFactoryAddress(), signer)
 }
 
 export const getAirdropperContract = (signer?: ethers.Signer | ethers.providers.Provider) => {

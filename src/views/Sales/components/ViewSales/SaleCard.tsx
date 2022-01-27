@@ -5,8 +5,12 @@ import { Flex, Text, LinkExternal } from '@pancakeswap/uikit'
 import { Token } from '@pancakeswap/sdk'
 import { useTranslation } from 'contexts/Localization'
 import { StyledCard, LinkWrapper } from 'components/Launchpad/StyledControls'
+import { BIG_TEN } from 'utils/bigNumber'
+import { getFullDisplayBalance } from 'utils/formatBalance'
+import { useToken } from 'hooks/Tokens'
 import CardHeading from './CardHeading'
 import Timer from './Timer'
+import { PublicSaleData } from '../../types'
 
 const CardInnerContainer = styled(Flex)`
   flex-direction: column;
@@ -39,51 +43,46 @@ const Progressbar = styled.div<{percent: number}>`
 `
 
 export interface SaleCardProps {
-  token?: Token
-  usdPrice: BigNumber
-  marketCapUsd: BigNumber
-  soldUsd: BigNumber
-  participants?: number
-  startDate?: number
-  endDate?: number
+  sale: PublicSaleData
 }
 
-const SaleCard: React.FC<SaleCardProps> = ({token, usdPrice, marketCapUsd, soldUsd, participants, startDate, endDate}) => {
+const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
   const { t } = useTranslation()
+  const token = useToken(sale.token)
 
   return (
-    <LinkWrapper to="/presale/1234">
+    <LinkWrapper to={`/presale/${sale.address}`}>
 
     <StyledCard background="white" borderBackground="rgba(150,150,150,0.1)">
         <CardInnerContainer>
             <CardHeading
                 token={token}
-                startDate={startDate}
-                endDate={endDate}
+                startDate={sale.openingTime}
+                endDate={sale.closingTime}
             />
             <Text color="secondary" textAlign="center" fontSize="14px" mt="16px" mb="16px">
               {t('Crow is a decentralized currency that does not discriminate. Any individual or business can realize the advantages of finance.')}
             </Text>
-            { startDate > new Date().getTime() / 1000 ? (
+            { sale.openingTime > new Date().getTime() / 1000 ? (
               <>
               <Flex flexDirection="column" justifyContent="center" alignItems="center" mt="16px">
                 <Text color="secondary" fontSize="12px" mb="12px">
                   {t('Presale starts in')}
                 </Text>
-                <Timer target={startDate} />
+                <Timer target={sale.openingTime} />
               </Flex>
               </>
-            ) : endDate > new Date().getTime() / 1000 && (
+            ) : sale.closingTime > new Date().getTime() / 1000 && (
               <>
               <Flex flexDirection="column" justifyContent="center" alignItems="center" mt="16px">
                 <Text color="secondary" fontSize="12px" mb="12px">
                   {t('Presale ends in')}
                 </Text>
-                <Timer target={endDate} />
+                <Timer target={sale.closingTime} />
               </Flex>
               </>
             )}
-            <Flex flexDirection="row" justifyContent="space-between">
+            {/* <Flex flexDirection="row" justifyContent="space-between">
               <Flex flexDirection="column" alignItems="flex-start" mb="16px">
                 <Text color="secondary" fontSize="10px">
                   {t('Swap rate')}
@@ -100,24 +99,24 @@ const SaleCard: React.FC<SaleCardProps> = ({token, usdPrice, marketCapUsd, soldU
                   {marketCapUsd.toJSON()}
                 </Text>
               </Flex>
-            </Flex>
+            </Flex> */}
 
             <Flex flexDirection="column">
-              <Flex flexDirection="row" justifyContent="right">
+              {/* <Flex flexDirection="row" justifyContent="right">
                 <Text color="secondary" fontSize="10px" mb="8px">
                   {t('Participants - ')}
                 </Text>
                 <Text color="primary" fontSize="10px">
                   {participants}
                 </Text>
-              </Flex>
-              <Progressbar percent={soldUsd.multipliedBy(100).div(marketCapUsd).toNumber()} />
+              </Flex> */}
+              <Progressbar percent={sale.weiRaised.multipliedBy(100).div(sale.cap).toNumber()} />
               <Flex justifyContent="space-between" mt="8px">
                 <Text color="secondary" fontSize="10px">
-                  {soldUsd.multipliedBy(100).div(marketCapUsd).toFixed(0)}%
+                {sale.weiRaised.multipliedBy(100).div(sale.cap).toFixed(0)}%
                 </Text>
                 <Text color="primary" fontSize="10px">
-                  {soldUsd.toJSON()}
+                  {getFullDisplayBalance(sale.cap)} {t('CRO')}
                 </Text>
               </Flex>
             </Flex>

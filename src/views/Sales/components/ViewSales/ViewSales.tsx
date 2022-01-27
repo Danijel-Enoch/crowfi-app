@@ -1,118 +1,128 @@
-import React, {useMemo, useState } from 'react'
+import React, {useEffect, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
-import { Flex } from '@pancakeswap/uikit'
-import { Token } from '@pancakeswap/sdk'
-import BigNumber from 'bignumber.js'
-import tokens from 'config/constants/tokens'
+import { Flex, Heading, Skeleton, Text } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import BoxButtonMenu from 'components/BoxButtonMenu'
 import FlexLayout from 'components/Layout/Flex'
+import { useWeb3React } from '@web3-react/core'
+import { useAppDispatch } from 'state'
+import useENS from 'hooks/ENS/useENS'
+import { useTotalSaleCount } from 'state/launchpad/hooks'
 import SaleCard from './SaleCard'
-
-interface Sale {
-    id: string
-    token?: Token
-    usdPrice: BigNumber
-    marketCapUsd: BigNumber
-    soldUsd: BigNumber
-    participants?: number
-    startDate?: number
-    endDate?: number
-}
+import { findSales, getSales, getUserSales } from '../../hooks/getSales'
+import { PublicSaleData } from '../../types'
 
 export enum ViewMode {
-    VERIFIED = 'VERIFIED',
-    OTHERS = 'OTHERS'
+    ALL = 'ALL',
+    USER = 'USER'
+}
+
+export interface PageData {
+    totalCount: number
+    page: number
+    data?: PublicSaleData[]
 }
 
 const ViewSales: React.FC = () => {
 
     const theme = useTheme()
     const { t } = useTranslation()
-    const [ viewMode, setViewMode ] = useState(ViewMode.VERIFIED)
+    const itemPerPage = 100;
+    const [ viewMode, setViewMode ] = useState(ViewMode.ALL)
+    const { account } = useWeb3React()
+    const dispatch = useAppDispatch()
+    const [searchQuery, setSearchQuery] = useState<string>('')
+    const [isLoading, setIsLoading] = useState(true)
+    const [pageData, setPageData] = useState<PageData>({
+        totalCount: 0,
+        page: 0,
+        data: null
+    })
+    const { address: searchTokenAddress } = useENS(searchQuery)
+    const totalSaleCount = useTotalSaleCount()
 
-    const menuItems = ['Verified Presales', 'Other Presales']
-    const menuItemsOnMobile = ['Verified', 'Others']
+    const menuItems = ['All Presales', 'My Presales']
+    const menuItemsOnMobile = ['All Presales', 'My Presales']
 
     const onMenuClick = (index: number) =>  {
-        const allViewModes = [ViewMode.VERIFIED, ViewMode.OTHERS]
+        const allViewModes = [ViewMode.ALL, ViewMode.USER]
         const nViewMode = allViewModes[index]
         if (nViewMode !== viewMode) {
             setViewMode(nViewMode)
         }
     }
+
     
+    useEffect(() => {
 
-    const verifiedSales: Sale[] = useMemo(() => {
-        return [
-            {
-                id: '1',
-                token: tokens.crow,
-                usdPrice: new BigNumber(0.1),
-                marketCapUsd: new BigNumber(10000),
-                soldUsd: new BigNumber(100),
-                participants: 99,
-                startDate: 1642645616,
-                endDate: 1647743216,
-            },
-            {
-                id: '2',
-                token: tokens.crow,
-                usdPrice: new BigNumber(0.1),
-                marketCapUsd: new BigNumber(582),
-                soldUsd: new BigNumber(76),
-                participants: 12,
-                startDate: 1641998709,
-                endDate: 1647743216,
-            },
-            {
-                id: '3',
-                token: tokens.crow,
-                usdPrice: new BigNumber(0.1),
-                marketCapUsd: new BigNumber(582),
-                soldUsd: new BigNumber(76),
-                participants: 12,
-                startDate: 1641998709,
-                endDate: 1641998709,
+        const fetchSales = async() =>  {
+            try {
+                setIsLoading(true)
+                if (searchTokenAddress) {
+                    const data = await findSales(searchTokenAddress)
+                    setPageData({data, page: 0, totalCount: totalSaleCount})
+                } else if (viewMode === ViewMode.USER) {
+                    if (account && totalSaleCount > 0) {
+                        const data = await getUserSales(account)
+                        setPageData({data, page: 0, totalCount: totalSaleCount})
+                    } else {
+                        setPageData({data: undefined, page: 0, totalCount: 0})
+                    }
+                } else if (totalSaleCount > 0) {
+                        const data = await getSales(0, Math.min(itemPerPage, totalSaleCount))
+                        setPageData({data, page: 0, totalCount: totalSaleCount})
+                } else {
+                    setPageData({data: undefined, page: 0, totalCount: 0})
+                }
+            } catch (e) {
+                console.log('e', e)
+            } finally {
+                setIsLoading(false)
             }
-        ]
-    }, [])
-
-    const otherSales: Sale[] = useMemo(() => {
-        return [
-        ]
-    }, [])
-
-    const videModeSales: Sale[] = useMemo(() => {
-        if (viewMode === ViewMode.VERIFIED) {
-            return verifiedSales
         }
-        return otherSales
-    }, [verifiedSales, otherSales, viewMode])
 
-    const renderContent = () => (
-        <FlexLayout>
-        {
-            videModeSales.map((sale) => (
-                <SaleCard 
-                    key={sale.id}
-                    token={sale.token}
-                    startDate={sale.startDate}
-                    endDate={sale.endDate}
-                    usdPrice={sale.usdPrice}
-                    marketCapUsd={sale.marketCapUsd}
-                    soldUsd={sale.soldUsd}
-                    participants={sale.participants}
-                />
-            ))
+        fetchSales()
+
+    }, [dispatch, account, viewMode, totalSaleCount, pageData.page, itemPerPage, searchTokenAddress])
+
+    const renderContent = () => {
+        if (isLoading) {
+            return (
+                <Skeleton width="100%" height="300px" animation="waves"/>
+            )
         }
-        </FlexLayout>
-    )
+
+        return (
+            <FlexLayout>
+            {
+                pageData.data ? pageData.data.map((sale) => (
+                    <SaleCard 
+                        key={sale.address}
+                        sale={sale}
+                    />
+                )) 
+                : null
+            }
+            </FlexLayout>
+        )
+    }
 
     return (
         <>
-            <Flex flexDirection="column">
-
+            <Flex flexDirection="column" margin={["12px", "12px", "12px", "24px"]}>
+            <Flex flexDirection="column" alignItems="center">
+                {totalSaleCount >= 0 ? (
+                    <Heading color='primary' scale="xl" textAlign="center">
+                        {totalSaleCount}
+                    </Heading>
+                ): (
+                    <Skeleton width="100px" height="40px"/>
+                )}
+                
+                <Text color='secondary' textAlign="center">
+                    {t('Presales Created')}
+                </Text>
+            </Flex>
             <BoxButtonMenu onItemClick={onMenuClick} items={menuItems} mobileItems={menuItemsOnMobile}/>
 
             {renderContent()}

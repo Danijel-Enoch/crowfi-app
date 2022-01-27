@@ -135,6 +135,25 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
 
 // Slices states
 
+
+export interface SerializedLaunchpadState {
+  userDataLoaded: boolean
+
+  totalSaleCount?: number
+  fee?: SerializedBigNumber
+
+  userSaleCount?: number
+}
+
+export interface DeserializedLaunchpadState {
+  userDataLoaded: boolean
+
+  totalSaleCount?: number
+  fee?: BigNumber
+
+  userSaleCount?: number
+}
+
 export enum LockType {
   NORMAL = "NORMAL",
   LIQUIDITY = "LIQUIDITY",
@@ -627,6 +646,7 @@ export interface State {
   pools: PoolsState
   tokenFactory: SerializedTokenFactoryState
   locker: SerializedLockerState
+  launchpad: SerializedLaunchpadState
   voting: VotingState
   lottery: LotteryState
 }

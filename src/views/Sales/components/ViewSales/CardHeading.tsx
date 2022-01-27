@@ -57,11 +57,13 @@ const CardHeading: React.FC<CardHeadingProps> = ({ token, startDate, endDate }) 
   }, [status])
   return (
     <Wrapper justifyContent="flex-start" alignItems="center" mb="12px">
-      <TokenImage token={token} width={64} height={64}/>
+      {token && (
+        <TokenImage token={token} width={64} height={64}/>
+      )}
       <Flex flexDirection="column" alignItems="start" ml="12px">
-        <Heading mb="4px" color="primary">{token.name}</Heading>
+        <Heading mb="4px" color="primary">{token ? token.name : ''}</Heading>
         <Flex justifyContent="flex-start" alignItems="center">
-          <SymbolText color="primary" mr="8px">{token.symbol}</SymbolText>
+          <SymbolText color="primary" mr="8px">{token ? token.symbol : ''}</SymbolText>
           <Text fontSize="10px" color={statusColor}>
             { status}
           </Text>

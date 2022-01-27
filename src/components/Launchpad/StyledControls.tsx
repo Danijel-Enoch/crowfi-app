@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Heading, Flex, Text, Input, Card } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
@@ -204,7 +204,10 @@ export const StyledAddressInput = React.memo(function InnerInput({
   }
 
   const { address, loading, name } = useENS(value)
-  const error = Boolean(value.length > 0 && !loading && !address)
+  const error = useMemo(() => {
+    if (value && value.length > 0 && !loading && !address) return true
+    return false
+  }, [value, loading, address])
 
   const { t } = useTranslation()
 

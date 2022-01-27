@@ -22,18 +22,39 @@ const SaleCountDownText = styled(Text)`
   margin: 4px;
 `
 
-const SaleTimer: React.FC<{ endTime: number }> = ({ endTime }) => {
+const SaleTimer: React.FC<{ startTime: number, endTime: number }> = ({ startTime, endTime }) => {
   const { t } = useTranslation()
   const [days, setDays] = useState('')
   const [hours, setHours] = useState('')
   const [minutes, setMinutes] = useState('')
   const [seconds, setSeconds] = useState('')
+  const [text, setText] = useState('')
 
   useInterval(() => {
-    const now = new Date().getTime();
-    const diffTime = endTime * 1000 - now;
+    const now = Math.floor(new Date().getTime() / 1000);
+    if (now > endTime) {
+      setDays('')
+      setHours('')
+      setMinutes('')
+      setSeconds('')
+      setText('Closed')
+      return;
+    }
+
+    let diffTime = 0;
+
+    if (now > startTime) {
+      diffTime = endTime- now;
+      setText(`${t('Presale ends in')} :`)
+    } else {
+      diffTime = startTime - now;
+      setText(`${t('Presale starts in')} :`)
+    }
+
+    
+    
     if (diffTime > 0) {
-      const duration = Math.floor(diffTime / 1000);
+      const duration = diffTime;
       const d = Math.floor(duration / 86400);
       const h = Math.floor((duration % 86400) / 3600);
       const m = Math.floor((duration % 3600) / 60);
@@ -52,7 +73,7 @@ const SaleTimer: React.FC<{ endTime: number }> = ({ endTime }) => {
   }, 1000)
   return (
     <Flex flexDirection="column"  alignItems="center">
-      <Text bold>{t('Presale Ends In')}: </Text>
+      <Text bold>{text}</Text>
       <SaleCountDown>
         <SaleCountDownText>
           {days}

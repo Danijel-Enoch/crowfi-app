@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Route, useRouteMatch } from 'react-router-dom'
 import styled from 'styled-components'
 import { Flex, Heading, SubMenuItems, Text, useMatchBreakpoints } from '@pancakeswap/uikit'
+import { usePollLaunchpadData } from 'state/launchpad/hooks'
 import { useTranslation } from 'contexts/Localization'
 import PageHeader from 'components/PageHeader'
 import { PageBGWrapper } from 'components/Launchpad/StyledControls'
@@ -31,6 +32,9 @@ const Sales: React.FC = () => {
 
     const { t } = useTranslation()
     const [ viewMode, setViewMode ] = useState(ViewMode.VIEW)
+
+
+    usePollLaunchpadData()
     
     const renderContent = () => {
         if (viewMode === ViewMode.CREATE) {
@@ -58,7 +62,7 @@ const Sales: React.FC = () => {
                             <Text>{t('Sales')}</Text>
                         </TabToggle2>
                         <TabToggle2 isActive={viewMode === ViewMode.CREATE} onClick={() => setViewMode(ViewMode.CREATE)}>
-                            <Text>{t('Create or Manage')}</Text>
+                            <Text>{t('Create')}</Text>
                         </TabToggle2>
                     </TabToggleGroup2>
 

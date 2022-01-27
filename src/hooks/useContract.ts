@@ -37,6 +37,8 @@ import {
   getStandardTokenContract,
   getLiquidityGeneratorTokenContract,
   getLockerContract,
+  getCrowpadSaleFactoryContract,
+  getCrowpadSaleContract,
 } from 'utils/contractHelpers'
 import { getMulticallAddress } from 'utils/addressHelpers'
 
@@ -56,6 +58,17 @@ import { getContract } from '../utils'
 /**
  * Helper hooks to get specific contracts (by ABI)
  */
+
+export const useCrowpadSaleContract = (address: string) => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getCrowpadSaleContract(address, library.getSigner()), [address, library])
+}
+
+export const useCrowpadSaleFactoryContract = () => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getCrowpadSaleFactoryContract(library.getSigner()), [library])
+}
+
 
 export const useAirdropperContract = () => {
 

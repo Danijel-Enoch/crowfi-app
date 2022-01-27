@@ -26,6 +26,10 @@ export const getTokenFactoryAddress = () => {
   return getAddress(addresses.tokenFactory)
 }
 
+export const getCrowpadSaleFactoryAddress = () => {
+  return getAddress(addresses.launchpadSaleFactory)
+}
+
 export const getMasterChefAddress = () => {
   return getAddress(addresses.masterChef)
 }
