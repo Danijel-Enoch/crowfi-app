@@ -2,6 +2,7 @@ import { getCrowpadSaleContract, getCrowpadSaleFactoryContract } from "utils/con
 import crowpadSaleABI from 'config/abi/crowpadSale.json'
 import multicall from "utils/multicall";
 import BigNumber from "bignumber.js";
+import { BIG_ZERO } from "utils/bigNumber";
 import { PublicSaleData, PublicSaleMetaData } from "../types";
 
 export const findSales = async (token: string) : Promise<PublicSaleData[]> => {
@@ -142,14 +143,32 @@ export const getUserSales = async (account: string) : Promise<PublicSaleData[]> 
     return res
 }
 
-export const getSaleUserContribution = async (address?: string, account?: string) : Promise<BigNumber|null> => {
+export const getSaleUserData = async (address?: string, account?: string) : Promise<{contribution: BigNumber, balance: BigNumber}> => {
     if (!address || !account) {
         return null
     }
+    
+    const calls = [
+        {
+            address,
+            name: 'getUserContribution',
+            params: [account]
+        },
+        {
+            address,
+            name: 'balanceOf',
+            params: [account]
+        }
+    ]
 
-    const contract = getCrowpadSaleContract(address)
-    const contribution_ = await contract.getUserContribution(account)
-    return new BigNumber(contribution_._hex)
+    const [
+        [contribution_], 
+        [balance_]
+    ] = await multicall(crowpadSaleABI, calls)
+    
+    const contribution = contribution_ ? new BigNumber(contribution_._hex) : BIG_ZERO;
+    const balance = balance_ ? new BigNumber(balance_._hex) : BIG_ZERO;
+    return {contribution, balance}
 }
 
 export const getSale = async (address: string) : Promise<PublicSaleData> => {

@@ -94,7 +94,7 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
                     )}
                     </Text>
                 </Message>
-                { token && balanceAmount && balanceTokenNumber.lt(requiredTokenNumber) && (
+                { !closed && !sale.finalized && token && balanceAmount && balanceTokenNumber.lt(requiredTokenNumber) && (
                     <>
                     <Heading fontSize="20px" color="red" textAlign="center">
                         {t('Complete your setup by depositing %amount% %symbol%!', {amount: getFullDisplayBalance(capTokenNumber.minus(balanceTokenNumber), token.decimals), symbol: token.symbol})}
