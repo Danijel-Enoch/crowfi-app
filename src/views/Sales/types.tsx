@@ -27,16 +27,19 @@ export interface PublicSaleData {
     cap: BigNumber
     weiRaised: BigNumber
     finalized: boolean
+    logo?: string
 
     meta?: PublicSaleMetaData
 }
 
 export interface PublicSaleMetaData {
     website?: string
-    github?: string
     twitter?: string
-    reddit?: string
+    facebook?: string
     telegram?: string
+    instagram?: string
+    github?: string
+    discord?: string
+    reddit?: string
     description?: string
-    logo?: string
 }

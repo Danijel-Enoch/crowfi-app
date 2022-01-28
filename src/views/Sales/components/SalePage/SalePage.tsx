@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Link, RouteComponentProps } from 'react-router-dom'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Link, RouteComponentProps, Router } from 'react-router-dom'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { isAddress } from 'ethers/lib/utils'
@@ -9,9 +9,11 @@ import { useTranslation } from 'contexts/Localization'
 import SaleBaseSection from './SaleBaseSection'
 import SaleActionSection from './SaleActionSection'
 import SaleStatusSection from './SaleStatusSection'
-import { getSale } from '../../hooks/getSales'
+import { getSale, getSaleMeta } from '../../hooks/getSales'
 import { PublicSaleData } from '../../types'
 import SaleManageSection from './SaleManageSection'
+import SaleEditMetaSection from './SaleEditMetaSection'
+import SalePageContent from './SalePageContent'
 
 const StyledSection = styled(Flex)`
     filter: ${({ theme }) => theme.card.dropShadow};
@@ -50,7 +52,10 @@ const BlankPage = styled.div`
         min-height: calc(100vh - 336px);
     }
 `
-
+enum ViewMode {
+    VIEW,
+    EDITMETA
+}
 
 const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
     match: {
@@ -62,6 +67,15 @@ const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
     const [sale, setSale] = useState<PublicSaleData|null>(null)
     const [loaded, setLoaded] = useState(false)
     const [isValid, setIsValid] = useState(true)
+    const [viewMode, setViewMode] = useState(ViewMode.VIEW)
+
+    const reloadSaleMeta = useCallback( async() => {
+        const meta = await getSaleMeta(routeAddress)
+        sale.meta = {...meta}
+        sale.logo = meta.logo
+        setSale(sale)
+    }, [routeAddress, sale])
+
     useEffect(() => {
         const fetchSale = async() => {
             if (!isAddress(routeAddress)) {
@@ -75,6 +89,9 @@ const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
                 if (!sale_) {
                     setIsValid(false)
                 } else {
+                    const meta = await getSaleMeta(routeAddress)
+                    sale_.meta = {...meta}
+                    sale_.logo = meta.logo
                     setIsValid(true)
                     setSale(sale_)
                 }
@@ -88,7 +105,16 @@ const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
             fetchSale()
         }
         
-    }, [routeAddress, loaded])
+    }, [routeAddress, reloadSaleMeta, loaded])
+
+    const renderContent = () =>  {
+        if (viewMode === ViewMode.VIEW) {
+            return <SalePageContent account={account} address={routeAddress} sale={sale} onEditMeta={() => setViewMode(ViewMode.EDITMETA)} />
+        }
+
+        return <SaleEditMetaSection sale={sale} address={routeAddress} account={account} onBack={() => setViewMode(ViewMode.VIEW)} onUpdatedMeta={reloadSaleMeta}/>
+
+    }
     
     return (
         <>
@@ -115,41 +141,7 @@ const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
                 </BlankPage>
             )}
 
-            { loaded && isValid && (
-                <>
-                <Flex style={{padding: "24px 16px 12px 16px"}}>
-                    <Breadcrumbs mb="32px" separator={<ChevronRightIcon color="white" width="24px" />}>
-                    <Link to="/presale">
-                        <Text color="white">{t('Presale')}</Text>
-                    </Link>
-                    <Flex>
-                        <Text mr="8px" color="rgba(255, 255, 255, 0.6)">{routeAddress}</Text>
-                    </Flex>
-                    </Breadcrumbs>
-                </Flex>
-                <Flex flexDirection="row" flexWrap="wrap" style={{padding: "0px 8px 32px 0px"}}>
-                    <Flex flexDirection="column" flex={[1, 1, 1, 3]} width={['100%', '100%', '66%', '66%']}>
-                        <StyledSection>
-                            <SaleBaseSection sale={sale}/>
-                        </StyledSection>
-                    </Flex>
-                    <Flex flexDirection="column" flex={[1, 1, 1, 2]} width={['100%', '100%', '33%', '33%']}>
-                        { account === sale.owner ? (
-                            <StyledSection>
-                                <SaleManageSection sale={sale} account={account} />
-                            </StyledSection>
-                        ) : (
-                            <StyledSection>
-                                <SaleActionSection sale={sale} account={account} />
-                            </StyledSection>
-                        )}
-                        <StyledSection>
-                            <SaleStatusSection sale={sale}/>
-                        </StyledSection>
-                    </Flex>
-                </Flex>
-                </>
-            )}
+            { loaded && isValid && renderContent()}
             
         </>
     )

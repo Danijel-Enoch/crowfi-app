@@ -84,15 +84,21 @@ export const StyledTextarea = React.memo(function InnerTextArea({
   placeholder,
   onUserInput,
   hasError,
+  maxLength,
   ...rest
 }: {
   hasError?: boolean
+  maxLength?: number
   value: string
   onUserInput: (input: string) => void
 
 } & Omit<React.HTMLProps<HTMLTextAreaElement>, 'ref' | 'onChange' | 'as'>) {
 
   const enforcer = (nextUserInput: string) => {
+    if (maxLength && nextUserInput.length > maxLength) {
+      onUserInput(nextUserInput.substring(0, maxLength))
+      return
+    }
     onUserInput(nextUserInput)
   }
 
@@ -168,7 +174,84 @@ export const StyledTextInput = React.memo(function InnerInput({
       />
     )
   })
+export const StyledURLInput = React.memo(function InnerInput({
+  value,
+  onUserInput,
+  title,
+  placeholder,
+  pattern,
+  validateReg,
+  errorReg,
+  transform,
+  ...rest
+}: {
+  value: string
+  onUserInput: (input: string) => void
+  title?: string
+  error?: boolean
+  fontSize?: string
+  align?: 'right' | 'left'
+  pattern?: string,
+  validateReg?:RegExp
+  errorReg?: RegExp
+  transform?: (input: string) => string
+} & Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {
+  // const pattern_ = pattern || "^[\\d\\w].*[\\d\\w]*$"
+  // const validateReg_ = validateReg || RegExp(`^[\\d\\w].*[\\d\\w]*$`)
+  const enforcer = (nextUserInput: string) => {
+    const text = transform ? transform(nextUserInput) : nextUserInput
+    if (text === '' || !validateReg || validateReg.test(escapeRegExp(text))) {
+      const withoutSpaces = text.replace(/\s+/g, '')
+      onUserInput(withoutSpaces)
+    }
+    // if (nextUserInput === '' || validateReg_.test(escapeRegExp(nextUserInput))) {
+    //   onUserInput(nextUserInput)
+    // }
+  }
+  const error = useMemo(() => {
+    
+    if (!value || value.length === 0) {
+      return false
+    }
 
+    if (errorReg) {
+      const res = errorReg.test(value)
+      return !res;
+    }
+    try {
+      const url = new URL(value);
+      return url.protocol !== 'http:' && url.protocol !== 'https:';
+    } catch (e) {
+      return true;
+    }
+    return false;
+  }, [value, errorReg])
+
+  const { t } = useTranslation()
+
+  return (
+    <StyledInput
+      {...rest}
+      value={value}
+      onChange={(event) => {
+        const input = event.target.value
+        const withoutSpaces = input.replace(/\s+/g, '')
+        enforcer(withoutSpaces)
+      }}
+      // universal input options
+      inputMode="text"
+      title={title}
+      autoComplete="off"
+      autoCorrect="off"
+      hasError={error}
+      // text-specific options
+      type="text"
+      // pattern="^(0x[a-fA-F0-9]{40})$"
+      placeholder={placeholder}
+      spellCheck="false"
+    />
+  )
+})
 
 export const StyledAddressInput = React.memo(function InnerInput({
   value,

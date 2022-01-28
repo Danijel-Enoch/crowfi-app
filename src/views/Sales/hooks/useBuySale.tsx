@@ -42,3 +42,19 @@ export const useFinalizeSale = (address: string) => {
 
   return { onFinalize: handleFinalize }
 }
+
+
+
+export const useUpdateSaleMeta = (address: string) => {
+  const saleContract = useCrowpadSaleContract(address)
+
+  const handleUpdateMeta = useCallback(async (logo, website, facebook, twitter, instagram, telegram, github, discord, reddit, description) => {
+    const args = [logo, website, twitter, facebook, telegram, instagram, github, discord, reddit, description]
+    const gasPrice = getGasPrice()
+    const tx = await callWithEstimateGas(saleContract, 'updateMeta', args, {gasPrice})
+    const receipt = await tx.wait()
+    return receipt.status
+  }, [saleContract])
+
+  return { onUpdateMeta: handleUpdateMeta }
+}

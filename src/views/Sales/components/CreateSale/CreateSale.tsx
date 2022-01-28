@@ -10,7 +10,7 @@ import { useAppDispatch } from 'state'
 import { useSaleDeployFee } from 'state/launchpad/hooks'
 import { fetchLaunchpadPublicDataAsync, fetchLaunchpadUserDataAsync } from 'state/launchpad'
 import Select from 'components/Select/Select'
-import { StyledInput, StyledInputStyles, StyledIntegerInput, StyledInputLabel, StyledAddressInput, StyledNumericalInput } from 'components/Launchpad/StyledControls'
+import { StyledInput, StyledInputStyles, StyledIntegerInput, StyledInputLabel, StyledAddressInput, StyledNumericalInput, StyledTextInput } from 'components/Launchpad/StyledControls'
 import useTheme from 'hooks/useTheme'
 import useToast from 'hooks/useToast'
 import { useToken } from 'hooks/Tokens'
@@ -72,6 +72,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
     const [pendingTx, setPendingTx] = useState(false)
     const [ agreed, setAgreed ] = useState<boolean>(false)
     const [ presentedDesclaimer, setPresentedDesclaimer ] = useState<boolean>(false)
+    const [ logo, setLogo ] = useState<string>('')
     const [ rate, setRate ] = useState<string>('')
     const [ softCap, setSoftCap ] = useState<string>('')
     const [ hardCap, setHardCap ] = useState<string>('')
@@ -148,7 +149,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
     const handleCreate = useCallback(async () => {
         try {
             setPendingTx(true)
-            const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, rateNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000))
+            const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, rateNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000), logo.trim())
             dispatch(fetchLaunchpadPublicDataAsync())
             dispatch(fetchLaunchpadUserDataAsync({account}))
             history.push(`/presale/${saleAddress}`)
@@ -159,7 +160,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
         } finally {
           setPendingTx(false)
         }
-    }, [onCreateSale, dispatch, toastError, t, history, account, deployFee, wallet, searchToken, rateNumber, softCapNumber, hardCapNumber, startDate, endDate])
+    }, [onCreateSale, dispatch, toastError, t, history, account, deployFee, wallet, searchToken, rateNumber, softCapNumber, hardCapNumber, startDate, endDate, logo])
 
     const renderApprovalOrCreateButton = () => {
         return  (
@@ -260,6 +261,15 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
                                 onChange={handleEndDateChange}
                                 selected={endDate}
                                 placeholderText="Presale End Time"/>
+                            </InputWrap>
+                            <InputWrap>
+                                <StyledTextInput
+                                    value={logo} 
+                                    placeholder={t('Logo')}
+                                    onUserInput={(value) => setLogo(value)} />
+                                <StyledInputLabel>
+                                    {t('Logo Link: (URL must end with a supported image extension png, jpg, jpeg or gif))')}
+                                </StyledInputLabel>
                             </InputWrap>
                             {/* <InputWrap>
                                 <DateTimePikcer 

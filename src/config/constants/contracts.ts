@@ -33,7 +33,7 @@ export default {
   launchpadSaleFactory: {
     97: '0x7B8e2CE337cfEad3633EeB8dDDC242e76fF1A613',
     56: '0x6ab8463a4185b80905e05a9ff80a2d6b714b9e95',
-    338: '0x4777304104b1E583cDbF7c9f2823EB272a78f7Cf'
+    338: '0xaC0556974a83BE840c8FC0c2aa250546Fe1bCE07'
   },
   locker: {
     97: '0x7B8e2CE337cfEad3633EeB8dDDC242e76fF1A613',

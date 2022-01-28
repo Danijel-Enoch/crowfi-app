@@ -1,8 +1,9 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'contexts/Localization'
 import { format } from 'date-fns'
 import styled from 'styled-components'
-import { Flex, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton } from '@pancakeswap/uikit'
+import { Flex, Text, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton, PencilIcon, RedditIcon, DiscordIcon, InstagramIcon } from '@pancakeswap/uikit'
 import { getBscScanLink } from 'utils'
 import truncateHash from 'utils/truncateHash'
 import { getFullDisplayBalance } from 'utils/formatBalance'
@@ -21,11 +22,24 @@ const LogoWrapper = styled.div`
     }
 `
 
+const StyledIconButton = styled(IconButton)`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    background: ${({ theme }) => theme.colors.backgroundAlt2};
+    border-radius: 12px;
+    margin-right: 8px;
+`
+
 export interface SaleBaseSectionProps {
+    account?: string
     sale: PublicSaleData
+    onEditMeta?: () => void
 }
 
-const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({sale}) => {
+const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditMeta}) => {
 
     const { t } = useTranslation()
     const { isMobile } = useMatchBreakpoints()
@@ -38,29 +52,69 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({sale}) => {
                 <Flex justifyContent="space-between">
                     <Flex alignItems="center">
                         <LogoWrapper>
-                            <img src='/logo.png' alt={t('Crow Logo')} />
+                            { sale.logo && sale.logo.length > 0 ? (
+                                <img src={sale.logo} alt={t('Logo')} />
+                            ) : (
+                                <img src='/logo.png' alt={t('Crow Logo')} />
+                            )}
                         </LogoWrapper>
                         <Flex flexDirection="column">
+                            <Flex alignItems="center">
                             <Heading>
                                 {token ? token.name : ''} Presale
                             </Heading>
+                            { account === sale.owner && (
+                            <IconButton onClick={onEditMeta} variant="text" scale="sm">
+                                <PencilIcon width="16px" height="16px"/>
+                            </IconButton>
+                            )}
+                            </Flex>
                             <Flex flexDirection="row">
-                                <IconButton variant="text" scale="sm" disabled mr="8px">
-                                    <LanguageIcon width="12px" />
-                                </IconButton>
-                                <IconButton variant="text" scale="sm" disabled mr="8px">
-                                    <GithubIcon width="12px" />
-                                </IconButton>
-                                <IconButton variant="text" scale="sm" disabled mr="8px">
-                                    <TwitterIcon width="12px" />
-                                </IconButton>
-                                <IconButton variant="text" scale="sm" disabled mr="8px">
-                                    <TelegramIcon width="12px" />
-                                </IconButton>
+                                { sale.meta && sale.meta.website && (
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.website}>
+                                        <LanguageIcon width="16px" color="primary" />
+                                    </StyledIconButton>
+                                )}
+                                { sale.meta && sale.meta.twitter && (
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.twitter}>
+                                        <TwitterIcon width="16px" color="primary" />
+                                    </StyledIconButton>
+                                )}
+                                { sale.meta && sale.meta.instagram && (
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.instagram}>
+                                        <InstagramIcon width="16px" color="primary" />
+                                    </StyledIconButton>
+                                )}
+                                { sale.meta && sale.meta.telegram && (
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.telegram}>
+                                        <TelegramIcon width="16px" color="primary" />
+                                    </StyledIconButton>
+                                )}
+                                { sale.meta && sale.meta.discord && (
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.discord}>
+                                        <DiscordIcon width="16px" color="primary" />
+                                    </StyledIconButton>
+                                )}
+                                { sale.meta && sale.meta.github && (
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.github}>
+                                        <GithubIcon width="16px" color="primary" />
+                                    </StyledIconButton>
+                                )}
+                                { sale.meta && sale.meta.reddit && (
+                                    <StyledIconButton variant="primary" scale="sm" mr="8px" as="a" href={sale.meta.reddit}>
+                                        <RedditIcon width="16px" color="primary" />
+                                    </StyledIconButton>
+                                )}
                             </Flex>
                         </Flex>
                     </Flex>
                 </Flex>
+                {sale.meta && sale.meta.description && sale.meta.description.length > 0 && (
+                    <Text fontSize="14px" color="rgba(0,0,0,0.7)" mt="8px" mb="8px">
+                        {sale.meta.description}
+                    </Text>
+                )}
+                
                 <Flex flexDirection="column">
                     <InfoRow>
                         <InfoLabel>{t('Presale Address')}</InfoLabel>

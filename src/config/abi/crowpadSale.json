@@ -220,6 +220,32 @@
   },
   {
     "inputs": [],
+    "name": "discord",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "facebook",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "finalize",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -252,6 +278,19 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "github",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -298,6 +337,19 @@
   },
   {
     "inputs": [],
+    "name": "instagram",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "investorHardCap",
     "outputs": [
       {
@@ -337,6 +389,19 @@
   },
   {
     "inputs": [],
+    "name": "logo",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "openingTime",
     "outputs": [
       {
@@ -363,12 +428,38 @@
   },
   {
     "inputs": [],
+    "name": "projectDescription",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "rate",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "reddit",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -395,6 +486,136 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "discord_",
+        "type": "string"
+      }
+    ],
+    "name": "setDiscord",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "facebook_",
+        "type": "string"
+      }
+    ],
+    "name": "setFacebook",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "github_",
+        "type": "string"
+      }
+    ],
+    "name": "setGithub",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "instagram_",
+        "type": "string"
+      }
+    ],
+    "name": "setInstagram",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "logo_",
+        "type": "string"
+      }
+    ],
+    "name": "setLogo",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "projectDescription_",
+        "type": "string"
+      }
+    ],
+    "name": "setProjectDescription",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "reddit_",
+        "type": "string"
+      }
+    ],
+    "name": "setReddit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "telegram_",
+        "type": "string"
+      }
+    ],
+    "name": "setTelegram",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "twitter_",
+        "type": "string"
+      }
+    ],
+    "name": "setTwitter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "website_",
+        "type": "string"
+      }
+    ],
+    "name": "setWebsite",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "stage",
     "outputs": [
@@ -402,6 +623,19 @@
         "internalType": "enum CrowpadSale.CrowdsaleStage",
         "name": "",
         "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "telegram",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -448,12 +682,96 @@
   },
   {
     "inputs": [],
+    "name": "twitter",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "logo_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "website_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "twitter_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "facebook_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "telegram_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "instagram_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "github_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "discord_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "reddit_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "projectDescription_",
+        "type": "string"
+      }
+    ],
+    "name": "updateMeta",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "wallet",
     "outputs": [
       {
         "internalType": "address payable",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "website",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",

@@ -6,6 +6,7 @@ import { TokenImage } from 'components/TokenImage'
 import tokens from 'config/constants/tokens'
 
 export interface CardHeadingProps {
+  logo?: string,
   token: Token,
   startDate: number,
   endDate: number
@@ -29,7 +30,18 @@ const SymbolText = styled(Text)`
   background: ${({ theme }) => theme.colors.backgroundAlt};
 `
 
-const CardHeading: React.FC<CardHeadingProps> = ({ token, startDate, endDate }) => {
+const Logo = styled.div`
+  width: 64px;
+  height: 64px;
+  position: relative;
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit:contain;
+  }
+`
+
+const CardHeading: React.FC<CardHeadingProps> = ({ logo, token, startDate, endDate }) => {
   const status = useMemo(() => {
     if (endDate < new Date().getTime() / 1000) {
       return 'Closed'
@@ -57,8 +69,14 @@ const CardHeading: React.FC<CardHeadingProps> = ({ token, startDate, endDate }) 
   }, [status])
   return (
     <Wrapper justifyContent="flex-start" alignItems="center" mb="12px">
-      {token && (
-        <TokenImage token={token} width={64} height={64}/>
+      {logo && logo.length > 0 ? (
+        <Logo>
+          <img src={logo} alt="Logo"/>
+        </Logo>
+      ) : (
+        <Logo>
+          <img src="https://crowfi.app/logo.png" alt="Logo"/>
+        </Logo>
       )}
       <Flex flexDirection="column" alignItems="start" ml="12px">
         <Heading mb="4px" color="primary">{token ? token.name : ''}</Heading>

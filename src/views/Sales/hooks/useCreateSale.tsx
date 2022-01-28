@@ -8,9 +8,9 @@ export const useCreateSale = () => {
   const factory = useCrowpadSaleFactoryContract()
 
   const handleCreateSale = useCallback(
-    async (feeAmount, wallet, token, rate, goal, cap, openingTime, closingTime) => {
+    async (feeAmount, wallet, token, rate, goal, cap, openingTime, closingTime, logo) => {
       const gasPrice = getGasPrice()
-      const args = [rate, wallet, token, cap, openingTime, closingTime, goal];
+      const args = [rate, wallet, token, cap, openingTime, closingTime, goal, logo];
       const tx = await callWithEstimateGas(factory, 'createSale', args, { gasPrice}, 1000, feeAmount)
       const receipt = await tx.wait()
       if (receipt.status === 1) {
