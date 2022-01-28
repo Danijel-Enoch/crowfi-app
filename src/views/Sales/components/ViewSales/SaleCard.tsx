@@ -56,6 +56,7 @@ const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
     <StyledCard background="white" borderBackground="rgba(150,150,150,0.1)">
         <CardInnerContainer>
             <CardHeading
+                logo={sale.logo}
                 token={token}
                 startDate={sale.openingTime}
                 endDate={sale.closingTime}

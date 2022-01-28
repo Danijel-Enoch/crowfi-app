@@ -6,12 +6,9 @@ import { isAddress } from 'ethers/lib/utils'
 import { Breadcrumbs, Flex, Text, ChevronRightIcon, Spinner, LogoIcon, Heading, Button } from '@pancakeswap/uikit'
 import { PageBGWrapper } from 'components/Launchpad/StyledControls'
 import { useTranslation } from 'contexts/Localization'
-import SaleBaseSection from './SaleBaseSection'
-import SaleActionSection from './SaleActionSection'
-import SaleStatusSection from './SaleStatusSection'
+import useRefresh from 'hooks/useRefresh'
 import { getSale, getSaleMeta } from '../../hooks/getSales'
 import { PublicSaleData } from '../../types'
-import SaleManageSection from './SaleManageSection'
 import SaleEditMetaSection from './SaleEditMetaSection'
 import SalePageContent from './SalePageContent'
 
@@ -64,7 +61,9 @@ const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
 }) => {
     const { t } = useTranslation()
     const { account } = useWeb3React()
+    const { slowRefresh }  = useRefresh()
     const [sale, setSale] = useState<PublicSaleData|null>(null)
+    const [needReload, setNeedReload] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const [isValid, setIsValid] = useState(true)
     const [viewMode, setViewMode] = useState(ViewMode.VIEW)
@@ -99,17 +98,26 @@ const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
                 setIsValid(false)
             }
             setLoaded(true)
+            setNeedReload(false)
         }
-
-        if (!loaded) {
-            fetchSale()
-        }
+            
+        fetchSale()
         
-    }, [routeAddress, reloadSaleMeta, loaded])
+    }, [routeAddress, needReload, slowRefresh])
+
+    const triggerReload = () =>  {
+        console.log('here - triggering reload');
+        if (needReload) {
+            setNeedReload(false)
+            setNeedReload(true)
+        } else {
+            setNeedReload(true)
+        }
+    }
 
     const renderContent = () =>  {
         if (viewMode === ViewMode.VIEW) {
-            return <SalePageContent account={account} address={routeAddress} sale={sale} onEditMeta={() => setViewMode(ViewMode.EDITMETA)} />
+            return <SalePageContent account={account} address={routeAddress} sale={sale} onEditMeta={() => setViewMode(ViewMode.EDITMETA)} onReloadSale={triggerReload}/>
         }
 
         return <SaleEditMetaSection sale={sale} address={routeAddress} account={account} onBack={() => setViewMode(ViewMode.VIEW)} onUpdatedMeta={reloadSaleMeta}/>

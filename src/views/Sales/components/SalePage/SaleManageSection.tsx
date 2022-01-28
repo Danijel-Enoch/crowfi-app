@@ -26,9 +26,11 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
     const [closed, setClosed] = useState(false)
     const [pendingTx, setPendingTx] = useState(false)
     const token = useToken(sale.token)
-    const depositedAmount = useTokenBalance(sale.address, token)
-    const depositedAmountNumber = depositedAmount && token ? new BigNumber(depositedAmount.toExact()).multipliedBy(BIG_TEN.pow(token.decimals)) : null;
-    const requiredDepositeNumber = sale.cap.multipliedBy(sale.rate)
+    const balanceAmount = useTokenBalance(sale.address, token)
+    const balanceTokenNumber = balanceAmount && token ? new BigNumber(balanceAmount.toExact()).multipliedBy(BIG_TEN.pow(token.decimals)) : null;
+    const capTokenNumber = sale.cap.multipliedBy(sale.rate)
+    const raisedTokenNumber = sale.weiRaised.multipliedBy(sale.rate)
+    const requiredTokenNumber = capTokenNumber.minus(raisedTokenNumber)
 
     const { onDeposite } = useDepositeSale(sale.token)
 
@@ -47,7 +49,7 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
     const handleDeposit = useCallback(async () => {
         try {
             setPendingTx(true)
-            const amount = requiredDepositeNumber.minus(depositedAmountNumber)
+            const amount = requiredTokenNumber.minus(balanceTokenNumber)
             const receipt = await onDeposite(amount.toString(), sale.address)
             toastSuccess(
             `${t('Deposited')}!`,
@@ -63,7 +65,7 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
         } finally {
             setPendingTx(false)
         }
-    }, [toastError, toastSuccess, t, onDeposite, depositedAmountNumber, requiredDepositeNumber, token, sale.address])
+    }, [toastError, toastSuccess, t, onDeposite, balanceTokenNumber, requiredTokenNumber, token, sale.address])
 
     const handleFinalize = useCallback(async () => {
         try {
@@ -92,10 +94,10 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
                     )}
                     </Text>
                 </Message>
-                { token && depositedAmount && depositedAmountNumber.lt(requiredDepositeNumber) && (
+                { token && balanceAmount && balanceTokenNumber.lt(requiredTokenNumber) && (
                     <>
                     <Heading fontSize="20px" color="red" textAlign="center">
-                        {t('Complete your setup by depositing %amount% %symbol%!', {amount: getFullDisplayBalance(requiredDepositeNumber.minus(depositedAmountNumber), token.decimals), symbol: token.symbol})}
+                        {t('Complete your setup by depositing %amount% %symbol%!', {amount: getFullDisplayBalance(capTokenNumber.minus(balanceTokenNumber), token.decimals), symbol: token.symbol})}
                     </Heading>
 
                     <Flex justifyContent="center" mt="16px" mb="16px">
@@ -105,15 +107,15 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
                     </>
                 )}
                 <Flex justifyContent="center" mb="8px">
-                    { depositedAmount ? (
+                    { balanceAmount ? (
                         <Text fontSize="16px" mr="8px">
-                            {depositedAmount.toExact()} {depositedAmount.token.symbol}
+                            {balanceAmount.toExact()} {balanceAmount.token.symbol}
                         </Text>
                     ) : (
                         <Skeleton width="60px" height="30px" mr="8px"/>
                     )}
                     <Text fontSize='16px' textAlign="center">
-                        {t('deposited')}
+                        {t('remaining')}
                     </Text>
                 </Flex>
                 <SaleTimer startTime={sale.openingTime} endTime={sale.closingTime} />

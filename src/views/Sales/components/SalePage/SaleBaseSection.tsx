@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'contexts/Localization'
 import { format } from 'date-fns'
 import styled from 'styled-components'
-import { Flex, Text, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton, PencilIcon, RedditIcon, DiscordIcon, InstagramIcon } from '@pancakeswap/uikit'
+import { Flex, Text, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton, PencilIcon, RedditIcon, DiscordIcon, InstagramIcon, FacebookIcon } from '@pancakeswap/uikit'
 import { getBscScanLink } from 'utils'
 import truncateHash from 'utils/truncateHash'
 import { getFullDisplayBalance } from 'utils/formatBalance'
@@ -15,6 +15,7 @@ import { PublicSaleData } from '../../types'
 const LogoWrapper = styled.div`
     width: 80px;
     height: 80px;
+    margin-right: 16px;
     > img {
         width: 100%;
         height: 100%;
@@ -73,6 +74,11 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                                 { sale.meta && sale.meta.website && (
                                     <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.website}>
                                         <LanguageIcon width="16px" color="primary" />
+                                    </StyledIconButton>
+                                )}
+                                { sale.meta && sale.meta.facebook && (
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.facebook}>
+                                        <FacebookIcon width="16px" color="primary" />
                                     </StyledIconButton>
                                 )}
                                 { sale.meta && sale.meta.twitter && (

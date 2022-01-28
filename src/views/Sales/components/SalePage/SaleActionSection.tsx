@@ -16,9 +16,10 @@ import { getSaleUserContribution } from '../../hooks/getSales'
 export interface SaleActionSectionProps {
     sale: PublicSaleData
     account: string
+    onReloadSale?: () => void
 }
 
-const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale}) => {
+const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onReloadSale}) => {
 
     const { t } = useTranslation()
     const { toastError, toastSuccess } = useToast()
@@ -45,8 +46,8 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
 
     const maxNumber = useMemo(() => {
         let max = sale.cap.minus(sale.weiRaised)
-        if (max.gt(BIG_TEN.pow(18).multipliedBy(2))) {
-            max = BIG_TEN.pow(18).multipliedBy(2)
+        if (max.gt(BIG_TEN.pow(18).multipliedBy(50))) {
+            max = BIG_TEN.pow(18).multipliedBy(50)
         }
         return max
     }, [sale])
@@ -83,6 +84,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
         try {
             setPendingTx(true)
             const receipt = await onBuySale(account, valueNumber.toString())
+            onReloadSale()
             setLoadContribution(!loadContribution)
             toastSuccess(
             `${t('Purchased')}!`,
@@ -97,7 +99,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
         } finally {
             setPendingTx(false)
         }
-    }, [toastError, toastSuccess, t, onBuySale, sale, valueNumber, account, loadContribution])
+    }, [toastError, toastSuccess, t, onBuySale, onReloadSale, sale, valueNumber, account, loadContribution])
 
     return (
         <>

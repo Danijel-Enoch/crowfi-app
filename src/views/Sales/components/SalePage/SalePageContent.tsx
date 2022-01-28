@@ -56,10 +56,11 @@ export interface SalePageContentProps {
     address: string
     sale?: PublicSaleData
     onEditMeta?: () => void
+    onReloadSale?: () => void
 }
 
 const SalePageContent: React.FC<SalePageContentProps> = ({
-    account, address, sale, onEditMeta
+    account, address, sale, onEditMeta, onReloadSale
 }) => {
     const { t } = useTranslation()
     
@@ -89,7 +90,7 @@ const SalePageContent: React.FC<SalePageContentProps> = ({
                             </StyledSection>
                         ) : (
                             <StyledSection>
-                                <SaleActionSection sale={sale} account={account} />
+                                <SaleActionSection sale={sale} account={account} onReloadSale={onReloadSale}/>
                             </StyledSection>
                         )}
                         <StyledSection>

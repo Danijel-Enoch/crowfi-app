@@ -1,14 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'contexts/Localization'
 import { Text, Flex,  Breadcrumbs, ChevronRightIcon, Button } from '@pancakeswap/uikit'
 import styled from 'styled-components'
-import { StyledNumericalInput, StyledURLInput, StyledTextInput, StyledInputLabel, StyledTextarea } from 'components/Launchpad/StyledControls'
+import { StyledURLInput, StyledInputLabel, StyledTextarea } from 'components/Launchpad/StyledControls'
 import Dots from 'components/Loader/Dots'
 import useToast from 'hooks/useToast'
 import { PublicSaleData } from '../../types'
 import { useUpdateSaleMeta } from '../../hooks/useBuySale'
-import { getSaleMeta } from '../../hooks/getSales'
 
 const StyledSection = styled(Flex)`
     filter: ${({ theme }) => theme.card.dropShadow};
@@ -62,8 +61,6 @@ const SaleEditMetaSection: React.FC<SaleEditMetaSectionProps> = ({
 
     const { t } = useTranslation()
     const { toastError, toastSuccess } = useToast()
-    const [value, setValue] = useState('')
-    const [text, setText] = useState('')
     const [pendingTx, setPendingTx] = useState(false)
     const urlReg = RegExp('^(http|https)\\://(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{1,256}.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$')
     const imgReg = RegExp('^(http|https)\\://(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)(png|jpeg|gif|jpg)$')
@@ -78,34 +75,12 @@ const SaleEditMetaSection: React.FC<SaleEditMetaSectionProps> = ({
     const [reddit, setReddit] = useState(sale.meta ? sale.meta.reddit : '')
     const [description, setDescription] = useState(sale.meta ? sale.meta.description : '')
 
-    const [loaded, setLoaded] = useState(false)
-
     const { onUpdateMeta } = useUpdateSaleMeta(sale.address)
 
     const tranformInput = (input?: string) => {
         if (!input) return ''
         return input.trim()
     }
-
-    useEffect(() =>  {
-        const fetchMeta = async() =>{
-            const meta = await getSaleMeta(sale.address)
-            setLogo(meta.logo)
-            setWebsite(meta.website)
-            setTwitter(meta.twitter)
-            setFacebook(meta.facebook)
-            setTelegram(meta.telegram)
-            setInstagram(meta.instagram)
-            setGithub(meta.github)
-            setDiscord(meta.discord)
-            setReddit(meta.reddit)
-            setDescription(meta.description)
-        }
-
-        if (!loaded) {
-            fetchMeta()
-        }
-    }, [loaded, sale])
 
     const handleUpdate = useCallback( async () => {
         
