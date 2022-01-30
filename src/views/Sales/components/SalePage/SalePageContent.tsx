@@ -13,6 +13,7 @@ import { getSale } from '../../hooks/getSales'
 import { PublicSaleData } from '../../types'
 import SaleManageSection from './SaleManageSection'
 import SaleEditMetaSection from './SaleEditMetaSection'
+import SaleWhitelistSection from './SaleWhitelistSection'
 
 const StyledSection = styled(Flex)`
     filter: ${({ theme }) => theme.card.dropShadow};
@@ -57,10 +58,11 @@ export interface SalePageContentProps {
     sale?: PublicSaleData
     onEditMeta?: () => void
     onReloadSale?: () => void
+    onWhitelistChanged?: (enabled: boolean) => void
 }
 
 const SalePageContent: React.FC<SalePageContentProps> = ({
-    account, address, sale, onEditMeta, onReloadSale
+    account, address, sale, onEditMeta, onReloadSale, onWhitelistChanged
 }) => {
     const { t } = useTranslation()
     
@@ -85,9 +87,16 @@ const SalePageContent: React.FC<SalePageContentProps> = ({
                     </Flex>
                     <Flex flexDirection="column" flex={[1, 1, 1, 2]} width={['100%', '100%', '33%', '33%']}>
                         { account === sale.owner ? (
+                            <>
                             <StyledSection>
-                                <SaleManageSection sale={sale} account={account} />
+                                <SaleManageSection sale={sale} account={account} onReloadSale={onReloadSale}/>
                             </StyledSection>
+                            { sale.whitelistEnabled && (
+                                <StyledSection>
+                                    <SaleWhitelistSection sale={sale} account={account}/>
+                                </StyledSection>
+                            )}
+                            </>
                         ) : (
                             <StyledSection>
                                 <SaleActionSection sale={sale} account={account} onReloadSale={onReloadSale}/>

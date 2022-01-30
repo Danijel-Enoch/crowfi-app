@@ -183,10 +183,6 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                         <InfoValue>{getFullDisplayBalance(sale.cap)} CRO</InfoValue>
                     </InfoRow>
                     <InfoRow>
-                        <InfoLabel>{t('Unsold Tokens')}</InfoLabel>
-                        <InfoValue>Burn</InfoValue>
-                    </InfoRow>
-                    <InfoRow>
                         <InfoLabel>{t('Presale Start Time')}</InfoLabel>
                         <InfoValue>{ format(sale.openingTime * 1000, 'yyyy/MM/dd hh:mm aa')}</InfoValue>
                     </InfoRow>

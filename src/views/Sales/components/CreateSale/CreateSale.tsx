@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
-import { Text, Flex, Box, Input, Heading, Button, Radio, useModal } from '@pancakeswap/uikit'
+import { Text, Flex, Box, Input, Heading, Button, Radio, useModal, useTooltip, HelpIcon } from '@pancakeswap/uikit'
 import { JSBI, Token, TokenAmount } from '@pancakeswap/sdk'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
@@ -9,13 +9,13 @@ import BigNumber from 'bignumber.js'
 import { useAppDispatch } from 'state'
 import { useSaleDeployFee } from 'state/launchpad/hooks'
 import { fetchLaunchpadPublicDataAsync, fetchLaunchpadUserDataAsync } from 'state/launchpad'
-import Select from 'components/Select/Select'
-import { StyledInput, StyledInputStyles, StyledIntegerInput, StyledInputLabel, StyledAddressInput, StyledNumericalInput, StyledTextInput } from 'components/Launchpad/StyledControls'
+import { StyledAddressInput, StyledNumericalInput, StyledTextInput, StyledWrapperWithTooltip } from 'components/Launchpad/StyledControls'
+import RadioWithText from 'components/Launchpad/RadioWithText'
 import useTheme from 'hooks/useTheme'
 import useToast from 'hooks/useToast'
 import { useToken } from 'hooks/Tokens'
 import useTokenBalance from 'hooks/useTokenBalance'
-import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
+import { useApproveCallback } from 'hooks/useApproveCallback'
 import { getCrowpadSaleFactoryAddress } from 'utils/addressHelpers'
 import { isAddress } from 'utils'
 import { BIG_TEN, BIG_ZERO } from 'utils/bigNumber'
@@ -23,14 +23,11 @@ import { getFullDisplayBalance } from 'utils/formatBalance'
 import Dots from 'components/Loader/Dots'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import DateTimePikcer from 'components/Launchpad/DateTimePicker'
-import RadioWithText from 'components/Launchpad/RadioWithText'
-import { DatePicker } from 'components/DatePicker'
-import { OwnerType, TokenType, UnlockType } from '../../types'
 import DesclaimerModal from './DesclaimerModal'
 import { useCreateSale } from '../../hooks/useCreateSale'
 
 const InputWrap = styled.div`
-    padding: 8px 0px;
+    padding: 8px 4px;
 `
 const RadioGroup = styled(Flex)`
   align-items: center;
@@ -57,6 +54,19 @@ const StyledList = styled.ul`
     }
 `
 
+interface FormErrors {
+    token?: string,
+    wallet?: string,
+    rate?: string,
+    softCap?: string,
+    hardCap?: string,
+    minContribution?: string,
+    maxContribution?: string,
+    presaleStartTime?: string,
+    presaleEndTime?: string,
+    logo?: string
+}
+
 interface CreateProps {
     onDisagree: () => void
 }
@@ -76,15 +86,24 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
     const [ rate, setRate ] = useState<string>('')
     const [ softCap, setSoftCap ] = useState<string>('')
     const [ hardCap, setHardCap ] = useState<string>('')
-    const [ contributionLimit, setContributionLimit ] = useState<string>('')
-    const [ lpPercent, setLpPercent ] = useState<string>('')
-    const [ swapRate, setSwapRate ] = useState<string>('')
+    const [ minContribution, setMinContribution ] = useState<string>('')
+    const [ maxContribution, setMaxContribution ] = useState<string>('')
     const [startDate, setStartDate] = useState<Date|null>(null)
     const [endDate, setEndDate] = useState<Date|null>(null)
     const [wallet, setWallet] = useState<string|null>(null)
-    const [lockDate, setLockDate] = useState<Date|null>(null)
+    const [formError, setFormError] = useState<FormErrors>({})
+    const [whitelistEnabled, setWhitelistEnabled] = useState<boolean>(false)
+    const {
+        targetRef: whitelistTargetRef,
+        tooltip: whitelistTooltipElement,
+        tooltipVisible: whitelistTooltipVisible,
+      } = useTooltip("In a private sale, only whitelisted customers can distribute.", {
+        placement: 'bottom',
+      })
     const deployFee = useSaleDeployFee()
 
+    const minContributionNumer = new BigNumber(minContribution).multipliedBy(BIG_TEN.pow(18))
+    const maxContributionNumer = new BigNumber(maxContribution).multipliedBy(BIG_TEN.pow(18))
     const hardCapNumber = new BigNumber(hardCap).multipliedBy(BIG_TEN.pow(18))
     const { onCreateSale } = useCreateSale()
 
@@ -103,7 +122,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
 
     const softCapNumber = useMemo(() => {
         const res = new BigNumber(softCap).multipliedBy(BIG_TEN.pow(18))
-        if (!res || !res.isFinite() || res.eq(0)) {
+        if (res && res.isFinite() && res.lte(BIG_TEN.pow(15))) {
             return BIG_TEN.pow(15)
         }
         return res
@@ -136,20 +155,102 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
 
     const handleStartDateChange = (date: Date, event) => {
         setStartDate(date)
+        setFormError({...formError, presaleStartTime: null})
     }
 
     const handleEndDateChange = (date: Date, event) => {
         setEndDate(date)
+        setFormError({...formError, presaleEndTime: null})
     }
 
-    const handleLockDateChange = (date: Date, event) => {
-        setLockDate(date)
-    }
+    const validateInputs = useCallback(() => {
+        let valid = true
+        const error: FormErrors = {}
+
+        if (!tokenAddress || tokenAddress.length === 0) {
+            error.token = "Token address is required.";
+            valid = false;
+        } else if (!searchToken) {
+            valid = false;
+            error.token = "Token address is invalid.";
+        } else {
+
+            if (!rateNumber || !rateNumber.isFinite() || rateNumber.eq(0)) {
+                valid = false;
+                error.rate = "Presale rate is required.";
+            }
+
+
+            if (!depositAmoutNumber || !depositAmoutNumber.isFinite() || depositAmoutNumber.eq(0)) {
+                valid = false;
+                error.maxContribution = "Hard cap is invalid.";
+            }
+        }
+
+        if (!isAddress(wallet)) {
+            valid = false;
+            error.wallet = "Wallet address is invalid.";
+        }
+
+        if (!softCapNumber || !softCapNumber.isFinite() || softCapNumber.eq(0)) {
+            valid = false;
+            error.softCap = "Soft cap is required.";
+        }
+
+        if (!hardCapNumber || !hardCapNumber.isFinite() || hardCapNumber.eq(0)) {
+            valid = false;
+            error.hardCap = "Hard cap is required.";
+        }
+
+        if (softCapNumber && hardCapNumber && softCapNumber.gte(hardCapNumber)) {
+            valid = false;
+            error.softCap = "Soft cap cannot be greater than hard cap.";
+        }
+
+        if (!minContributionNumer || !minContributionNumer.isFinite() || minContributionNumer.eq(0)) {
+            valid = false;
+            error.minContribution = "Min contribution is required.";
+        }
+
+        if (!maxContributionNumer || !maxContributionNumer.isFinite() || maxContributionNumer.eq(0)) {
+            valid = false;
+            error.maxContribution = "Max contribution is required.";
+        }
+
+        if (minContributionNumer && maxContributionNumer && minContributionNumer.gte(maxContributionNumer)) {
+            valid = false;
+            error.softCap = "Min contribution cannot be greater than max contribution.";
+        }
+
+        if (!startDate) {
+            valid = false;
+            error.presaleStartTime = "Presale start date is required.";
+        } else if (startDate <= new Date()) {
+            valid = false;
+            error.presaleStartTime = "Presale start date should be earlier than current time.";
+        }
+
+        if (!endDate) {
+            valid = false;
+            error.presaleEndTime = "Presale start date is required.";
+        }
+
+        if (startDate && endDate && startDate >= endDate) {
+            valid = false;
+            error.presaleEndTime = "Presale end date should be later than presale start date.";
+        }
+        setFormError(error)
+        return valid
+    }, [wallet, searchToken, rateNumber, softCapNumber, hardCapNumber, startDate, endDate, minContributionNumer, maxContributionNumer, depositAmoutNumber, tokenAddress])
+
 
     const handleCreate = useCallback(async () => {
+        if (!validateInputs()) {
+            return
+        }
         try {
             setPendingTx(true)
-            const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, rateNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000), logo.trim())
+            const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, rateNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000), minContributionNumer.toJSON(), maxContributionNumer.toJSON(), whitelistEnabled, true, logo.trim())
             dispatch(fetchLaunchpadPublicDataAsync())
             dispatch(fetchLaunchpadUserDataAsync({account}))
             history.push(`/presale/${saleAddress}`)
@@ -160,12 +261,12 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
         } finally {
           setPendingTx(false)
         }
-    }, [onCreateSale, dispatch, toastError, t, history, account, deployFee, wallet, searchToken, rateNumber, softCapNumber, hardCapNumber, startDate, endDate, logo])
+    }, [onCreateSale, dispatch, toastError, t, validateInputs, history, account, deployFee, wallet, searchToken, rateNumber, softCapNumber, hardCapNumber, startDate, endDate, minContributionNumer, maxContributionNumer, whitelistEnabled, logo])
 
     const renderApprovalOrCreateButton = () => {
         return  (
             <Button
-            disabled={ pendingTx || !searchToken || !rateNumber || !rateNumber.isFinite() || rateNumber.eq(0) || !softCapNumber || !softCapNumber.isFinite() || softCapNumber.eq(0) || !hardCapNumber || !hardCapNumber.isFinite() || hardCapNumber.eq(0) || softCapNumber.gte(hardCapNumber) || !depositAmoutNumber || !depositAmoutNumber.isFinite() || depositAmoutNumber.eq(0) || !startDate || !endDate || startDate <= new Date() || startDate >= endDate || !isAddress(wallet) }
+            disabled={ pendingTx }
             onClick={handleCreate}
             width="100%"
             >
@@ -181,10 +282,17 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
                     <Flex flexDirection={["column", "column", "column", "row"]} maxWidth="960px" width="100%">
                         <Flex flexDirection="column" flex="1" order={[1, 1, 1, 0]}>
                             <InputWrap>
+                                <StyledWrapperWithTooltip
+                                    error={formError.token}
+                                    >
                                 <StyledAddressInput 
                                     value={tokenAddress} 
                                     placeholder={t('Token Address')}
-                                    onUserInput={(value) => setTokenAddress(value)} />
+                                    onUserInput={(value) => {
+                                        setTokenAddress(value)
+                                        setFormError({...formError, token: null})
+                                    }} />
+                                </StyledWrapperWithTooltip>
                             </InputWrap>
                             { searchToken && (
                                 <>
@@ -211,72 +319,143 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
                                 </>
                             )}
                             <InputWrap>
-                                <StyledAddressInput 
-                                    value={wallet} 
-                                    placeholder={t('Wallet Address')}
-                                    onUserInput={(value) => setWallet(value)} />
+                                <StyledWrapperWithTooltip
+                                    tooltip={t('Enter your wallet address which you want to receive CRO from your customers.')}
+                                    error={formError.wallet}
+                                    >
+                                    <StyledAddressInput
+                                        value={wallet} 
+                                        placeholder={t('Wallet Address')}
+                                        onUserInput={(value) => {
+                                            setWallet(value)
+                                            setFormError({...formError, wallet: null})
+                                        }} />
+                                </StyledWrapperWithTooltip>
                             </InputWrap>
                             <InputWrap>
-                                <StyledNumericalInput placeholder={t('Presale Rate, ex. 500')} value={rate} onUserInput={(value) => setRate(value)}/>
-                                <StyledInputLabel>
-                                    {t('Enter your presale price in CRO: (If I pay 1 CRO, how many tokens do I get?)')}
-                                </StyledInputLabel>
+                                <StyledWrapperWithTooltip
+                                    tooltip={t('Enter your presale price in CRO: (If I pay 1 CRO, how many tokens do I get?)')}
+                                    error={formError.rate}
+                                    >
+                                    <StyledNumericalInput placeholder={t('Presale Rate, ex. 500')} value={rate} onUserInput={
+                                        (value) => {
+                                        setRate(value)
+                                        setFormError({...formError, rate: null})
+                                    }}/>
+                                </StyledWrapperWithTooltip>
+                            </InputWrap>
+                            <Flex flexDirection={["column", null, null, "row"]}>
+                                <InputWrap style={{flex: 1}}>
+                                    <StyledWrapperWithTooltip
+                                        tooltip={t('Enter your desired softcap in CRO: [soft,hard] (For a small or near 0 soft cap set your softcap to 0.001)')}
+                                        error={formError.softCap}
+                                            >
+                                        <StyledNumericalInput placeholder={t('Soft Cap ex.50 CRO')} value={softCap} onUserInput={(value) => {
+                                            setSoftCap(value)
+                                            setFormError({...formError, softCap: null})
+                                        } }/>
+                                    </StyledWrapperWithTooltip>
+                                </InputWrap>
+                                <InputWrap style={{flex: 1}}>
+
+                                    <StyledWrapperWithTooltip
+                                            tooltip={t('Enter your desired hardcap in CRO: [soft,hard]')}
+                                            error={formError.hardCap}
+                                                >
+                                        <StyledNumericalInput placeholder={t('Hard Cap ex.100 CRO')} value={hardCap} onUserInput={(value) => {
+                                            setHardCap(value)
+                                            setFormError({...formError, hardCap: null})
+                                        }}/>
+                                    </StyledWrapperWithTooltip>
+                                </InputWrap>
+                            </Flex>
+                            <Flex flexDirection={["column", null, null, "row"]}>
+                                <InputWrap style={{flex: 1}}>
+                                    <StyledWrapperWithTooltip
+                                        tooltip={t('Enter your desired minimum contribution in CRO. ex. 0.1 CRO')}
+                                        error={formError.minContribution}
+                                            >
+                                        <StyledNumericalInput placeholder={t('Min contribution')} style={{marginRight: "4px"}} value={minContribution} onUserInput={(value) => {
+                                            setMinContribution(value)
+                                            setFormError({...formError, minContribution: null})
+                                        }}/>
+                                    </StyledWrapperWithTooltip>
+                                </InputWrap>
+                                <InputWrap style={{flex: 1}}>
+                                    <StyledWrapperWithTooltip
+                                        tooltip={t('Enter your desired maximum contribution in CRO. ex. 2 CRO')}
+                                        error={formError.maxContribution}
+                                            >
+                                        <StyledNumericalInput placeholder={t('Max Contribution')} style={{marginLeft: "4px"}} value={maxContribution} onUserInput={(value) => {
+                                            setMaxContribution(value)
+                                            setFormError({...formError, maxContribution: null})
+                                        }}/>
+                                    </StyledWrapperWithTooltip>
+                                </InputWrap>
+                            </Flex>
+                            <InputWrap>
+                                <StyledWrapperWithTooltip
+                                    tooltip={t('Enter the presale start time in your local time.')}
+                                    error={formError.presaleStartTime}
+                                    >
+                                    <DateTimePikcer 
+                                    onChange={handleStartDateChange}
+                                    selected={startDate}
+                                    placeholderText="Presale Start Time"/>
+                                </StyledWrapperWithTooltip>
                             </InputWrap>
                             <InputWrap>
-                                <Flex>
-                                    <StyledNumericalInput placeholder={t('Soft Cap ex.50')} style={{marginRight: "4px"}} value={softCap} onUserInput={(value) => setSoftCap(value)}/>
-                                    <StyledNumericalInput placeholder={t('Hard Cap ex.100')} style={{marginLeft: "4px"}} value={hardCap} onUserInput={(value) => setHardCap(value)}/>
+                                <StyledWrapperWithTooltip
+                                    tooltip={t('Enter the presale end time in your local time.')}
+                                    error={formError.presaleEndTime}
+                                    >
+                                    <DateTimePikcer 
+                                    onChange={handleEndDateChange}
+                                    selected={endDate}
+                                    placeholderText="Presale End Time"/>
+                                </StyledWrapperWithTooltip>
+                            </InputWrap>
+                            <InputWrap>
+                                <Flex  alignItems="center">
+                                    <Text color="primary">
+                                        {t('Sale type:')}
+                                    </Text>
+                                    <span ref={whitelistTargetRef}>
+                                        <HelpIcon color="textSubtle" width="20px" ml="6px" mt="4px" />
+                                    </span>
+                                    { whitelistTooltipVisible && whitelistTooltipElement}
                                 </Flex>
-                                <StyledInputLabel>
-                                    {t('Enter your desired softcap and hardcap: [soft,hard] (For a small or near 0 soft cap set your softcap to 0.001)')}
-                                </StyledInputLabel>
-                                
-                            </InputWrap>
-                            {/* <InputWrap>
-                                <StyledIntegerInput placeholder={t('Contribution Limits')} value={contributionLimit} onUserInput={(value) => setContributionLimit(value)} />
-                                <StyledInputLabel>
-                                    {t('Enter the maximum amounts each wallet can contribute: (max)')}
-                                </StyledInputLabel>
-                            </InputWrap>
-                            <InputWrap>
-                                <StyledIntegerInput placeholder={t('CrowFi Swap Liquidity, ex. 60')} value={lpPercent} onUserInput={(value) => setLpPercent(value)}/>
-                                <StyledInputLabel>
-                                    {t('Enter the percentage of raised funds that should be allocated to Liquidity on CrowFi Swap (Min 51%)')}
-                                </StyledInputLabel>
-                            </InputWrap>
-                            <InputWrap>
-                                <StyledNumericalInput placeholder={t('CrowFi Swap Rate ex.400')} value={swapRate} onUserInput={(value) => setSwapRate(value)} />
-                                <StyledInputLabel>
-                                    {t('Enter CrowFi Swap listing price in CRO: (If I buy 1 CRO worth on CrowFi Swap how many tokens do I get?)')}
-                                </StyledInputLabel>
-                            </InputWrap> */}
-                            <InputWrap>
-                                <DateTimePikcer 
-                                onChange={handleStartDateChange}
-                                selected={startDate}
-                                placeholderText="Presale Start Time"/>
+                                <Flex>
+                                    <Flex flex="1">
+                                        <RadioWithText
+                                            checked={!whitelistEnabled}
+                                            onClick={() => setWhitelistEnabled(false)}
+                                            text={t('Public')}
+                                            />
+                                    </Flex>
+                                    <Flex flex="1">
+                                        <RadioWithText
+                                            checked={whitelistEnabled}
+                                            onClick={() => setWhitelistEnabled(true)}
+                                            text={t('Private')}
+                                            />
+                                    </Flex>
+                                </Flex>
                             </InputWrap>
                             <InputWrap>
-                                <DateTimePikcer 
-                                onChange={handleEndDateChange}
-                                selected={endDate}
-                                placeholderText="Presale End Time"/>
-                            </InputWrap>
-                            <InputWrap>
+                                <StyledWrapperWithTooltip
+                                    tooltip={t('Logo Link: (URL must end with a supported image extension png, jpg, jpeg or gif))')}
+                                    error={formError.logo}
+                                    >
                                 <StyledTextInput
                                     value={logo} 
-                                    placeholder={t('Logo')}
-                                    onUserInput={(value) => setLogo(value)} />
-                                <StyledInputLabel>
-                                    {t('Logo Link: (URL must end with a supported image extension png, jpg, jpeg or gif))')}
-                                </StyledInputLabel>
+                                    placeholder={t('Logo (optional)')}
+                                    onUserInput={(value) => {
+                                        setLogo(value)
+                                        setFormError({...formError, logo: null})
+                                    }} />
+                                </StyledWrapperWithTooltip>
                             </InputWrap>
-                            {/* <InputWrap>
-                                <DateTimePikcer 
-                                onChange={handleLockDateChange}
-                                selected={lockDate}
-                                placeholderText="Liquidity Lockup Time"/>
-                            </InputWrap> */}
 
                             <Flex flexDirection="row" justifyContent="center" mt="12px">
                                 {!account ? <ConnectWalletButton mt="8px" width="100%" /> : renderApprovalOrCreateButton()}

@@ -15,6 +15,11 @@ export enum OwnerType {
     OTHER = "OTHER"
 }
 
+export enum PaymentType {
+    ESCROW = "ESCROW",
+    DIRECT = "DIRECT"
+}
+
 export interface PublicSaleData {
     address: string
     token: string
@@ -25,9 +30,14 @@ export interface PublicSaleData {
     rate: BigNumber
     goal: BigNumber
     cap: BigNumber
+    minContribution?: BigNumber
+    maxContribution?: BigNumber
     weiRaised: BigNumber
     finalized: boolean
+    canceled: boolean
     logo?: string
+    whitelistEnabled?: boolean
+    paymentType?: PaymentType
 
     meta?: PublicSaleMetaData
 }

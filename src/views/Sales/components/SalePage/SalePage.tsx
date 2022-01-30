@@ -117,7 +117,16 @@ const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
 
     const renderContent = () =>  {
         if (viewMode === ViewMode.VIEW) {
-            return <SalePageContent account={account} address={routeAddress} sale={sale} onEditMeta={() => setViewMode(ViewMode.EDITMETA)} onReloadSale={triggerReload}/>
+            return (
+                <SalePageContent account={account} 
+                    address={routeAddress} 
+                    sale={sale} 
+                    onEditMeta={() => setViewMode(ViewMode.EDITMETA)} 
+                    onReloadSale={triggerReload} 
+                    onWhitelistChanged={(enabled) => {
+                        setSale({...sale, whitelistEnabled: enabled})
+                    }}/>
+            )
         }
 
         return <SaleEditMetaSection sale={sale} address={routeAddress} account={account} onBack={() => setViewMode(ViewMode.VIEW)} onUpdatedMeta={reloadSaleMeta}/>

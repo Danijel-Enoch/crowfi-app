@@ -2,14 +2,12 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Tag, Flex, Heading, Text } from '@pancakeswap/uikit'
 import { Token } from '@pancakeswap/sdk'
-import { TokenImage } from 'components/TokenImage'
-import tokens from 'config/constants/tokens'
+import { useTranslation } from 'contexts/Localization'
+import { PublicSaleData } from '../../types'
 
 export interface CardHeadingProps {
-  logo?: string,
+  sale?: PublicSaleData
   token: Token,
-  startDate: number,
-  endDate: number
 }
 
 const Wrapper = styled(Flex)`
@@ -41,27 +39,46 @@ const Logo = styled.div`
   }
 `
 
-const CardHeading: React.FC<CardHeadingProps> = ({ logo, token, startDate, endDate }) => {
+const CardHeading: React.FC<CardHeadingProps> = ({ token, sale }) => {
+
+  const { t } = useTranslation()
+
   const status = useMemo(() => {
-    if (endDate < new Date().getTime() / 1000) {
-      return 'Closed'
+    const now = new Date().getTime() / 1000;
+
+    if (sale.canceled) {
+      return t('Canceled')
+    }
+    if (sale.finalized) {
+      return t('Finalized')
     }
 
-    if (startDate < new Date().getTime() / 1000) {
-      return 'Running'
+    if (sale.closingTime < now) {
+      return t('Closed')
     }
 
-    return 'Pending'
+    if (sale.openingTime < now) {
+      return t('In Progress')
+    }
 
-  }, [startDate, endDate])
+    return t('Pending')
+
+  }, [sale, t])
 
   const statusColor = useMemo(() => {
     if (status === 'Closed') {
       return 'red'
     }
+    if (status === 'canceled') {
+      return 'gray'
+    }
 
     if (status === 'Running') {
       return 'primary'
+    }
+
+    if (status === 'Finalized') {
+      return 'green'
     }
 
     return 'gray'
@@ -69,9 +86,9 @@ const CardHeading: React.FC<CardHeadingProps> = ({ logo, token, startDate, endDa
   }, [status])
   return (
     <Wrapper justifyContent="flex-start" alignItems="center" mb="12px">
-      {logo && logo.length > 0 ? (
+      {sale.logo && sale.logo.length > 0 ? (
         <Logo>
-          <img src={logo} alt="Logo"/>
+          <img src={sale.logo} alt="Logo"/>
         </Logo>
       ) : (
         <Logo>

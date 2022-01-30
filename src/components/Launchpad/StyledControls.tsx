@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Heading, Flex, Text, Input, Card } from '@pancakeswap/uikit'
+import { Heading, Flex, Text, Input, Card, useTooltip, HelpIcon } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { escapeRegExp } from 'utils'
@@ -78,6 +78,52 @@ export const StyledInputLabel = styled(Text)`
     alpha: 0.8;
     font-size: 10px;
 `
+
+const TooltipWrapper = styled.span`
+  position: absolute;
+  top: 6px;
+  right: 10px;
+`
+
+const StyledWrapperWithTooltipContainer = styled.div<{hasError: boolean}>`
+  input {
+    border-color: ${({ theme, hasError }) => (hasError ? theme.colors.failure : theme.colors.primary)};
+  }
+`
+
+const StyledErrorLabel = styled(Text)`
+  color: ${({ theme }) => theme.colors.failure};
+  padding: 2px 8px;
+  alpha: 0.8;
+  font-size: 10px;
+`
+
+export const StyledWrapperWithTooltip: React.FC<{error?: string, tooltip?: string}> = ({ error, tooltip, children }) => {
+  const {
+    targetRef: totalStakedTargetRef,
+    tooltip: tooltipElement,
+    tooltipVisible,
+  } = useTooltip(tooltip, {
+    placement: 'bottom',
+  })
+  const hasError = !!error
+  return (
+    <StyledWrapperWithTooltipContainer style={{position: "relative"}} hasError={hasError}>
+      { children }
+      { error && (
+        <StyledErrorLabel>
+          {error}
+        </StyledErrorLabel>
+      )}
+      { tooltip && (
+        <TooltipWrapper ref={totalStakedTargetRef}>
+          <HelpIcon color="textSubtle" width="20px" ml="6px" mt="4px" />
+        </TooltipWrapper>
+      )}
+      {tooltipVisible && tooltipElement}
+    </StyledWrapperWithTooltipContainer>
+  )
+}
 
 export const StyledTextarea = React.memo(function InnerTextArea({
   value,

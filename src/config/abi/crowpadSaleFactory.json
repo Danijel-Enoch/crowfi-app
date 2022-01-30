@@ -85,23 +85,28 @@
         "type": "address"
       },
       {
-        "internalType": "uint256",
-        "name": "_cap",
-        "type": "uint256"
+        "internalType": "uint256[]",
+        "name": "_caps",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_contributionLimit",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_duration",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "bool",
+        "name": "_whitelistEnabled",
+        "type": "bool"
       },
       {
         "internalType": "uint256",
-        "name": "_openingTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_closingTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_goal",
+        "name": "_stage",
         "type": "uint256"
       },
       {

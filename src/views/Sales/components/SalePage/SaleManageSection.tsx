@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'contexts/Localization'
 import { Text, Flex,  Message, Progress, Button, Heading, Skeleton } from '@pancakeswap/uikit'
 import { StyledNumericalInput } from 'components/Launchpad/StyledControls'
+import Dots from 'components/Loader/Dots'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import { useToken } from 'hooks/Tokens'
 import useInterval from 'hooks/useInterval'
@@ -11,20 +12,23 @@ import { BIG_TEN } from 'utils/bigNumber'
 import { BigNumber} from 'bignumber.js'
 import SaleTimer from './SaleTimer'
 import { PublicSaleData } from '../../types'
-import { useDepositeSale } from '../../hooks/useDepositeSale'
+import { useCancelSale, useDepositeSale } from '../../hooks/useDepositeSale'
 import { useFinalizeSale } from '../../hooks/useBuySale'
 
 export interface SaleActionSectionProps {
     sale: PublicSaleData
     account: string
+    onReloadSale?: () => void
 }
 
-const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) => {
+const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onReloadSale}) => {
 
     const { t } = useTranslation()
     const { toastError, toastSuccess } = useToast()
     const [closed, setClosed] = useState(false)
     const [pendingTx, setPendingTx] = useState(false)
+    const [depositing, setDepositing] = useState(false)
+    const [canceling, setCanceling] = useState(false)
     const token = useToken(sale.token)
     const balanceAmount = useTokenBalance(sale.address, token)
     const balanceTokenNumber = balanceAmount && token ? new BigNumber(balanceAmount.toExact()).multipliedBy(BIG_TEN.pow(token.decimals)) : null;
@@ -35,6 +39,8 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
     const { onDeposite } = useDepositeSale(sale.token)
 
     const { onFinalize } = useFinalizeSale(sale.address)
+
+    const { onCancel } = useCancelSale(sale.address)
 
 
     useInterval(() => {
@@ -48,9 +54,10 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
 
     const handleDeposit = useCallback(async () => {
         try {
-            setPendingTx(true)
+            setDepositing(true)
             const amount = requiredTokenNumber.minus(balanceTokenNumber)
             const receipt = await onDeposite(amount.toString(), sale.address)
+            onReloadSale()
             toastSuccess(
             `${t('Deposited')}!`,
             t('You have been deposited %amount% %symbol% successfully', {
@@ -63,14 +70,15 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
             toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
 
         } finally {
-            setPendingTx(false)
+            setDepositing(false)
         }
-    }, [toastError, toastSuccess, t, onDeposite, balanceTokenNumber, requiredTokenNumber, token, sale.address])
+    }, [toastError, toastSuccess, t, onDeposite, onReloadSale, balanceTokenNumber, requiredTokenNumber, token, sale.address])
 
     const handleFinalize = useCallback(async () => {
         try {
             setPendingTx(true)
             const receipt = await onFinalize()
+            onReloadSale()
             toastSuccess(
             `${t('Finalized')}!`,
             t('This sale has been finalized'),
@@ -82,7 +90,25 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
         } finally {
             setPendingTx(false)
         }
-    }, [toastError, toastSuccess, t, onFinalize])
+    }, [toastError, toastSuccess, t, onFinalize, onReloadSale])
+
+    const handleCancel = useCallback(async () => {
+        try {
+            setCanceling(true)
+            const receipt = await onCancel()
+            onReloadSale()
+            toastSuccess(
+            `${t('Success')}!`,
+            t('This sale has been canceled'),
+            )
+        } catch (e) {
+            console.log('e', e)
+            toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+
+        } finally {
+            setCanceling(false)
+        }
+    }, [toastError, toastSuccess, t, onCancel, onReloadSale])
 
     return (
         <>
@@ -101,8 +127,8 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
                     </Heading>
 
                     <Flex justifyContent="center" mt="16px" mb="16px">
-                        <Button disabled={pendingTx}
-                            onClick={handleDeposit}>{t('Deposit')}</Button>
+                        <Button disabled={depositing}
+                            onClick={handleDeposit}>{ depositing ? (<Dots>{t('Depositing')}</Dots>) : t('Deposit')}</Button>
                     </Flex>
                     </>
                 )}
@@ -118,7 +144,39 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
                         {t('remaining')}
                     </Text>
                 </Flex>
-                <SaleTimer startTime={sale.openingTime} endTime={sale.closingTime} />
+                { sale.canceled ? (
+                    <Flex justifyContent="center" mt="16px" mb="16px">
+                        <Text fontSize="16px">
+                            { t('Canceled') }
+                        </Text>
+                    </Flex>
+                ) : (
+                    <>
+                    {
+                        closed ? (
+                            <>
+                            {
+                                sale.finalized ? (
+                                    <Flex justifyContent="center" mt="16px" mb="16px">
+                                        <Text fontSize="16px">
+                                            { t('Finalized') }
+                                        </Text>
+                                    </Flex>
+                                ) : (
+                                    <Flex justifyContent="center" mt="16px" mb="16px">
+                                        <Text fontSize="16px">
+                                            { t('Closed') }
+                                        </Text>
+                                    </Flex>
+                                )
+                            }
+                            </>
+                        ) : (
+                            <SaleTimer startTime={sale.openingTime} endTime={sale.closingTime} />
+                        )
+                    }
+                    </>
+                )}
                 <Flex flexDirection="column" mt="8px" mb="16px">
                     <Progress primaryStep={sale.weiRaised.multipliedBy(100).div(sale.cap).toNumber()} />
                     <Flex justifyContent="space-between">
@@ -130,16 +188,18 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale}) =>
                         </Text>
                     </Flex>
                 </Flex>
-                { closed && (
+                { !sale.canceled && closed && !sale.finalized && (
                     <Flex justifyContent="center" mt="16px" mb="16px">
-                        <Text fontSize="16px">
-                            { sale.finalized ? t('Finalized') : t('Closed')}
-                        </Text>
+                        <Button disabled={pendingTx} onClick={handleFinalize}>
+                            { pendingTx ? (<Dots>{t('Finalizing')}</Dots>) : t('Finalize')}
+                        </Button>
                     </Flex>
                 )}
-                { closed && !sale.finalized && (
+                { !sale.canceled && !closed && sale.weiRaised.eq(0) && (
                     <Flex justifyContent="center" mt="16px" mb="16px">
-                        <Button disabled={pendingTx} onClick={handleFinalize}>{t('Finalize')}</Button>
+                        <Button disabled={canceling} onClick={handleCancel}>
+                            { canceling ? (<Dots>{t('Canceling')}</Dots>) : t('Cancel')}
+                        </Button>
                     </Flex>
                 )}
             </Flex>

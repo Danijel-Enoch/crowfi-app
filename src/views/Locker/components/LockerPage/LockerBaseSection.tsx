@@ -4,6 +4,7 @@ import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { Flex, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton } from '@pancakeswap/uikit'
 import { Token } from '@pancakeswap/sdk'
+import TokenAddress from 'components/TokenAddress'
 import { DeserializedLock } from 'state/types'
 import useTotalSupply from 'hooks/useTotalSupply'
 import { getBscScanLink } from 'utils'
@@ -68,7 +69,7 @@ const LockerBaseSection: React.FC<LockerBaseSectionProps> = ({token, lock}) => {
                         <InfoLabel>{t('Token Address')}</InfoLabel>
                         <Flex alignItems="center">
                             { lock ? (
-                                <LinkExternal href={getBscScanLink(lock.tokenAddress, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(lock.tokenAddress) : lock.tokenAddress }</LinkExternal>
+                                <TokenAddress address={lock.tokenAddress} truncate={isMobile} scale="sm"/>
                             ) : (
                                 <Skeleton width="60px" height="20px"/>
                             )}

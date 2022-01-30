@@ -56,15 +56,30 @@ const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
     <StyledCard background="white" borderBackground="rgba(150,150,150,0.1)">
         <CardInnerContainer>
             <CardHeading
-                logo={sale.logo}
                 token={token}
-                startDate={sale.openingTime}
-                endDate={sale.closingTime}
+                sale={sale}
             />
-            <Text color="secondary" textAlign="center" fontSize="14px" mt="16px" mb="16px">
-              {t('Crow is a decentralized currency that does not discriminate. Any individual or business can realize the advantages of finance.')}
-            </Text>
-            { sale.openingTime > new Date().getTime() / 1000 ? (
+            <Flex flexDirection="row" justifyContent="space-between">
+             <Flex flexDirection="column" alignItems="flex-start" mb="16px">
+               <Text color="secondary" fontSize="10px">
+                 {t('Rate')}
+               </Text>
+               <Text color="primary" fontSize="16px">
+                 {(t('1 CRO = %rate% %symbol%', {rate: sale.rate.toJSON(), symbol: token ? token.symbol : ''}))}
+               </Text>
+             </Flex>
+            </Flex>
+            <Flex flexDirection="row" justifyContent="space-between">
+             <Flex flexDirection="column" alignItems="flex-start" mb="16px">
+               <Text color="secondary" fontSize="10px">
+                 {t('Soft Cap / Hard Cap')}
+               </Text>
+               <Text color="primary" fontSize="16px">
+                 {(t('%soft% CRO - %hard% CRO', {soft: getFullDisplayBalance(sale.goal), hard: getFullDisplayBalance(sale.cap)}))}
+               </Text>
+             </Flex>
+           </Flex>
+            { !sale.canceled && sale.openingTime > new Date().getTime() / 1000 ? (
               <>
               <Flex flexDirection="column" justifyContent="center" alignItems="center" mt="16px">
                 <Text color="secondary" fontSize="12px" mb="12px">
@@ -73,7 +88,7 @@ const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
                 <Timer target={sale.openingTime} />
               </Flex>
               </>
-            ) : sale.closingTime > new Date().getTime() / 1000 && (
+            ) : !sale.canceled && sale.closingTime > new Date().getTime() / 1000 && (
               <>
               <Flex flexDirection="column" justifyContent="center" alignItems="center" mt="16px">
                 <Text color="secondary" fontSize="12px" mb="12px">
@@ -83,24 +98,6 @@ const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
               </Flex>
               </>
             )}
-            {/* <Flex flexDirection="row" justifyContent="space-between">
-              <Flex flexDirection="column" alignItems="flex-start" mb="16px">
-                <Text color="secondary" fontSize="10px">
-                  {t('Swap rate')}
-                </Text>
-                <Text color="primary" fontSize="16px">
-                  {(t('1 %symbol% = %price% USDT'), token.symbol, usdPrice.toJSON())}
-                </Text>
-              </Flex>
-              <Flex flexDirection="column" alignItems="end" mb="16px">
-                <Text color="secondary" fontSize="10px">
-                  {t('Market Cap')}
-                </Text>
-                <Text color="primary" fontSize="16px">
-                  {marketCapUsd.toJSON()}
-                </Text>
-              </Flex>
-            </Flex> */}
 
             <Flex flexDirection="column">
               {/* <Flex flexDirection="row" justifyContent="right">

@@ -4,6 +4,7 @@ import { InjectedModalProps } from '@pancakeswap/uikit'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'contexts/Localization'
 import { getFullDisplayBalance } from 'utils/formatBalance'
+import { BIG_ZERO } from 'utils/bigNumber'
 import TransactionConfirmationModal, { ConfirmationModalContent, TransactionErrorContent } from 'components/TransactionConfirmationModal'
 import ConfirmModalFooter from './ConfirmModalFooter'
 import ConfirmModalHeader from './ConfirmModalHeader'
@@ -13,7 +14,7 @@ import ConfirmModalHeader from './ConfirmModalHeader'
 interface ConfirmAirdropModalProps {
   token?: Token
   receipts?: string[]
-  amounts?: BigNumber[]
+  amounts?: string[]
   attemptingTxn: boolean
   txHash?: string
   onConfirm: () => void
@@ -35,9 +36,9 @@ const ConfirmAirdropModal: React.FC<InjectedModalProps & ConfirmAirdropModalProp
 
   const { t } = useTranslation()
 
-  const totalAmount = amounts? getFullDisplayBalance(amounts.reduce((acum, amount) => {
-    return acum.plus(amount)
-  }), token.decimals) : '0'
+  const totalAmount = amounts && amounts.length > 0 ? getFullDisplayBalance(amounts.reduce((acum, amount) => {
+    return acum.plus(new BigNumber(amount))
+  }, BIG_ZERO), token.decimals) : '0'
 
   const modalHeader = useCallback(() => {
     return token && receipts && amounts ? (

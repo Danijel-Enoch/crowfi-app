@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'contexts/Localization'
 import { Flex } from '@pancakeswap/uikit'
+import { getFullDisplayBalance } from 'utils/formatBalance'
 import { InfoRow, InfoLabel, InfoValue } from './styled'
-import { PublicSaleData } from '../../types'
+import { PaymentType, PublicSaleData } from '../../types'
 
 export interface SaleStatusSectionProps {
     sale: PublicSaleData
@@ -14,6 +15,10 @@ const SaleStatusSection: React.FC<SaleStatusSectionProps> = ({sale}) => {
 
     const status = useMemo(() => {
         const now = new Date().getTime() / 1000;
+
+        if (sale.canceled) {
+            return t('Canceled')
+        }
         if (sale.finalized) {
             return t('Finalized')
         }
@@ -39,15 +44,23 @@ const SaleStatusSection: React.FC<SaleStatusSectionProps> = ({sale}) => {
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Sale Type')}</InfoLabel>
-                        <InfoValue>{t('Public')}</InfoValue>
+                        <InfoValue>{ sale.whitelistEnabled ? t('Private') : t('Public')}</InfoValue>
                     </InfoRow>
                     <InfoRow>
-                        <InfoLabel>{t('Minimum Buy')}</InfoLabel>
-                        <InfoValue>0.01 CRO</InfoValue>
+                        <InfoLabel>{t('Payment Type')}</InfoLabel>
+                        <Flex>
+                            <InfoValue color={sale.paymentType === PaymentType.ESCROW ? "primary" : "gray"}>{t('Escrow')}</InfoValue>
+                            <InfoValue>{t('|')}</InfoValue>
+                            <InfoValue color={sale.paymentType === PaymentType.DIRECT ? "primary" : "gray"}>{t('Direct Payment')}</InfoValue>
+                        </Flex>
                     </InfoRow>
                     <InfoRow>
-                        <InfoLabel>{t('Maximum Buy')}</InfoLabel>
-                        <InfoValue>2 CRO</InfoValue>
+                        <InfoLabel>{t('Minimum Contribution')}</InfoLabel>
+                        <InfoValue>{getFullDisplayBalance(sale.minContribution)} CRO</InfoValue>
+                    </InfoRow>
+                    <InfoRow>
+                        <InfoLabel>{t('Maximum Contribution')}</InfoLabel>
+                        <InfoValue>{getFullDisplayBalance(sale.maxContribution)} CRO</InfoValue>
                     </InfoRow>
                 </Flex>
             </Flex>

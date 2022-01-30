@@ -5,6 +5,7 @@ import { useTranslation } from 'contexts/Localization'
 import { getBscScanLink } from 'utils'
 import BigNumber from 'bignumber.js'
 import { getFullDisplayBalance } from 'utils/formatBalance'
+import { BIG_ZERO } from 'utils/bigNumber'
 
 export default function ConfirmModalHeader({
   token,
@@ -13,7 +14,7 @@ export default function ConfirmModalHeader({
 }: {
     token: Token,
     receipts: string[],
-    amounts: BigNumber[]
+    amounts: string[]
 }) {
   const { t } = useTranslation()
 
@@ -40,8 +41,8 @@ export default function ConfirmModalHeader({
           </Text>
           <Text color="primary">
             {getFullDisplayBalance(amounts.reduce((acum, amount) => {
-              return acum.plus(amount)
-            }), token.decimals)}
+              return acum.plus(new BigNumber(amount))
+            }, BIG_ZERO), token.decimals)}
           </Text>
         </Flex>
       </Flex>

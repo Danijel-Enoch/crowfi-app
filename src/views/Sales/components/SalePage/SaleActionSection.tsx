@@ -8,7 +8,7 @@ import { getFullDisplayBalance } from 'utils/formatBalance'
 import useInterval from 'hooks/useInterval'
 import useToast from 'hooks/useToast'
 import { useToken } from 'hooks/Tokens'
-import { BIG_TEN } from 'utils/bigNumber'
+import { BIG_TEN, BIG_ZERO } from 'utils/bigNumber'
 import { BigNumber} from 'bignumber.js'
 import SaleTimer from './SaleTimer'
 import { PublicSaleData } from '../../types'
@@ -56,8 +56,12 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
         if (max.gt(BIG_TEN.pow(18).multipliedBy(50))) {
             max = BIG_TEN.pow(18).multipliedBy(50)
         }
-        return max
-    }, [sale])
+        if (max.gt(sale.maxContribution)) {
+            max = sale.maxContribution
+        }
+        max = contribution ? max.minus(contribution) : max;
+        return max.gt(BIG_ZERO) ? max : BIG_ZERO;
+    }, [sale, contribution])
 
     const valueNumber = new BigNumber(value).multipliedBy(BIG_TEN.pow(18))
 
@@ -139,7 +143,15 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                     )}
                     </Text>
                 </Message>
-                <SaleTimer startTime={sale.openingTime} endTime={sale.closingTime} />
+                { sale.canceled ? (
+                    <Flex justifyContent="center" mt="16px" mb="16px">
+                        <Text fontSize="16px">
+                            { t('Canceled') }
+                        </Text>
+                    </Flex>
+                ) : (
+                    <SaleTimer startTime={sale.openingTime} endTime={sale.closingTime} />
+                )}
                 <Flex flexDirection="column" mt="8px">
                     <Progress primaryStep={sale.weiRaised.multipliedBy(100).div(sale.cap).toNumber()} />
                     <Flex justifyContent="space-between">
@@ -165,34 +177,39 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                         {t('Claimable : %amount% %currency%', {amount: getFullDisplayBalance(balance, token.decimals), currency:token.symbol})}
                     </Text>
                 )}
-                { showBuy && (
+                { !sale.canceled && (
                     <>
-                    <Text fontSize="14px" fontStyle="bold" mt="8px">
-                        {t('Amount (max: %amount% %currency%)', {amount: getFullDisplayBalance(maxNumber), currency:'CRO'})}
-                    </Text>
-                    <Flex position="relative">
-                        <StyledNumericalInput
-                            value={value}
-                            onUserInput={(val) => setValue(val)} />
-                        <Button scale="xs" style={{position: 'absolute', right: '12px', top: '10px'}} onClick={handleClickMax}>{t('MAX')}</Button>
-                    </Flex>
+
+                    { showBuy && (
+                        <>
+                        <Text fontSize="14px" fontStyle="bold" mt="8px">
+                            {t('Amount (max: %amount% %currency%)', {amount: getFullDisplayBalance(maxNumber), currency:'CRO'})}
+                        </Text>
+                        <Flex position="relative">
+                            <StyledNumericalInput
+                                value={value}
+                                onUserInput={(val) => setValue(val)} />
+                            <Button scale="xs" style={{position: 'absolute', right: '12px', top: '10px'}} onClick={handleClickMax}>{t('MAX')}</Button>
+                        </Flex>
+                        <Flex justifyContent="center" mt="8px">
+                            <Button 
+                                scale="sm" 
+                                disabled={!buyable || pendingTx || !valueNumber || !valueNumber.isFinite() || valueNumber.eq(0) || valueNumber.gt(maxNumber)} 
+                                onClick={handleBuy}
+                            >
+                                { pendingTx ? (<Dots>{t('Purchasing')}</Dots>) : t('Purchase')}
+                            </Button>
+                        </Flex>
+                        </>
+                    )}
+                    { showClaim && (
                     <Flex justifyContent="center" mt="8px">
-                        <Button 
-                            scale="sm" 
-                            disabled={!buyable || pendingTx || !valueNumber || !valueNumber.isFinite() || valueNumber.gte(maxNumber)} 
-                            onClick={handleBuy}
-                        >
-                            { pendingTx ? (<Dots>{t('Purchasing')}</Dots>) : t('Purchase')}
+                        <Button scale="sm" disabled={pendingTx || !balance || !balance.isFinite() || balance.eq(0)} onClick={handleClaim}>
+                            { pendingTx ? (<Dots>{t('Claiming')}</Dots>) : t('Claim')}
                         </Button>
                     </Flex>
+                    )}
                     </>
-                )}
-                { showClaim && (
-                <Flex justifyContent="center" mt="8px">
-                    <Button scale="sm" disabled={pendingTx || !balance || !balance.isFinite() || balance.eq(0)} onClick={handleClaim}>
-                        { pendingTx ? (<Dots>{t('Claiming')}</Dots>) : t('Claim')}
-                    </Button>
-                </Flex>
                 )}
             </Flex>
         </>

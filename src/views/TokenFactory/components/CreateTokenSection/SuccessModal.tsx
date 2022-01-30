@@ -9,6 +9,7 @@ import { useToken } from 'hooks/Tokens';
 import useTotalSupply from 'hooks/useTotalSupply';
 import truncateHash from 'utils/truncateHash'
 import { registerToken } from 'utils/wallet'
+import TokenAddress from 'components/TokenAddress'
 
 
 const ModalInnerContainer = styled(Flex)`
@@ -89,9 +90,10 @@ const SuccessModal: React.FC<InjectedModalProps & SuccessModalProps> = ({ tokenA
           </Flex>
           <Flex justifyContent="space-between">
             <Text color="secondary" mr="8px">{t('Address')}:</Text>
-            <LinkExternal href={getBscScanLink(tokenAddress, 'address')}>{truncateHash(tokenAddress)}</LinkExternal>
+            <TokenAddress address={tokenAddress} />
           </Flex>
           {token && (
+          <>
           <Flex justifyContent="center" mt="16px">
           <Button
               variant="text"
@@ -103,6 +105,18 @@ const SuccessModal: React.FC<InjectedModalProps & SuccessModalProps> = ({ tokenA
             <MetamaskIcon ml="4px" />
           </Button>
           </Flex>
+          <Flex justifyContent="center" mt="16px">
+          <Button
+              as="a"
+              variant='text'
+              p="0"
+              height="auto"
+              href={`/create/${token.address}`}
+            >
+            {t('Add Liquidity for %name%', {name: token.name})}
+          </Button>
+          </Flex>
+          </>
           )}
         </Flex>
       <ModalActions>
