@@ -46,14 +46,14 @@ const SaleStatusSection: React.FC<SaleStatusSectionProps> = ({sale}) => {
                         <InfoLabel>{t('Sale Type')}</InfoLabel>
                         <InfoValue>{ sale.whitelistEnabled ? t('Private') : t('Public')}</InfoValue>
                     </InfoRow>
-                    <InfoRow>
+                    {/* <InfoRow>
                         <InfoLabel>{t('Payment Type')}</InfoLabel>
                         <Flex>
                             <InfoValue color={sale.paymentType === PaymentType.ESCROW ? "primary" : "gray"}>{t('Escrow')}</InfoValue>
                             <InfoValue>{t('|')}</InfoValue>
                             <InfoValue color={sale.paymentType === PaymentType.DIRECT ? "primary" : "gray"}>{t('Direct Payment')}</InfoValue>
                         </Flex>
-                    </InfoRow>
+                    </InfoRow> */}
                     <InfoRow>
                         <InfoLabel>{t('Minimum Contribution')}</InfoLabel>
                         <InfoValue>{getFullDisplayBalance(sale.minContribution)} CRO</InfoValue>

@@ -91,7 +91,7 @@ const SalePageContent: React.FC<SalePageContentProps> = ({
                             <StyledSection>
                                 <SaleManageSection sale={sale} account={account} onReloadSale={onReloadSale}/>
                             </StyledSection>
-                            { sale.whitelistEnabled && (
+                            { sale.whitelistEnabled && !sale.canceled && !sale.finalized && (
                                 <StyledSection>
                                     <SaleWhitelistSection sale={sale} account={account}/>
                                 </StyledSection>
