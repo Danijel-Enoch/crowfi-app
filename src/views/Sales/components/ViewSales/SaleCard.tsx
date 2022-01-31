@@ -51,7 +51,7 @@ const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
   const token = useToken(sale.token)
 
   return (
-    <LinkWrapper to={`/presale/${sale.address}`}>
+    <LinkWrapper to={`/presale/view/${sale.address}`}>
 
     <StyledCard background="white" borderBackground="rgba(150,150,150,0.1)">
         <CardInnerContainer>

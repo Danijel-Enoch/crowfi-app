@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Route, useRouteMatch } from 'react-router-dom'
+import { Route, RouteComponentProps, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import styled from 'styled-components'
 import { Flex, Heading, SubMenuItems, Text, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { usePollLaunchpadData } from 'state/launchpad/hooks'
@@ -32,16 +32,13 @@ const Sales: React.FC = () => {
 
     const { t } = useTranslation()
     const [ viewMode, setViewMode ] = useState(ViewMode.VIEW)
+    const { path, url, isExact } = useRouteMatch()
+    const { pathname } = useLocation()
+    const history = useHistory()
+    const isCreate = pathname.includes('create')
 
 
     usePollLaunchpadData()
-    
-    const renderContent = () => {
-        if (viewMode === ViewMode.CREATE) {
-            return <CreateOrManageSale onDisagree={() => setViewMode(ViewMode.VIEW)}/>
-        }
-        return <ViewSales/>
-    }
 
     return (
         <>
@@ -58,15 +55,26 @@ const Sales: React.FC = () => {
 
                 <StyledPageBody flexDirection="column" flex="1" margin={["0px 12px 24px 12px", null, null, "0px 24px 24px 24px"]}>
                     <TabToggleGroup2>
-                        <TabToggle2 isActive={viewMode === ViewMode.VIEW} onClick={() => setViewMode(ViewMode.VIEW)}>
+                        <TabToggle2 isActive={!isCreate} onClick={() => {
+                            if (isCreate) {
+                                history.push(path)
+                            }
+                        }}>
                             <Text>{t('Sales')}</Text>
                         </TabToggle2>
-                        <TabToggle2 isActive={viewMode === ViewMode.CREATE} onClick={() => setViewMode(ViewMode.CREATE)}>
+                        <TabToggle2 isActive={isCreate} onClick={() => {
+                            if (!isCreate) {
+                                history.push(`${path}/create`)
+                            }
+                        }}>
                             <Text>{t('Create')}</Text>
                         </TabToggle2>
                     </TabToggleGroup2>
+                    <Route exact path={`${path}`} component={ViewSales} />
+                    <Route exact path={`${path}/create`} component={CreateOrManageSale} />
+                    <Route exact path={`${path}/create/:address`} component={CreateOrManageSale} />
 
-                    {renderContent()}
+                    {/* {renderContent()} */}
                 </StyledPageBody>
 
             </PageWrapper>

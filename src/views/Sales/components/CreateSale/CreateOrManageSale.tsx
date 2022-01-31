@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useHistory, RouteComponentProps } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 import { Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
@@ -14,21 +15,27 @@ export enum ViewMode {
     MANAGE = 'MANAGE',
 }
 
-interface CreateOrManageSaleProps {
-    onDisagree: () => void
-}
-
-const CreateOrManageSale: React.FC<CreateOrManageSaleProps> = ({onDisagree}) => {
+const CreateOrManageSale: React.FC<RouteComponentProps<{address?: string}>> = ({
+    match: {
+        params: {address: routeAddress}
+    }
+}) => {
 
     const theme = useTheme()
     const { t } = useTranslation()
     const [ viewMode, setViewMode ] = useState(ViewMode.CREATE)
+    const history = useHistory()
+
+    const onDisagree = () =>  {
+        history.replace('/presale')
+    }
 
     const renderContent = () => {
+        console.log('here', routeAddress)
         if (viewMode === ViewMode.CREATE) {
-            return <CreateSale onDisagree={onDisagree}/>
+            return <CreateSale onDisagree={onDisagree} routeAddress={routeAddress}/>
         }
-        return <CreateSale onDisagree={onDisagree} />
+        return <CreateSale onDisagree={onDisagree} routeAddress={routeAddress}/>
     }
 
     return (

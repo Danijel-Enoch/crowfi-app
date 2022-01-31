@@ -68,10 +68,11 @@ interface FormErrors {
 }
 
 interface CreateProps {
+    routeAddress?: string
     onDisagree: () => void
 }
 
-const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
+const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
 
     const { t } = useTranslation()
     const { theme } = useTheme()
@@ -144,6 +145,12 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
         false,
         false
     )
+
+    useEffect(() => {
+        if (routeAddress && routeAddress.length > 0 && isAddress(routeAddress)) {
+            setTokenAddress(routeAddress)
+        }
+    }, [routeAddress])
 
     useEffect(() => {
         if (!agreed && !presentedDesclaimer) {
@@ -253,7 +260,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
             const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, rateNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000), minContributionNumer.toJSON(), maxContributionNumer.toJSON(), whitelistEnabled, true, logo.trim())
             dispatch(fetchLaunchpadPublicDataAsync())
             dispatch(fetchLaunchpadUserDataAsync({account}))
-            history.push(`/presale/${saleAddress}`)
+            history.push(`/presale/view/${saleAddress}`)
             // onPresentSuccess()
         } catch (e) {
           toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))

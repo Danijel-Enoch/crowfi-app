@@ -103,10 +103,10 @@ const App: React.FC = () => {
             <Route path="/pools">
               <Pools />
             </Route>
-            <Route exact path="/presale">
-              <Sales />
+            <Route exact strict path="/presale/view/:address" component={SalePage} />
+            <Route path="/presale">
+              <Sales/>
             </Route>
-            <Route exact strict path="/presale/:address" component={SalePage} />
             <Route exact path="/token-factory">
               <TokenFactory />
             </Route>

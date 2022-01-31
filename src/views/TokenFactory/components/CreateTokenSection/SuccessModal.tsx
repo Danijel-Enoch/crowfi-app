@@ -106,15 +106,26 @@ const SuccessModal: React.FC<InjectedModalProps & SuccessModalProps> = ({ tokenA
           </Button>
           </Flex>
           <Flex justifyContent="center" mt="16px">
-          <Button
-              as="a"
-              variant='text'
-              p="0"
-              height="auto"
-              href={`/create/${token.address}`}
-            >
-            {t('Add Liquidity for %name%', {name: token.name})}
-          </Button>
+            <Button
+                as="a"
+                variant='text'
+                p="0"
+                height="auto"
+                href={`/create/${token.address}`}
+              >
+              {t('Add Liquidity for %name%', {name: token.name})}
+            </Button>
+          </Flex>
+          <Flex justifyContent="center" mt="16px">
+            <Button
+                as="a"
+                variant='text'
+                p="0"
+                height="auto"
+                href={`/presale/create/${token.address}`}
+              >
+              {t('Go to Exchange')}
+            </Button>
           </Flex>
           </>
           )}
