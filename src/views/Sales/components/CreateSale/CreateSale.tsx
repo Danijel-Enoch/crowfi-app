@@ -98,7 +98,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         targetRef: whitelistTargetRef,
         tooltip: whitelistTooltipElement,
         tooltipVisible: whitelistTooltipVisible,
-      } = useTooltip("In a private sale, only whitelisted customers can distribute.", {
+      } = useTooltip("In a private sale, only whitelisted investors can contribute.", {
         placement: 'bottom',
       })
     const deployFee = useSaleDeployFee()
@@ -327,7 +327,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                             )}
                             <InputWrap>
                                 <StyledWrapperWithTooltip
-                                    tooltip={t('Enter your wallet address which you want to receive CRO from your customers.')}
+                                    tooltip={t('Enter your wallet address which you want to receive CRO from your investors.')}
                                     error={formError.wallet}
                                     >
                                     <StyledAddressInput

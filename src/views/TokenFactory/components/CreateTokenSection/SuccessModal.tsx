@@ -124,7 +124,7 @@ const SuccessModal: React.FC<InjectedModalProps & SuccessModalProps> = ({ tokenA
                 height="auto"
                 href={`/presale/create/${token.address}`}
               >
-              {t('Go to Exchange')}
+              {t('Create Presale for %name%', {name: token.name})}
             </Button>
           </Flex>
           </>

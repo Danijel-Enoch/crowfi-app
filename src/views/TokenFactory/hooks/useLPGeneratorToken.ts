@@ -30,3 +30,34 @@ export const useLPGeneratorTokenWhitelistAddress = (tokenAddress) => {
 
   return { onAddToWhitelist: handleAddToWhitelist, onRemoveFromWhitelist: handleRemoveFromWhitelist }
 }
+
+export const useLPGeneratorTokenFee = (tokenAddress) => {
+  const tokenContract = useLiquidityGeneratorTokenContract(tokenAddress)
+
+  const handleSetTaxFee = useCallback(
+    async (taxFee) => {
+      const gasPrice = getGasPrice()
+      const args = [taxFee];
+      const tx = await callWithEstimateGas(tokenContract, 'setTaxFeePercent', args, { gasPrice})
+      const receipt = await tx.wait()
+      return receipt.transactionHash
+    },
+    [ tokenContract]
+  )
+
+  const handleSetLpFee = useCallback(
+    async (lpFee) => {
+      const gasPrice = getGasPrice()
+      const args = [lpFee];
+      const tx = await callWithEstimateGas(tokenContract, 'setLiquidityFeePercent', args, { gasPrice})
+      const receipt = await tx.wait()
+      return receipt.transactionHash
+    },
+    [ tokenContract]
+  )
+
+  return {
+    onSetTaxFee: handleSetTaxFee,
+    onSetLpFee: handleSetLpFee,
+  }
+}

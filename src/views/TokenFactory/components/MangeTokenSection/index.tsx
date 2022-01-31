@@ -66,6 +66,7 @@ const ManageTokenSection: React.FC = () => {
                         <ManageTokenCard
                             key={token.address}
                             tokenData={token}
+                            account={account}
                         />
                     ))}
                     

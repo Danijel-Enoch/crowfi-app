@@ -1,21 +1,23 @@
-import React, { useCallback, useState } from 'react'
+import React, { useMemo, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
-import { Card, Flex, Text, Button, LinkExternal, Skeleton, useModal } from '@pancakeswap/uikit'
+import { Card, Flex, Text, Button, Skeleton, useModal, useTooltip } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
-import { getFullDisplayBalance, getFullDisplayBalanceExact } from 'utils/formatBalance'
+import { getFullDisplayBalanceExact } from 'utils/formatBalance'
 import { StyledAddressInput, StyledNumericalInput } from 'components/Launchpad/StyledControls'
 import TokenAddress from 'components/TokenAddress'
+import Dots from 'components/Loader/Dots'
 import Loading from 'components/Loading'
-import { AutoRow } from 'components/Layout/Row'
-import { useToken } from 'hooks/Tokens'
-import useTotalSupply from 'hooks/useTotalSupply'
+import useToast from 'hooks/useToast'
 import useENS from 'hooks/ENS/useENS'
+import { useAppDispatch } from 'state'
 import { DeserializedTokenData, TokenType } from 'state/types'
+import { fetchTokenFactoryUserDataAsync } from 'state/tokenFactory'
 import { BIG_TEN } from 'utils/bigNumber'
 import CardHeading from './CardHeading'
 import ConfirmBurnModal from './ConfirmBurnModal'
 import ConfirmWhitelistModal from './ConfirmWhitelistModal'
+import { useLPGeneratorTokenFee } from '../../hooks/useLPGeneratorToken'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -46,15 +48,29 @@ const StyledButton = styled(Button)`
 
 export interface ManageTokenCardProps {
   tokenData?: DeserializedTokenData
+  account?: string
 }
 
-const ManageTokenCard: React.FC<ManageTokenCardProps> = ({tokenData}) => {
+const ManageTokenCard: React.FC<ManageTokenCardProps> = ({account, tokenData}) => {
   const { t } = useTranslation()
-
+  const dispatch = useAppDispatch()
+  const { toastError, toastSuccess } = useToast()
   const [burnAmount, setBurnAmount] = useState('')
   const [whitelistAddress, setWhitelistAddress] = useState('')
   const { address:validatedWhitelistAddress, loading: loadingWhitelistAddress } = useENS(whitelistAddress)
-
+  const [pendingTaxFee, setPendingTaxFee] = useState(false)
+  const [pendingLpFee, setPendingLpFee] = useState(false)
+  const [taxFee, setTaxFee] = useState('')
+  const taxFeeNumber = useMemo(() => {
+    return new BigNumber(taxFee)
+  }, [taxFee])
+  const [lpFee, setLpFee] = useState('')
+  const lpFeeNumber = useMemo(() => {
+    return new BigNumber(lpFee)
+  }, [lpFee])
+  const [taxInitialized, setTaxInitialized] = useState(false)
+  const [lpInitialized, setLpInitialized] = useState(false)
+  const { onSetLpFee, onSetTaxFee } = useLPGeneratorTokenFee(tokenData.address)
   const burnAmountNumber = new BigNumber(burnAmount).multipliedBy(BIG_TEN.pow(tokenData.decimals))
 
   const handleChangePercent = (percent: number) => {
@@ -114,6 +130,101 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({tokenData}) => {
   const showRemoveFromWhitelist = useCallback(async() => {
     onPresentRemoveFromWhitelistModal()
   }, [onPresentRemoveFromWhitelistModal])
+
+  useEffect(() => {
+    if (!taxInitialized && tokenData.taxFee) {
+      setTaxInitialized(true)
+      setTaxFee((tokenData.taxFee.toNumber() / 100).toString())
+    }
+    if (!lpInitialized && tokenData.lpFee) {
+      setLpInitialized(true)
+      setLpFee((tokenData.lpFee.toNumber() / 100).toString())
+    }
+  }, [tokenData.taxFee, tokenData.lpFee, taxInitialized, lpInitialized])
+
+  const handleChangeTaxFee = useCallback(async () => {
+    try {
+      setPendingTaxFee(true)
+      const newFee = taxFeeNumber.multipliedBy(100).toString()
+      await onSetTaxFee(newFee)
+      dispatch(fetchTokenFactoryUserDataAsync({account}))
+      toastSuccess(t('Success'), t('Holder reward fee has been changed to %amount%%', {amount: new BigNumber(newFee).div(100).toJSON()}))
+    } catch (e) {
+      toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+    } finally {
+      setPendingTaxFee(false)
+    }
+  }, [t, toastError, toastSuccess, onSetTaxFee, dispatch, account, taxFeeNumber])
+
+  const handleChangeLpFee = useCallback(async () => {
+    try {
+      setPendingLpFee(true)
+      const newFee = lpFeeNumber.multipliedBy(100).toString()
+      await onSetLpFee(newFee)
+      dispatch(fetchTokenFactoryUserDataAsync({account}))
+      toastSuccess(t('Success'), t('Liquidity fee has been changed to %amount%%', {amount: new BigNumber(newFee).div(100).toJSON()}))
+    } catch (e) {
+      toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+    } finally {
+      setPendingLpFee(false)
+    }
+  }, [t, toastError, toastSuccess, onSetLpFee, dispatch, account, lpFeeNumber])
+
+  const {
+    tooltipVisible: taxFeeTooltipVisible,
+    targetRef: taxFeeTargetRef,
+    tooltip: taxFeeTooltip,
+  } = useTooltip((
+    <>
+    <Flex>
+      <Button
+        variant='secondary'
+        scale="sm"
+        mr="8px"
+        disabled={pendingTaxFee} 
+        onClick={() => {
+          setTaxFee((tokenData.taxFee.toNumber() / 100).toString())
+        }}>
+        {t('Cancel')}
+      </Button>
+      <Button 
+        scale="sm"
+        variant='primary'
+        disabled={pendingTaxFee || !taxFeeNumber || !taxFeeNumber.isFinite() || taxFeeNumber.gt(BIG_TEN)} 
+        onClick={handleChangeTaxFee}>
+        { pendingTaxFee ? (<Dots>{t('Chaning')}</Dots>) : t('Change')}
+      </Button>
+    </Flex>
+    </>
+  ), { placement: "bottom", trigger: "click" });
+
+  const {
+    tooltipVisible: lpFeeTooltipVisible,
+    targetRef: lpFeeTargetRef,
+    tooltip: lpFeeTooltip,
+  } = useTooltip((
+    <>
+    <Flex>
+      <Button
+        variant='secondary'
+        scale="sm"
+        mr="8px"
+        disabled={pendingLpFee} 
+        onClick={() => {
+          setLpFee((tokenData.lpFee.toNumber() / 100).toString())
+        }}>
+        {t('Cancel')}
+      </Button>
+      <Button 
+        scale="sm"
+        variant='primary'
+        disabled={pendingLpFee || !lpFeeNumber || !lpFeeNumber.isFinite() || lpFeeNumber.gt(BIG_TEN)} 
+        onClick={handleChangeLpFee}>
+        { pendingLpFee ? (<Dots>{t('Chaning')}</Dots>) : t('Change')}
+      </Button>
+    </Flex>
+    </>
+  ), { placement: "bottom", trigger: "click" });
 
   const renderBurnSection = () : JSX.Element => {
     return (
@@ -201,11 +312,24 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({tokenData}) => {
               tokenData.type === TokenType.LIQUIDITY && (
                 <>
                 <Flex justifyContent="space-between" alignItems="center">
-                  <Text>{t('Holder Reward Fee')}:</Text>
+                  <Text style={{flex: 1}}>{t('Holder Reward Fee')}:</Text>
                   { tokenData.taxFee ? (
-                    <Text bold style={{ display: 'flex', alignItems: 'center' }}>
-                      {tokenData.taxFee.toNumber() / 100} %
-                    </Text>
+                    <>
+                    <Flex>
+                      <StyledNumericalInput
+                        innerRef={taxFeeTargetRef}
+                        style={{maxWidth:"60px", textAlign:"right", height:"20px"}}
+                        placeholder={t('Max %amount%%', {amount: 10})}
+                        value={taxFee}
+                        disabled={pendingTaxFee}
+                        onUserInput={(val) => setTaxFee(val)}
+                      />
+                      <Text bold style={{ display: 'flex', alignItems: 'center' }}>
+                        %
+                      </Text>
+                    </Flex>
+                    { taxFeeTooltipVisible && taxFeeTooltip}
+                    </>
                   ) : (
                     <Skeleton height="22px" width="60px" />
                   )}
@@ -213,9 +337,22 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({tokenData}) => {
                 <Flex justifyContent="space-between" alignItems="center">
                   <Text>{t('Liquidity Fee')}:</Text>
                   { tokenData.lpFee ? (
-                    <Text bold style={{ display: 'flex', alignItems: 'center' }}>
-                      {tokenData.lpFee.toNumber() / 100} %
-                    </Text>
+                    <>
+                    <Flex>
+                      <StyledNumericalInput
+                        innerRef={lpFeeTargetRef}
+                        style={{maxWidth:"60px", textAlign:"right", height:"20px"}}
+                        placeholder={t('Max %amount%%', {amount: 10})}
+                        value={lpFee}
+                        disabled={pendingLpFee}
+                        onUserInput={(val) => setLpFee(val)}
+                      />
+                      <Text bold style={{ display: 'flex', alignItems: 'center' }}>
+                        %
+                      </Text>
+                    </Flex>
+                    { lpFeeTooltipVisible && lpFeeTooltip}
+                    </>
                   ) : (
                     <Skeleton height="22px" width="60px" />
                   )}

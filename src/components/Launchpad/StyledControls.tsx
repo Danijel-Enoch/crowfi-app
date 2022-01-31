@@ -417,6 +417,7 @@ export const StyledNumericalInput = React.memo(function InnerInput({
     onUserInput,
     title,
     placeholder,
+    innerRef,
     ...rest
   }: {
     value: string | number
@@ -425,6 +426,7 @@ export const StyledNumericalInput = React.memo(function InnerInput({
     error?: boolean
     fontSize?: string
     align?: 'right' | 'left'
+    innerRef?: any
   } & Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {
     const enforcer = (nextUserInput: string) => {
       if (nextUserInput === '' || numericalInputRegex.test(escapeRegExp(nextUserInput))) {
@@ -448,6 +450,7 @@ export const StyledNumericalInput = React.memo(function InnerInput({
         autoComplete="off"
         autoCorrect="off"
         // text-specific options
+        ref={innerRef}
         type="text"
         pattern="^[0-9]*[.,]?[0-9]*$"
         placeholder={placeholder || '0.0'}
