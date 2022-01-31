@@ -146,9 +146,9 @@ export const getUserSales = async (account: string) : Promise<PublicSaleData[]> 
     return res
 }
 
-export const getSaleUserData = async (address?: string, account?: string) : Promise<{contribution: BigNumber, balance: BigNumber}> => {
+export const getSaleUserData = async (address?: string, account?: string) : Promise<{contribution: BigNumber, balance: BigNumber, whitelisted: boolean}> => {
     if (!address || !account) {
-        return {contribution: null, balance: null}
+        return {contribution: null, balance: null, whitelisted: false}
     }
     
     const calls = [
@@ -161,17 +161,23 @@ export const getSaleUserData = async (address?: string, account?: string) : Prom
             address,
             name: 'balanceOf',
             params: [account]
+        },
+        {
+            address,
+            name: 'isWhitelisted',
+            params: [account]
         }
     ]
 
     const [
         [contribution_], 
-        [balance_]
+        [balance_],
+        [whitelisted]
     ] = await multicall(crowpadSaleABI, calls)
     
     const contribution = contribution_ ? new BigNumber(contribution_._hex) : BIG_ZERO;
     const balance = balance_ ? new BigNumber(balance_._hex) : BIG_ZERO;
-    return {contribution, balance}
+    return {contribution, balance, whitelisted}
 }
 
 export const getSale = async (address: string) : Promise<PublicSaleData> => {

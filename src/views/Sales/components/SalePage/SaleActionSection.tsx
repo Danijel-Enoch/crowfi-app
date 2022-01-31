@@ -31,6 +31,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
     const [buyable, setBuyable] = useState(false)
     const [showBuy, setShowbuy] = useState(false)
     const [showClaim, setShowClaim] = useState(false)
+    const [whitelisted, setWhitelisted] = useState(true)
 
     const token = useToken(sale.token)
 
@@ -42,9 +43,10 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
 
     useEffect(() => {
         const fetchContribution = async () =>  {
-            const {contribution:contribution_, balance:balance_} = await getSaleUserData(sale.address, account)
+            const {contribution:contribution_, balance:balance_, whitelisted: whitelisted_} = await getSaleUserData(sale.address, account)
             setContribution(contribution_)
             setBalance(balance_)
+            setWhitelisted(whitelisted_)
             setLoadContribution(false)
         }
 
@@ -194,10 +196,10 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                         <Flex justifyContent="center" mt="8px">
                             <Button 
                                 scale="sm" 
-                                disabled={!buyable || pendingTx || !valueNumber || !valueNumber.isFinite() || valueNumber.eq(0) || valueNumber.gt(maxNumber)} 
+                                disabled={!buyable || pendingTx || !valueNumber || !valueNumber.isFinite() || valueNumber.eq(0) || valueNumber.gt(maxNumber) || (sale.whitelistEnabled && !whitelisted)} 
                                 onClick={handleBuy}
                             >
-                                { pendingTx ? (<Dots>{t('Purchasing')}</Dots>) : t('Purchase')}
+                                { pendingTx ? (<Dots>{t('Purchasing')}</Dots>) : (sale.whitelistEnabled && !whitelisted) ? t('You are not in whitelist') : t('Purchase')}
                             </Button>
                         </Flex>
                         </>
