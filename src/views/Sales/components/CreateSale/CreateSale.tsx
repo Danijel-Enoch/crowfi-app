@@ -347,7 +347,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
                             <Flex flexDirection={["column", null, null, "row"]}>
                                 <InputWrap style={{flex: 1}}>
                                     <StyledWrapperWithTooltip
-                                        tooltip={t('Enter your desired softcap in CRO: [soft,hard] (For a small or near 0 soft cap set your softcap to 0.001)')}
+                                        tooltip={t('Enter your desired softcap in CRO (For a small or near 0 soft cap set your softcap to 0.001)')}
                                         error={formError.softCap}
                                             >
                                         <StyledNumericalInput placeholder={t('Soft Cap ex.50 CRO')} value={softCap} onUserInput={(value) => {
@@ -359,7 +359,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree}) => {
                                 <InputWrap style={{flex: 1}}>
 
                                     <StyledWrapperWithTooltip
-                                            tooltip={t('Enter your desired hardcap in CRO: [soft,hard]')}
+                                            tooltip={t('Enter your desired hardcap in CRO')}
                                             error={formError.hardCap}
                                                 >
                                         <StyledNumericalInput placeholder={t('Hard Cap ex.100 CRO')} value={hardCap} onUserInput={(value) => {
