@@ -1,6 +1,6 @@
 import React from 'react'
 import { Trade, TradeType } from '@pancakeswap/sdk'
-import { Text } from '@pancakeswap/uikit'
+import { Text, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { Field } from 'state/swap/actions'
 import { useTranslation } from 'contexts/Localization'
 import { useUserSlippageTolerance } from 'state/user/hooks'
@@ -13,6 +13,7 @@ import SwapRoute from './SwapRoute'
 
 function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippage: number }) {
   const { t } = useTranslation()
+  const { isMobile } = useMatchBreakpoints()
   const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
@@ -25,6 +26,7 @@ function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippag
             {isExactIn ? t('Minimum received') : t('Maximum sold')}
           </Text>
           <QuestionHelper
+            placement={isMobile ? "top" : "right-end"}
             text={t(
               'Your transaction will revert if there is a large, unfavorable price movement before it is confirmed.',
             )}
@@ -46,6 +48,7 @@ function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippag
             {t('Price Impact')}
           </Text>
           <QuestionHelper
+            placement={isMobile ? "top" : "right-end"}
             text={t('The difference between the market price and estimated price due to trade size.')}
             ml="4px"
           />
@@ -59,6 +62,7 @@ function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippag
             {t('Liquidity Provider Fee')}
           </Text>
           <QuestionHelper
+            placement={isMobile ? "top" : "right-end"}
             text={
               <>
                 <Text mb="12px">{t('For each trade a %amount% fee is paid', { amount: '0.25%' })}</Text>
