@@ -32,7 +32,7 @@ function ImportToken({ tokens, handleCurrencySelect }: ImportProps) {
       <Message variant="warning">
         <Text>
           {t(
-            'Anyone can create a BEP20 token on BSC with any name, including creating fake versions of existing tokens and tokens that claim to represent projects that do not have a token.',
+            'Anyone can create a CRC20 token on Cronos with any name, including creating fake versions of existing tokens and tokens that claim to represent projects that do not have a token.',
           )}
           <br />
           <br />
