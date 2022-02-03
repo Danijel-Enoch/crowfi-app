@@ -4,7 +4,9 @@ import { useTranslation } from 'contexts/Localization'
 import { format } from 'date-fns'
 import styled from 'styled-components'
 import { Flex, Text, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton, PencilIcon, RedditIcon, DiscordIcon, InstagramIcon, FacebookIcon } from '@pancakeswap/uikit'
+import TokenAddress from 'components/TokenAddress'
 import { getBscScanLink } from 'utils'
+import { BIG_TEN } from 'utils/bigNumber'
 import truncateHash from 'utils/truncateHash'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import { useToken } from 'hooks/Tokens'
@@ -125,13 +127,13 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                     <InfoRow>
                         <InfoLabel>{t('Presale Address')}</InfoLabel>
                         <Flex alignItems="center">
-                            <LinkExternal href={getBscScanLink(sale.address, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(sale.address) : sale.address }</LinkExternal>
+                            <TokenAddress truncate={isMobile} scale="sm" address={sale.address}/>
                         </Flex>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Presale Owner')}</InfoLabel>
                         <Flex alignItems="center">
-                            <LinkExternal href={getBscScanLink(sale.owner, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(sale.owner) : sale.owner }</LinkExternal>
+                            <TokenAddress truncate={isMobile} scale="sm" address={sale.owner}/>
                         </Flex>
                     </InfoRow>
                     <InfoRow>
@@ -160,7 +162,7 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Address')}</InfoLabel>
-                        <LinkExternal href={getBscScanLink(sale.token, 'address')} fontSize="14px" style={{wordBreak:"break-all"}}>{ isMobile ?  truncateHash(sale.token) : sale.token }</LinkExternal>
+                            <TokenAddress truncate={isMobile} scale="sm" address={sale.token}/>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Total Supply')}</InfoLabel>
@@ -172,7 +174,23 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Presale Rate')}</InfoLabel>
-                        <InfoValue>1 CRO = {sale.rate.toJSON()} {token ? token.symbol : ''}</InfoValue>
+                        { token ? (
+                            <InfoValue>1 CRO = {getFullDisplayBalance(sale.rate.multipliedBy(BIG_TEN.pow(18 - sale.rateDecimals)), token.decimals)} {token ? token.symbol : ''}</InfoValue>
+                        ) : (
+                            <Skeleton width="40px" height="30px"/>
+                        )}
+                    </InfoRow>
+                    <InfoRow>
+                        <InfoLabel>{t('Listing Rate')}</InfoLabel>
+                        { token ? (
+                            <InfoValue>1 CRO = {getFullDisplayBalance(sale.listingRate.multipliedBy(BIG_TEN.pow(18 - sale.listingRateDecimals)), token.decimals)} {token ? token.symbol : ''}</InfoValue>
+                        ) : (
+                            <Skeleton width="40px" height="30px"/>
+                        )}
+                    </InfoRow>
+                    <InfoRow>
+                        <InfoLabel>{t('Liquidity')}</InfoLabel>
+                        <InfoValue>{sale.liquidity} %</InfoValue>
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Soft Cap')}</InfoLabel>

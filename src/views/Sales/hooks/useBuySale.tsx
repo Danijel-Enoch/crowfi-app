@@ -30,6 +30,19 @@ export const useClaimSale = (address: string) => {
   return { onClaimSale: handleClaim }
 }
 
+export const useClaimRefundSale = (address: string) => {
+  const saleContract = useCrowpadSaleContract(address)
+
+  const handleClaimRefund = useCallback(async (account: string) => {
+    const gasPrice = getGasPrice()
+    const tx = await callWithEstimateGas(saleContract, 'claimRefund', [account], {gasPrice})
+    const receipt = await tx.wait()
+    return receipt.status
+  }, [saleContract])
+
+  return { onClaimRefundSale: handleClaimRefund }
+}
+
 export const useFinalizeSale = (address: string) => {
   const saleContract = useCrowpadSaleContract(address)
 

@@ -35,12 +35,16 @@ export const scaleVariants = {
     [scales.SM]: {
         fontSize: "14px",
     },
+    [scales.XS]: {
+        fontSize: "12px",
+    },
 };
 
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(Button)<{fontSz:string}>`
   height: unset;
   padding: unset;
+  font-size: ${({ fontSz }) => fontSz};
 `
 
 const StyledIconButton = styled(Button)`
@@ -83,11 +87,11 @@ const TokenAddress: React.FC<TokenAddressProps> = ({scale="md", address, truncat
     }
     return (
         <Flex position="relative" alignItems="center" {...props}>
-            <StyledButton onClick={copyAddress} variant="text" fontSize={scaleVariants[scale]}>{truncate ? truncateHash(address) : address}</StyledButton>
+            <StyledButton onClick={copyAddress} variant="text" fontSz={scaleVariants[scale].fontSize}>{truncate ? truncateHash(address) : address}</StyledButton>
             <StyledIconButton variant="text" onClick={copyAddress} ml="4px">
                 <CopyIcon color="primary" width="24px" />
             </StyledIconButton>
-            <StyledIconButton as="a" href={getBscScanLink(address, 'address')} ml="4px">
+            <StyledIconButton as="a" href={getBscScanLink(address, 'address')} ml="4px" target="_blank">
                 <OpenNewIcon color="primary"  width="24px"/>
             </StyledIconButton>
             <Tooltip isTooltipDisplayed={isTooltipDisplayed}>{t('Copied')}</Tooltip>

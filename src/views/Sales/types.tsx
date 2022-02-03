@@ -28,6 +28,10 @@ export interface PublicSaleData {
     openingTime: number
     closingTime: number
     rate: BigNumber
+    rateDecimals: number
+    listingRate: BigNumber
+    listingRateDecimals: number
+    liquidity: number
     goal: BigNumber
     cap: BigNumber
     minContribution?: BigNumber

@@ -3,9 +3,10 @@ import { Link, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { isAddress } from 'ethers/lib/utils'
-import { Breadcrumbs, Flex, Text, ChevronRightIcon, Spinner, LogoIcon, Heading, Button } from '@pancakeswap/uikit'
+import { Breadcrumbs, Flex, Text, ChevronRightIcon, Spinner, LogoIcon, Heading, Button, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { PageBGWrapper } from 'components/Launchpad/StyledControls'
 import { useTranslation } from 'contexts/Localization'
+import truncateHash from 'utils/truncateHash'
 import SaleBaseSection from './SaleBaseSection'
 import SaleActionSection from './SaleActionSection'
 import SaleStatusSection from './SaleStatusSection'
@@ -65,6 +66,7 @@ const SalePageContent: React.FC<SalePageContentProps> = ({
     account, address, sale, onEditMeta, onReloadSale, onWhitelistChanged
 }) => {
     const { t } = useTranslation()
+    const { isMobile } = useMatchBreakpoints()
     
     return (
         <>
@@ -74,7 +76,7 @@ const SalePageContent: React.FC<SalePageContentProps> = ({
                     <Text color="white">{t('Presale')}</Text>
                 </Link>
                 <Flex>
-                    <Text mr="8px" color="rgba(255, 255, 255, 0.6)">{address}</Text>
+                    <Text mr="8px" color="rgba(255, 255, 255, 0.6)">{ isMobile ? truncateHash(address) : address}</Text>
                 </Flex>
                 </Breadcrumbs>
             </Flex>

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'contexts/Localization'
 import { Flex } from '@pancakeswap/uikit'
+import { SALE_FINALIZE_DEADLINE } from 'config/constants'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import { InfoRow, InfoLabel, InfoValue } from './styled'
 import { PaymentType, PublicSaleData } from '../../types'
@@ -20,6 +21,10 @@ const SaleStatusSection: React.FC<SaleStatusSectionProps> = ({sale}) => {
             return t('Canceled')
         }
         if (sale.finalized) {
+            return t('Finalized')
+        }
+
+        if (sale.closingTime + SALE_FINALIZE_DEADLINE < now) {
             return t('Finalized')
         }
 

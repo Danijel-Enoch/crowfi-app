@@ -5,6 +5,7 @@ import { Token } from '@pancakeswap/sdk'
 import { StyledNumericalInput } from 'components/Launchpad/StyledControls'
 import Dots from 'components/Loader/Dots'
 import { getFullDisplayBalance } from 'utils/formatBalance'
+import { SALE_FINALIZE_DEADLINE } from 'config/constants'
 import useInterval from 'hooks/useInterval'
 import useToast from 'hooks/useToast'
 import { useToken } from 'hooks/Tokens'
@@ -12,7 +13,7 @@ import { BIG_TEN, BIG_ZERO } from 'utils/bigNumber'
 import { BigNumber} from 'bignumber.js'
 import SaleTimer from './SaleTimer'
 import { PublicSaleData } from '../../types'
-import { useBuySale, useClaimSale } from '../../hooks/useBuySale'
+import { useBuySale, useClaimRefundSale, useClaimSale } from '../../hooks/useBuySale'
 import { getSaleUserData } from '../../hooks/getSales'
 
 export interface SaleActionSectionProps {
@@ -28,6 +29,8 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
     const [value, setValue] = useState('')
     const [text, setText] = useState('')
     const [pendingTx, setPendingTx] = useState(false)
+    const [claimingRefund, setClaimingRefund] = useState(false)
+    const [expired, setExpired] = useState(sale.finalized)
     const [buyable, setBuyable] = useState(false)
     const [showBuy, setShowbuy] = useState(false)
     const [showClaim, setShowClaim] = useState(false)
@@ -40,39 +43,42 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
     const [contribution, setContribution] = useState<BigNumber|null>(null)
 
     const [balance, setBalance] = useState<BigNumber|null>(null)
+    const [balanceEth, setBalanceEth] = useState<BigNumber|null>(null)
 
     useEffect(() => {
         const fetchContribution = async () =>  {
-            const {contribution:contribution_, balance:balance_, whitelisted: whitelisted_} = await getSaleUserData(sale.address, account)
+            const {contribution:contribution_, balanceEth: balanceEth_, balance:balance_, whitelisted: whitelisted_} = await getSaleUserData(sale.address, account)
             setContribution(contribution_)
             setBalance(balance_)
+            setBalanceEth(balanceEth_)
             setWhitelisted(whitelisted_)
             setLoadContribution(false)
+
+            console.log('balanceEth', balanceEth? balanceEth.toJSON() : '')
         }
 
         fetchContribution()
-    }, [account, sale.address, loadContribution])
+    }, [account, sale.address, loadContribution, balanceEth])
 
     const maxNumber = useMemo(() => {
-        let max = sale.cap.minus(sale.weiRaised)
-        if (max.gt(BIG_TEN.pow(18).multipliedBy(50))) {
-            max = BIG_TEN.pow(18).multipliedBy(50)
-        }
-        if (max.gt(sale.maxContribution)) {
-            max = sale.maxContribution
-        }
-        max = contribution ? max.minus(contribution) : max;
-        return max.gt(BIG_ZERO) ? max : BIG_ZERO;
+        const remaining = sale.cap.minus(sale.weiRaised)
+        const remainingContrib = sale.maxContribution.minus(contribution)
+
+        return remaining.gt(remainingContrib) ? remainingContrib : remaining;
     }, [sale, contribution])
 
     const valueNumber = new BigNumber(value).multipliedBy(BIG_TEN.pow(18))
 
     const { onBuySale } = useBuySale(sale.address)
     const { onClaimSale } = useClaimSale(sale.address)
+    const { onClaimRefundSale } = useClaimRefundSale(sale.address)
 
 
     useInterval(() => {
         const now = Math.floor(new Date().getTime() / 1000);
+        if (now > sale.closingTime + SALE_FINALIZE_DEADLINE) {
+            setExpired(true)
+        }
         if (now > sale.closingTime) {
             setBuyable(false)
             setShowbuy(false)
@@ -122,7 +128,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
             setLoadContribution(!loadContribution)
             toastSuccess(
             `${t('Success')}!`,
-            t('You have been purchased %amount% tokens successfully', {
+            t('You have been claimed your tokens successfully', {
                 amount: getFullDisplayBalance(contribution_.multipliedBy(sale.rate), token.decimals)
             }),
             )
@@ -134,6 +140,25 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
             setPendingTx(false)
         }
     }, [toastError, toastSuccess, t, onClaimSale, onReloadSale, sale, contribution, token, account, loadContribution])
+
+    const handleClaimRefund = useCallback(async () => {
+        try {
+            setClaimingRefund(true)
+            await onClaimRefundSale(account)
+            onReloadSale()
+            setLoadContribution(!loadContribution)
+            toastSuccess(
+            `${t('Success')}!`,
+            t('You have been claimed the refund successfully'),
+            )
+        } catch (e) {
+            console.log('e', e)
+            toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+
+        } finally {
+            setClaimingRefund(false)
+        }
+    }, [toastError, toastSuccess, t, onClaimRefundSale, onReloadSale, account, loadContribution])
 
     return (
         <>
@@ -151,7 +176,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                             { t('Canceled') }
                         </Text>
                     </Flex>
-                ) : (
+                ) : !sale.finalized && (
                     <SaleTimer startTime={sale.openingTime} endTime={sale.closingTime} />
                 )}
                 <Flex flexDirection="column" mt="8px">
@@ -174,10 +199,21 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                 </Text>
                 )}
                 
-                { token && balance && balance.isFinite() && (
+                { !sale.canceled && token && balance && balance.isFinite() && (
                     <Text fontSize="14px" fontStyle="bold" mt="8px" textAlign="center">
                         {t('Claimable : %amount% %currency%', {amount: getFullDisplayBalance(balance, token.decimals), currency:token.symbol})}
                     </Text>
+                )}
+                { sale.canceled && contribution && contribution.isFinite() && contribution.gt(0) && (
+                    <Flex justifyContent="center" mt="8px">
+                        <Button 
+                            scale="sm" 
+                            disabled={claimingRefund || !balanceEth || balanceEth.lte(0)} 
+                            onClick={handleClaimRefund}
+                        >
+                            { claimingRefund ? (<Dots>{t('Claiming')}</Dots>) : t('Claim Refund')}
+                        </Button>
+                    </Flex>
                 )}
                 { !sale.canceled && (
                     <>
@@ -206,7 +242,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                     )}
                     { showClaim && (
                     <Flex justifyContent="center" mt="8px">
-                        <Button scale="sm" disabled={pendingTx || !balance || !balance.isFinite() || balance.eq(0)} onClick={handleClaim}>
+                        <Button scale="sm" disabled={pendingTx || !balance || !balance.isFinite() || balance.eq(0) || (!expired && !sale.finalized) } onClick={handleClaim}>
                             { pendingTx ? (<Dots>{t('Claiming')}</Dots>) : t('Claim')}
                         </Button>
                     </Flex>

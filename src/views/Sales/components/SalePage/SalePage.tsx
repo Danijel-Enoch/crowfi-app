@@ -3,7 +3,7 @@ import { Link, RouteComponentProps, Router } from 'react-router-dom'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { isAddress } from 'ethers/lib/utils'
-import { Breadcrumbs, Flex, Text, ChevronRightIcon, Spinner, LogoIcon, Heading, Button } from '@pancakeswap/uikit'
+import { Breadcrumbs, Flex, Text, ChevronRightIcon, Spinner, LogoIcon, Heading, Button, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { PageBGWrapper } from 'components/Launchpad/StyledControls'
 import { useTranslation } from 'contexts/Localization'
 import useRefresh from 'hooks/useRefresh'
@@ -78,7 +78,6 @@ const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
     useEffect(() => {
         const fetchSale = async() => {
             if (!isAddress(routeAddress)) {
-                console.log('here', routeAddress)
                 setIsValid(false)
                 setLoaded(true)
                 return
@@ -106,7 +105,6 @@ const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
     }, [routeAddress, needReload, slowRefresh])
 
     const triggerReload = () =>  {
-        console.log('here - triggering reload');
         if (needReload) {
             setNeedReload(false)
             setNeedReload(true)

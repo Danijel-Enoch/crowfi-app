@@ -4,6 +4,7 @@ import { differenceInSeconds } from 'date-fns'
 import { Text, Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import useInterval from 'hooks/useInterval'
+import { SALE_FINALIZE_DEADLINE } from 'config/constants'
 
 const SaleCountDown = styled(Flex)`
   align-items: flex-end;
@@ -22,7 +23,7 @@ const SaleCountDownText = styled(Text)`
   margin: 4px;
 `
 
-const SaleTimer: React.FC<{ startTime: number, endTime: number }> = ({ startTime, endTime }) => {
+const SaleTimer: React.FC<{ startTime: number, endTime: number }> = ({ startTime, endTime}) => {
   const { t } = useTranslation()
   const [days, setDays] = useState('')
   const [hours, setHours] = useState('')
@@ -32,23 +33,26 @@ const SaleTimer: React.FC<{ startTime: number, endTime: number }> = ({ startTime
 
   useInterval(() => {
     const now = Math.floor(new Date().getTime() / 1000);
-    if (now > endTime) {
+    if (now > endTime + SALE_FINALIZE_DEADLINE) {
       setDays('')
       setHours('')
       setMinutes('')
       setSeconds('')
-      setText('Closed')
+      setText('Finalized')
       return;
     }
 
     let diffTime = 0;
 
-    if (now > startTime) {
-      diffTime = endTime- now;
-      setText(`${t('Presale ends in')} :`)
-    } else {
+    if (startTime > now) {
       diffTime = startTime - now;
       setText(`${t('Presale starts in')} :`)
+    } else if (endTime > now) {
+      diffTime = endTime - now;
+      setText(`${t('Presale ends in')} :`)
+    } else if (endTime + SALE_FINALIZE_DEADLINE > now) {
+      diffTime = endTime + SALE_FINALIZE_DEADLINE - now;
+      setText(`${t('Needs to be finalized')}`)
     }
 
     

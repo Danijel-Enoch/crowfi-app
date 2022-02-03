@@ -92,6 +92,8 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
 
 export const NetworkContextName = 'NETWORK'
 
+export const SALE_FINALIZE_DEADLINE = 86400 * 7
+
 // default allowed slippage, in bips
 export const INITIAL_ALLOWED_SLIPPAGE = 50
 // 20 minutes, denominated in seconds

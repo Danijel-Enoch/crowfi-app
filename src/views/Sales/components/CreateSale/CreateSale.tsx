@@ -58,6 +58,8 @@ interface FormErrors {
     token?: string,
     wallet?: string,
     rate?: string,
+    listingRate?: string,
+    liquidityPercent?: string,
     softCap?: string,
     hardCap?: string,
     minContribution?: string,
@@ -85,6 +87,8 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
     const [ presentedDesclaimer, setPresentedDesclaimer ] = useState<boolean>(false)
     const [ logo, setLogo ] = useState<string>('')
     const [ rate, setRate ] = useState<string>('')
+    const [ listingRate, setListingRate ] = useState<string>('')
+    const [ liquidityPercent, setLiquidityPercent ] = useState<string>('')
     const [ softCap, setSoftCap ] = useState<string>('')
     const [ hardCap, setHardCap ] = useState<string>('')
     const [ minContribution, setMinContribution ] = useState<string>('')
@@ -112,14 +116,43 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
     const searchToken: Token = useToken(tokenAddress)
     const {balance} = useTokenBalance(searchToken ? searchToken.address : null)
 
+    const rateDecimalsNumber = useMemo(() => {
+        const res = new BigNumber(rate)
+        if (!searchToken || !res || !res.isFinite() || res.eq(0)) {
+            return BIG_ZERO
+        }
+        return new BigNumber(res.decimalPlaces() + 18 - searchToken.decimals)
+    }, [rate, searchToken])
+
     const rateNumber = useMemo(() => {
         const res = new BigNumber(rate)
         if (!searchToken || !res || !res.isFinite() || res.eq(0)) {
             return BIG_ZERO
         }
 
-        return res.multipliedBy(BIG_TEN.pow(searchToken.decimals)).div(BIG_TEN.pow(18))
+        return res.multipliedBy(BIG_TEN.pow(res.decimalPlaces()))
     }, [rate, searchToken])
+
+    const listingRateDecimalsNumber = useMemo(() => {
+        const res = new BigNumber(listingRate)
+        if (!searchToken || !res || !res.isFinite() || res.eq(0)) {
+            return BIG_ZERO
+        }
+        return new BigNumber(res.decimalPlaces() + 18 - searchToken.decimals)
+    }, [listingRate, searchToken])
+
+    const listingRateNumber = useMemo(() => {
+        const res = new BigNumber(listingRate)
+        if (!searchToken || !res || !res.isFinite() || res.eq(0)) {
+            return BIG_ZERO
+        }
+
+        return res.multipliedBy(BIG_TEN.pow(res.decimalPlaces()))
+    }, [listingRate, searchToken])
+
+    const liquidityPercentNumber = useMemo(() => {
+        return new BigNumber(liquidityPercent)
+    }, [liquidityPercent])
 
     const softCapNumber = useMemo(() => {
         const res = new BigNumber(softCap).multipliedBy(BIG_TEN.pow(18))
@@ -129,14 +162,17 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         return res
     }, [softCap])
 
-    const depositAmoutNumber = useMemo(() => {
-        if (!rateNumber || !hardCapNumber || !hardCapNumber.isFinite()) {
+    const depositAmountNumber = useMemo(() => {
+        if (!rateNumber || !rateNumber.isFinite() || !listingRateNumber || !listingRateNumber.isFinite() || !liquidityPercentNumber || !liquidityPercentNumber.isFinite() || !hardCapNumber || !hardCapNumber.isFinite()) {
             return BIG_ZERO
         }
-        return hardCapNumber.multipliedBy(rateNumber)
-    }, [rateNumber, hardCapNumber])
 
-    const [approval, approveCallback] = useApproveCallback(searchToken && depositAmoutNumber && depositAmoutNumber.isFinite() ? new TokenAmount(searchToken, JSBI.BigInt(depositAmoutNumber.toJSON())) : undefined, getCrowpadSaleFactoryAddress())
+        const presaleAmount = hardCapNumber.multipliedBy(rateNumber).div(BIG_TEN.pow(rateDecimalsNumber))
+        const liquidityAmount = hardCapNumber.multipliedBy(liquidityPercentNumber).div(100).multipliedBy(listingRateNumber).div(BIG_TEN.pow(listingRateDecimalsNumber))
+        return presaleAmount.plus(liquidityAmount)
+    }, [rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, hardCapNumber])
+
+    const [approval, approveCallback] = useApproveCallback(searchToken && depositAmountNumber && depositAmountNumber.isFinite() ? new TokenAmount(searchToken, JSBI.BigInt(depositAmountNumber.toJSON())) : undefined, getCrowpadSaleFactoryAddress())
 
     const [onPresentDesclaimer] = useModal(
         <DesclaimerModal onAgree={() => {
@@ -185,10 +221,26 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
             if (!rateNumber || !rateNumber.isFinite() || rateNumber.eq(0)) {
                 valid = false;
                 error.rate = "Presale rate is required.";
+            } else if (!rateDecimalsNumber || !rateDecimalsNumber.isFinite() || rateDecimalsNumber.lt(0)) {
+                valid = false;
+                error.rate = "Presale rate is invalid .";
+            }
+
+            if (!listingRateNumber || !listingRateNumber.isFinite() || listingRateNumber.eq(0)) {
+                valid = false;
+                error.listingRate = "Listing rate is required.";
+            } else if (!listingRateDecimalsNumber || !listingRateDecimalsNumber.isFinite() || listingRateDecimalsNumber.lt(0)) {
+                valid = false;
+                error.listingRate = "Listing rate is invalid .";
+            }
+
+            if (!error.rate && !error.listingRate && listingRateNumber.div(BIG_TEN.pow(listingRateDecimalsNumber)).gte(rateNumber.div(BIG_TEN.pow(rateDecimalsNumber)))) {
+                valid = false;
+                error.listingRate = "Listing rate must be smaller than presale rate.";
             }
 
 
-            if (!depositAmoutNumber || !depositAmoutNumber.isFinite() || depositAmoutNumber.eq(0)) {
+            if (!depositAmountNumber || !depositAmountNumber.isFinite() || depositAmountNumber.eq(0)) {
                 valid = false;
                 error.maxContribution = "Hard cap is invalid.";
             }
@@ -197,6 +249,14 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         if (!isAddress(wallet)) {
             valid = false;
             error.wallet = "Wallet address is invalid.";
+        }
+
+        if (!liquidityPercentNumber || !liquidityPercentNumber.isFinite() || liquidityPercentNumber.eq(0)) {
+            valid = false;
+            error.liquidityPercent = "Liquidity percent is required.";
+        } else if (liquidityPercentNumber.lt(50) || liquidityPercentNumber.gt(100)) {
+            valid = false;
+            error.liquidityPercent = "Liquidity percent must be in 50-100.";
         }
 
         if (!softCapNumber || !softCapNumber.isFinite() || softCapNumber.eq(0)) {
@@ -248,7 +308,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         }
         setFormError(error)
         return valid
-    }, [wallet, searchToken, rateNumber, softCapNumber, hardCapNumber, startDate, endDate, minContributionNumer, maxContributionNumer, depositAmoutNumber, tokenAddress])
+    }, [wallet, searchToken, rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, softCapNumber, hardCapNumber, startDate, endDate, minContributionNumer, maxContributionNumer, depositAmountNumber, tokenAddress])
 
 
     const handleCreate = useCallback(async () => {
@@ -257,7 +317,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         }
         try {
             setPendingTx(true)
-            const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, rateNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000), minContributionNumer.toJSON(), maxContributionNumer.toJSON(), whitelistEnabled, true, logo.trim())
+            const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, rateNumber.toJSON(), rateDecimalsNumber.toJSON(), listingRateNumber.toJSON(), listingRateDecimalsNumber.toJSON(), liquidityPercentNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000), minContributionNumer.toJSON(), maxContributionNumer.toJSON(), whitelistEnabled, logo.trim())
             dispatch(fetchLaunchpadPublicDataAsync())
             dispatch(fetchLaunchpadUserDataAsync({account}))
             history.push(`/presale/view/${saleAddress}`)
@@ -268,7 +328,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         } finally {
           setPendingTx(false)
         }
-    }, [onCreateSale, dispatch, toastError, t, validateInputs, history, account, deployFee, wallet, searchToken, rateNumber, softCapNumber, hardCapNumber, startDate, endDate, minContributionNumer, maxContributionNumer, whitelistEnabled, logo])
+    }, [onCreateSale, dispatch, toastError, t, validateInputs, history, account, deployFee, wallet, searchToken, rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, softCapNumber, hardCapNumber, startDate, endDate, minContributionNumer, maxContributionNumer, whitelistEnabled, logo])
 
     const renderApprovalOrCreateButton = () => {
         return  (
@@ -402,12 +462,35 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                             </Flex>
                             <InputWrap>
                                 <StyledWrapperWithTooltip
+                                    tooltip={t('Enter your desired Liquidity % (50 ~ 100)')}
+                                    error={formError.liquidityPercent}
+                                        >
+                                    <StyledNumericalInput placeholder={t('Liquidity (%)')} value={liquidityPercent} onUserInput={(value) => {
+                                        setLiquidityPercent(value)
+                                        setFormError({...formError, liquidityPercent: null})
+                                    }}/>
+                                </StyledWrapperWithTooltip>
+                            </InputWrap>
+                            <InputWrap>
+                                <StyledWrapperWithTooltip
+                                    tooltip={t('Enter your desired listing prce in CRO: (If I pay 1 CRO, how many tokens do I get?)')}
+                                    error={formError.listingRate}
+                                        >
+                                    <StyledNumericalInput placeholder={t('Listing Rate')} value={listingRate} onUserInput={(value) => {
+                                        setListingRate(value)
+                                        setFormError({...formError, listingRate: null})
+                                    }}/>
+                                </StyledWrapperWithTooltip>
+                            </InputWrap>
+                            <InputWrap>
+                                <StyledWrapperWithTooltip
                                     tooltip={t('Enter the presale start time in your local time.')}
                                     error={formError.presaleStartTime}
                                     >
                                     <DateTimePikcer 
                                     onChange={handleStartDateChange}
                                     selected={startDate}
+                                    timeIntervals={1}
                                     placeholderText="Presale Start Time"/>
                                 </StyledWrapperWithTooltip>
                             </InputWrap>
@@ -419,6 +502,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                                     <DateTimePikcer 
                                     onChange={handleEndDateChange}
                                     selected={endDate}
+                                    timeIntervals={1}
                                     placeholderText="Presale End Time"/>
                                 </StyledWrapperWithTooltip>
                             </InputWrap>
@@ -478,6 +562,22 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                                 </li>
                                 
                             </StyledList>
+
+                            {searchToken && (
+                                <>
+                                <Flex mt="24px">
+                                    <Text fontSize="14px" color="secondary" mr="16px">
+                                        {t('Required Token Amount')}:
+                                    </Text>
+                                    { depositAmountNumber && (
+                                        <Text fontSize="14px" color="primary">
+                                            {getFullDisplayBalance(depositAmountNumber, searchToken.decimals)} {searchToken.symbol}
+                                        </Text>
+                                    )}
+                                </Flex>
+                                </>
+                            )}
+                            
                         </Flex>
                     </Flex>
                 </Flex>

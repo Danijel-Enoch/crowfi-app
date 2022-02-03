@@ -8,7 +8,7 @@ import { PaymentType, PublicSaleData, PublicSaleMetaData } from "../types";
 export const findSales = async (token: string) : Promise<PublicSaleData[]> => {
     const saleFactoryContract = getCrowpadSaleFactoryContract()
     const saleAddresses: string[]|null = await saleFactoryContract.getSalesForToken(0, 100)
-    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled']
+    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled']
 
     if (!saleAddresses || saleAddresses.length === 0) {
         return [];
@@ -27,7 +27,7 @@ export const findSales = async (token: string) : Promise<PublicSaleData[]> => {
 
     const response = await multicall(crowpadSaleABI, calls)
     const res = response.reduce((accum: any[][], item, index) => {
-        const chunk = Math.floor(index / 12)
+        const chunk = Math.floor(index / 16)
         const chunks = accum
         chunks[chunk] = ([] as any[]).concat(accum[chunk] || [], item)
         return chunks
@@ -41,11 +41,15 @@ export const findSales = async (token: string) : Promise<PublicSaleData[]> => {
             goal: new BigNumber(item[4]._hex),
             cap: new BigNumber(item[5]._hex),
             rate: new BigNumber(item[6]._hex),
-            openingTime: new BigNumber(item[7]._hex).toNumber(),
-            closingTime: new BigNumber(item[8]._hex).toNumber(),
-            finalized: item[9],
-            logo: item[10],
-            canceled: item[11],
+            rateDecimals: new BigNumber(item[7]._hex).toNumber(),
+            listingRate: new BigNumber(item[8]._hex),
+            listingRateDecimals: new BigNumber(item[9]._hex).toNumber(),
+            liquidity: new BigNumber(item[10]._hex).toNumber(),
+            openingTime: new BigNumber(item[11]._hex).toNumber(),
+            closingTime: new BigNumber(item[12]._hex).toNumber(),
+            finalized: item[13],
+            logo: item[14],
+            canceled: item[15],
         }
     })
 
@@ -59,7 +63,7 @@ export const getSales = async (start: number, count: number) : Promise<PublicSal
 
     const saleFactoryContract = getCrowpadSaleFactoryContract()
     const saleAddresses: string[] = await saleFactoryContract.getSales(start, start+count)
-    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled']
+    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled']
 
     const calls = saleAddresses.reduce((accum, address, index) => {
         fields.forEach((field) => {
@@ -74,7 +78,7 @@ export const getSales = async (start: number, count: number) : Promise<PublicSal
 
     const response = await multicall(crowpadSaleABI, calls)
     const res = response.reduce((accum: any[][], item, index) => {
-        const chunk = Math.floor(index / 12)
+        const chunk = Math.floor(index / 16)
         const chunks = accum
         chunks[chunk] = ([] as any[]).concat(accum[chunk] || [], item)
         return chunks
@@ -88,11 +92,15 @@ export const getSales = async (start: number, count: number) : Promise<PublicSal
             goal: new BigNumber(item[4]._hex),
             cap: new BigNumber(item[5]._hex),
             rate: new BigNumber(item[6]._hex),
-            openingTime: new BigNumber(item[7]._hex).toNumber(),
-            closingTime: new BigNumber(item[8]._hex).toNumber(),
-            finalized: item[9],
-            logo: item[10],
-            canceled: item[11],
+            rateDecimals: new BigNumber(item[7]._hex).toNumber(),
+            listingRate: new BigNumber(item[8]._hex),
+            listingRateDecimals: new BigNumber(item[9]._hex).toNumber(),
+            liquidity: new BigNumber(item[10]._hex).toNumber(),
+            openingTime: new BigNumber(item[11]._hex).toNumber(),
+            closingTime: new BigNumber(item[12]._hex).toNumber(),
+            finalized: item[13],
+            logo: item[14],
+            canceled: item[15],
         }
     })
 
@@ -102,7 +110,7 @@ export const getSales = async (start: number, count: number) : Promise<PublicSal
 export const getUserSales = async (account: string) : Promise<PublicSaleData[]> => {
     const saleFactoryContract = getCrowpadSaleFactoryContract()
     const saleAddresses: string[] = await saleFactoryContract.getSalesForUser(account)
-    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled']
+    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled']
 
     if (!saleAddresses || saleAddresses.length === 0) {
         return [];
@@ -121,7 +129,7 @@ export const getUserSales = async (account: string) : Promise<PublicSaleData[]> 
 
     const response = await multicall(crowpadSaleABI, calls)
     const res = response.reduce((accum: any[][], item, index) => {
-        const chunk = Math.floor(index / 12)
+        const chunk = Math.floor(index / 16)
         const chunks = accum
         chunks[chunk] = ([] as any[]).concat(accum[chunk] || [], item)
         return chunks
@@ -135,26 +143,35 @@ export const getUserSales = async (account: string) : Promise<PublicSaleData[]> 
             goal: new BigNumber(item[4]._hex),
             cap: new BigNumber(item[5]._hex),
             rate: new BigNumber(item[6]._hex),
-            openingTime: new BigNumber(item[7]._hex).toNumber(),
-            closingTime: new BigNumber(item[8]._hex).toNumber(),
-            finalized: item[9],
-            logo: item[10],
-            canceled: item[11],
+            rateDecimals: new BigNumber(item[7]._hex).toNumber(),
+            listingRate: new BigNumber(item[8]._hex),
+            listingRateDecimals: new BigNumber(item[9]._hex).toNumber(),
+            liquidity: new BigNumber(item[10]._hex).toNumber(),
+            openingTime: new BigNumber(item[11]._hex).toNumber(),
+            closingTime: new BigNumber(item[12]._hex).toNumber(),
+            finalized: item[13],
+            logo: item[14],
+            canceled: item[15],
         }
     })
 
     return res
 }
 
-export const getSaleUserData = async (address?: string, account?: string) : Promise<{contribution: BigNumber, balance: BigNumber, whitelisted: boolean}> => {
+export const getSaleUserData = async (address?: string, account?: string) : Promise<{contribution: BigNumber, balanceEth: BigNumber, balance: BigNumber, whitelisted: boolean}> => {
     if (!address || !account) {
-        return {contribution: null, balance: null, whitelisted: false}
+        return {contribution: null, balanceEth: null, balance: null, whitelisted: false}
     }
     
     const calls = [
         {
             address,
             name: 'getUserContribution',
+            params: [account]
+        },
+        {
+            address,
+            name: 'depositOf',
             params: [account]
         },
         {
@@ -171,17 +188,19 @@ export const getSaleUserData = async (address?: string, account?: string) : Prom
 
     const [
         [contribution_], 
+        [deposit_],
         [balance_],
         [whitelisted]
     ] = await multicall(crowpadSaleABI, calls)
     
     const contribution = contribution_ ? new BigNumber(contribution_._hex) : BIG_ZERO;
+    const balanceEth = deposit_ ? new BigNumber(deposit_._hex) : BIG_ZERO;
     const balance = balance_ ? new BigNumber(balance_._hex) : BIG_ZERO;
-    return {contribution, balance, whitelisted}
+    return {contribution, balanceEth, balance, whitelisted}
 }
 
 export const getSale = async (address: string) : Promise<PublicSaleData> => {
-    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'openingTime', 'closingTime', 'finalized', 'logo', 'investorMinCap', 'investorHardCap', 'whitelistEnabled', 'stage', 'canceled']
+    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'investorMinCap', 'investorHardCap', 'whitelistEnabled', 'canceled']
 
     const calls = fields.map((field) =>  {
         return {
@@ -199,6 +218,10 @@ export const getSale = async (address: string) : Promise<PublicSaleData> => {
         [goal_],
         [cap_],
         [rate_],
+        [rateDecimals_],
+        [listingRate_],
+        [listingRateDecimals_],
+        [liquidityPercent_],
         [openingTime_],
         [closingTime_],
         [finalized],
@@ -206,7 +229,6 @@ export const getSale = async (address: string) : Promise<PublicSaleData> => {
         [minContribution_],
         [maxContribution_],
         [whitelistEnabled],
-        [stage],
         [canceled]
     ] = await multicall(crowpadSaleABI, calls)
     return {
@@ -218,6 +240,10 @@ export const getSale = async (address: string) : Promise<PublicSaleData> => {
         goal: new BigNumber(goal_._hex),
         cap: new BigNumber(cap_._hex),
         rate: new BigNumber(rate_._hex),
+        rateDecimals: new BigNumber(rateDecimals_._hex).toNumber(),
+        listingRate: new BigNumber(listingRate_._hex),
+        listingRateDecimals: new BigNumber(listingRateDecimals_._hex).toNumber(),
+        liquidity: new BigNumber(liquidityPercent_._hex).toNumber(),
         openingTime: new BigNumber(openingTime_._hex).toNumber(),
         closingTime: new BigNumber(closingTime_._hex).toNumber(),
         finalized,
@@ -231,7 +257,7 @@ export const getSale = async (address: string) : Promise<PublicSaleData> => {
 }
 
 export const getSaleMeta = async (address: string) : Promise<PublicSaleMetaData & {logo: string}> => {
-    const fields = ['logo', 'website', 'facebook', 'twitter', 'instagram', 'telegram', 'github', 'discord', 'reddit', 'projectDescription']
+    const fields = ['logo', 'website', 'links', 'projectDescription']
 
     const calls = fields.map((field) =>  {
         return {
@@ -244,25 +270,21 @@ export const getSaleMeta = async (address: string) : Promise<PublicSaleMetaData 
     const [
         [logo], 
         [website], 
-        [facebook],
-        [twitter], 
-        [instagram],
-        [telegram],
-        [github],
-        [discord],
-        [reddit],
+        links,
         [description],
     ] = await multicall(crowpadSaleABI, calls)
+
+    console.log('links', links)
     return {
         logo,
         website,
-        facebook,
-        twitter,
-        instagram,
-        telegram,
-        github,
-        discord,
-        reddit,
+        facebook: links.facebook,
+        twitter: links.twitter,
+        instagram: links.instagram,
+        telegram: links.telegram,
+        discord: links.discord,
+        reddit: links.reddit,
+        github: links.github,
         description,
     }
 }
