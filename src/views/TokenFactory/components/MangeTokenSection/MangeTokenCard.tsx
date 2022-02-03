@@ -3,11 +3,12 @@ import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { Card, Flex, Text, Button, Skeleton, useModal, useTooltip } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
-import { getFullDisplayBalanceExact } from 'utils/formatBalance'
+import { getFullDisplayBalance, getFullDisplayBalanceExact } from 'utils/formatBalance'
 import { StyledAddressInput, StyledNumericalInput } from 'components/Launchpad/StyledControls'
 import TokenAddress from 'components/TokenAddress'
 import Dots from 'components/Loader/Dots'
 import Loading from 'components/Loading'
+import useTokenBalance, { FetchStatus } from 'hooks/useTokenBalance'
 import useToast from 'hooks/useToast'
 import useENS from 'hooks/ENS/useENS'
 import { useAppDispatch } from 'state'
@@ -71,16 +72,20 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({account, tokenData}) =
   const [taxInitialized, setTaxInitialized] = useState(false)
   const [lpInitialized, setLpInitialized] = useState(false)
   const { onSetLpFee, onSetTaxFee } = useLPGeneratorTokenFee(tokenData.address)
+  const { balance: tokenBalance, fetchStatus: tokenBalanceFetchStatus } = useTokenBalance(tokenData.address)
   const burnAmountNumber = new BigNumber(burnAmount).multipliedBy(BIG_TEN.pow(tokenData.decimals))
 
-  const handleChangePercent = (percent: number) => {
+  const handleChangePercent = useCallback((percent: number) => {
+    if (!tokenBalance || !tokenBalance.isFinite()) {
+      return
+    }
     if (percent === 100) {
-      setBurnAmount(getFullDisplayBalanceExact(tokenData.totalSupply, tokenData.decimals))
+      setBurnAmount(getFullDisplayBalanceExact(tokenBalance, tokenData.decimals))
     } else {
-      const amount = tokenData.totalSupply.multipliedBy(percent).div(100)
+      const amount = tokenBalance.multipliedBy(percent).div(100)
       setBurnAmount(getFullDisplayBalanceExact(amount, tokenData.decimals))
     }
-  }
+  }, [tokenBalance, tokenData])
 
   const handleBurnComplete = () => {
     console.log('completed')
@@ -234,20 +239,20 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({account, tokenData}) =
         onUserInput={(val) => setBurnAmount(val)}
       />
       <Flex alignItems="center" justifyContent="space-between" mt="8px">
-        <StyledButton scale="xs" mx="2px" p="4px 8px" variant="tertiary" onClick={() => handleChangePercent(25)}>
+        <StyledButton disabled={tokenBalanceFetchStatus !== FetchStatus.SUCCESS} scale="xs" mx="2px" p="4px 8px" variant="tertiary" onClick={() => handleChangePercent(25)}>
           25%
         </StyledButton>
-        <StyledButton scale="xs" mx="2px" p="4px 8px" variant="tertiary" onClick={() => handleChangePercent(50)}>
+        <StyledButton disabled={tokenBalanceFetchStatus !== FetchStatus.SUCCESS} scale="xs" mx="2px" p="4px 8px" variant="tertiary" onClick={() => handleChangePercent(50)}>
           50%
         </StyledButton>
-        <StyledButton scale="xs" mx="2px" p="4px 8px" variant="tertiary" onClick={() => handleChangePercent(75)}>
+        <StyledButton disabled={tokenBalanceFetchStatus !== FetchStatus.SUCCESS} scale="xs" mx="2px" p="4px 8px" variant="tertiary" onClick={() => handleChangePercent(75)}>
           75%
         </StyledButton>
-        <StyledButton scale="xs" mx="2px" p="4px 8px" variant="tertiary" onClick={() => handleChangePercent(100)}>
+        <StyledButton disabled={tokenBalanceFetchStatus !== FetchStatus.SUCCESS} scale="xs" mx="2px" p="4px 8px" variant="tertiary" onClick={() => handleChangePercent(100)}>
           {t('Max')}
         </StyledButton>
       </Flex>
-      <Button mt="8px" width="100%" disabled={!burnAmountNumber || !burnAmountNumber.isFinite() || burnAmountNumber.eq(0) || !tokenData.totalSupply.isFinite() || tokenData.totalSupply.eq(0) || burnAmountNumber.gt(tokenData.totalSupply)} onClick={showConfirmBurn}>
+      <Button mt="8px" width="100%" disabled={tokenBalanceFetchStatus !== FetchStatus.SUCCESS || !burnAmountNumber || !burnAmountNumber.isFinite() || burnAmountNumber.eq(0) || !tokenData.totalSupply.isFinite() || tokenData.totalSupply.eq(0) || burnAmountNumber.gt(tokenData.totalSupply)} onClick={showConfirmBurn}>
         {t('Burn')}
       </Button>
     </Flex>
@@ -307,6 +312,16 @@ const ManageTokenCard: React.FC<ManageTokenCardProps> = ({account, tokenData}) =
                 <Text bold style={{ display: 'flex', alignItems: 'center' }}>
                   {getFullDisplayBalanceExact(tokenData.totalSupply, tokenData.decimals)}
                 </Text>
+            </Flex>
+            <Flex justifyContent="space-between" alignItems="center">
+                <Text>{t('Balance')}:</Text>
+                { tokenBalanceFetchStatus === FetchStatus.SUCCESS ? (
+                <Text bold style={{ display: 'flex', alignItems: 'center' }}>
+                  {getFullDisplayBalance(tokenBalance, tokenData.decimals, 0)}
+                </Text>
+                ) : (
+                  <Skeleton width="60px" height="20px"/>
+                )}
             </Flex>
             {
               tokenData.type === TokenType.LIQUIDITY && (
