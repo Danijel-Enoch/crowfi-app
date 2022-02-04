@@ -140,7 +140,7 @@ const LockerActionSection: React.FC<LockerActionSectionProps> = ({token, lock, a
                     <Button 
                         disabled={pendingUnlock || !currentBlockTimestamp || !lock || lock.unlockDate > currentBlockTimestamp.toNumber()}
                         onClick={handleUnlock}>
-                        {t('Unlock')}
+                        { pendingUnlock ? (<Dots>{t('Unlocking')}</Dots>) : t('Unlock')}
                     </Button>
                 </Flex>
                 )}
