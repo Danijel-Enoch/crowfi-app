@@ -200,7 +200,7 @@ export const getSaleUserData = async (address?: string, account?: string) : Prom
 }
 
 export const getSale = async (address: string) : Promise<PublicSaleData> => {
-    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'investorMinCap', 'investorHardCap', 'whitelistEnabled', 'canceled']
+    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'investorMinCap', 'investorHardCap', 'whitelistEnabled', 'canceled', 'liquidityUnlockTime', 'lockId']
 
     const calls = fields.map((field) =>  {
         return {
@@ -229,7 +229,9 @@ export const getSale = async (address: string) : Promise<PublicSaleData> => {
         [minContribution_],
         [maxContribution_],
         [whitelistEnabled],
-        [canceled]
+        [canceled],
+        [liquidityUnlockTime_],
+        [lockId_]
     ] = await multicall(crowpadSaleABI, calls)
     return {
         address,
@@ -252,7 +254,9 @@ export const getSale = async (address: string) : Promise<PublicSaleData> => {
         minContribution: new BigNumber(minContribution_._hex),
         maxContribution: new BigNumber(maxContribution_._hex),
         whitelistEnabled,
-        paymentType:  new BigNumber(closingTime_._hex).toNumber() === 0 ? PaymentType.DIRECT : PaymentType.ESCROW
+        paymentType:  new BigNumber(closingTime_._hex).toNumber() === 0 ? PaymentType.DIRECT : PaymentType.ESCROW,
+        unlockTime: new BigNumber(liquidityUnlockTime_._hex).toNumber(),
+        lockId: new BigNumber(lockId_._hex).toNumber(),
     }
 }
 
@@ -274,7 +278,6 @@ export const getSaleMeta = async (address: string) : Promise<PublicSaleMetaData 
         [description],
     ] = await multicall(crowpadSaleABI, calls)
 
-    console.log('links', links)
     return {
         logo,
         website,

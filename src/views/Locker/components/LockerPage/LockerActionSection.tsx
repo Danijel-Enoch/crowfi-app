@@ -63,7 +63,6 @@ const LockerActionSection: React.FC<LockerActionSectionProps> = ({token, lock, a
 
 
     const handleUnlockDateChange = (date: Date, event) => {
-        console.log('here', currentBlockTimestamp.toNumber())
         setUnlockDate(date)
     }
 

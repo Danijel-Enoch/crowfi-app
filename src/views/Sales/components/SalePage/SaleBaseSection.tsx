@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'contexts/Localization'
 import { format } from 'date-fns'
 import styled from 'styled-components'
-import { Flex, Text, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton, PencilIcon, RedditIcon, DiscordIcon, InstagramIcon, FacebookIcon } from '@pancakeswap/uikit'
+import { Flex, Text, Button, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton, PencilIcon, RedditIcon, DiscordIcon, InstagramIcon, FacebookIcon } from '@pancakeswap/uikit'
 import TokenAddress from 'components/TokenAddress'
 import { getBscScanLink } from 'utils'
 import { BIG_TEN } from 'utils/bigNumber'
@@ -208,6 +208,18 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                         <InfoLabel>{t('Presale End Time')}</InfoLabel>
                         <InfoValue>{ format(sale.closingTime * 1000, 'yyyy/MM/dd hh:mm aa')}</InfoValue>
                     </InfoRow>
+                    <InfoRow>
+                        <InfoLabel>{t('Liquidity Unlock Time')}</InfoLabel>
+                        <InfoValue>{ format(sale.unlockTime * 1000, 'yyyy/MM/dd hh:mm aa')}</InfoValue>
+                    </InfoRow> 
+                    { sale.lockId && (
+                        <InfoRow>
+                            <InfoLabel>{t('Locker')}</InfoLabel>
+                            <Button scale="xs" variant="text" as="a" href={`/lockers/${sale.lockId}`}>
+                            {t('View Liquidity Locker')}
+                            </Button>
+                        </InfoRow> 
+                    )}
                 </Flex>
             </Flex>
         </>

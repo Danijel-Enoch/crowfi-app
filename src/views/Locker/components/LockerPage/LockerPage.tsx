@@ -5,8 +5,8 @@ import { useWeb3React } from '@web3-react/core'
 import { Breadcrumbs, Flex, Text, ChevronRightIcon } from '@pancakeswap/uikit'
 import { PageBGWrapper } from 'components/Launchpad/StyledControls'
 import { useTranslation } from 'contexts/Localization'
-import { DeserializedLock } from 'state/types'
-import { useToken } from 'hooks/Tokens'
+import { DeserializedLock, LockType } from 'state/types'
+import { useToken, usePairToken } from 'hooks/Tokens'
 import LockerBaseSection from './LockerBaseSection'
 import LockerActionSection from './LockerActionSection'
 import LockerStatusSection from './LockerStatusSection'
@@ -30,13 +30,13 @@ const LockerPage: React.FC<RouteComponentProps<{address: string}>> = ({
     const { t } = useTranslation()
     const { account } = useWeb3React()
     const [lock, setLock] = useState<DeserializedLock|null>(null)
-    const token = useToken(lock ? lock.tokenAddress : null)
+    const token = useToken(lock? lock.tokenAddress : null)
+    const pairToken = usePairToken( lock ? lock.tokenAddress : null)
 
     useEffect(() => {
         const loadLock = async () => {
             try {
                 const lock_ = await getLock(parseInt(address))
-                console.log('loaded', lock_)
                 setLock(lock_)
             } catch (e) {
                 console.log('e', e)
@@ -67,7 +67,7 @@ const LockerPage: React.FC<RouteComponentProps<{address: string}>> = ({
             <Flex flexDirection="row" flexWrap="wrap" style={{padding: "0px 8px 32px 0px"}}>
                 <Flex flexDirection="column" flex={[1, 1, 1, 3]} width={['100%', '100%', '66%', '66%']}>
                     <StyledSection>
-                        <LockerBaseSection token={token} lock={lock}/>
+                        <LockerBaseSection pairToken={pairToken} token={token} lock={lock}/>
                     </StyledSection>
                 </Flex>
                 <Flex flexDirection="column" flex={[1, 1, 1, 2]} width={['100%', '100%', '33%', '33%']}>

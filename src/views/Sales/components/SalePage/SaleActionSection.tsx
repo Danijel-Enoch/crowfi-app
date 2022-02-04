@@ -53,8 +53,6 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
             setBalanceEth(balanceEth_)
             setWhitelisted(whitelisted_)
             setLoadContribution(false)
-
-            console.log('balanceEth', balanceEth? balanceEth.toJSON() : '')
         }
 
         fetchContribution()

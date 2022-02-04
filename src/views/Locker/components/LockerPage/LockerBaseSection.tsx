@@ -10,6 +10,7 @@ import useTotalSupply from 'hooks/useTotalSupply'
 import { getBscScanLink } from 'utils'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import truncateHash from 'utils/truncateHash'
+import { PairToken, useToken } from 'hooks/Tokens'
 import { InfoRow, InfoLabel, InfoValue, SectionTitle } from './styled'
 
 const LogoWrapper = styled.div`
@@ -25,14 +26,17 @@ const LogoWrapper = styled.div`
 export interface LockerBaseSectionProps {
     lock?: DeserializedLock
     token?: Token
+    pairToken?: PairToken
 }
 
-const LockerBaseSection: React.FC<LockerBaseSectionProps> = ({token, lock}) => {
+const LockerBaseSection: React.FC<LockerBaseSectionProps> = ({token, pairToken, lock}) => {
 
     const { t } = useTranslation()
     const { isMobile } = useMatchBreakpoints()
     const address = '0x852c75bd104b928BBF54e6Ab94F274B9F8Fa6536'
     const totalSupply = useTotalSupply(token)
+    const token0 = useToken(pairToken ? pairToken.token0Address : null)
+    const token1 = useToken(pairToken ? pairToken.token1Address : null)
 
     return (
         <>
@@ -43,11 +47,14 @@ const LockerBaseSection: React.FC<LockerBaseSectionProps> = ({token, lock}) => {
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Name')}</InfoLabel>
-                        { token ? (
+                        { token0 && token1 ? (
+                            <InfoValue>{token0.symbol} / {token1.symbol}</InfoValue>
+                        ) 
+                        : token ? (
                             <InfoValue>{token ? token.name : ''}</InfoValue>
                         ) : (
                             <Skeleton width="60px" height="20px"/>
-                        ) }
+                        )}
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Token Symobl')}</InfoLabel>

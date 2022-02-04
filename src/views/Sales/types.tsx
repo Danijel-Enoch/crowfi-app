@@ -27,6 +27,7 @@ export interface PublicSaleData {
     wallet: string
     openingTime: number
     closingTime: number
+    unlockTime?: number
     rate: BigNumber
     rateDecimals: number
     listingRate: BigNumber
@@ -42,6 +43,7 @@ export interface PublicSaleData {
     logo?: string
     whitelistEnabled?: boolean
     paymentType?: PaymentType
+    lockId?: number
 
     meta?: PublicSaleMetaData
 }

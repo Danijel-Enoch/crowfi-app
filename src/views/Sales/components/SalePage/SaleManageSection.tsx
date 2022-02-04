@@ -62,7 +62,7 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
         try {
             setDepositing(true)
             const amount = requiredTokenNumber.minus(balanceTokenNumber)
-            const receipt = await onDeposite(amount.toString(), sale.address)
+            const receipt = await onDeposite(amount.toFixed(0, 2), sale.address)
             onReloadSale()
             toastSuccess(
             `${t('Deposited')}!`,

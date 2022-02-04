@@ -66,6 +66,7 @@ interface FormErrors {
     maxContribution?: string,
     presaleStartTime?: string,
     presaleEndTime?: string,
+    unlockDate?: string
     logo?: string
 }
 
@@ -95,6 +96,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
     const [ maxContribution, setMaxContribution ] = useState<string>('')
     const [startDate, setStartDate] = useState<Date|null>(null)
     const [endDate, setEndDate] = useState<Date|null>(null)
+    const [unlockDate, setUnlockDate] = useState<Date|null>(null)
     const [wallet, setWallet] = useState<string|null>(null)
     const [formError, setFormError] = useState<FormErrors>({})
     const [whitelistEnabled, setWhitelistEnabled] = useState<boolean>(false)
@@ -172,7 +174,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         return presaleAmount.plus(liquidityAmount)
     }, [rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, hardCapNumber])
 
-    const [approval, approveCallback] = useApproveCallback(searchToken && depositAmountNumber && depositAmountNumber.isFinite() ? new TokenAmount(searchToken, JSBI.BigInt(depositAmountNumber.toJSON())) : undefined, getCrowpadSaleFactoryAddress())
+    const [approval, approveCallback] = useApproveCallback(searchToken && depositAmountNumber && depositAmountNumber.isFinite() ? new TokenAmount(searchToken, JSBI.BigInt(depositAmountNumber.toFixed(0))) : undefined, getCrowpadSaleFactoryAddress())
 
     const [onPresentDesclaimer] = useModal(
         <DesclaimerModal onAgree={() => {
@@ -204,6 +206,11 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
     const handleEndDateChange = (date: Date, event) => {
         setEndDate(date)
         setFormError({...formError, presaleEndTime: null})
+    }
+
+    const handleUnlockDatechange = (date: Date, event) => {
+        setUnlockDate(date)
+        setFormError({...formError, unlockDate: null})
     }
 
     const validateInputs = useCallback(() => {
@@ -306,9 +313,16 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
             valid = false;
             error.presaleEndTime = "Presale end date should be later than presale start date.";
         }
+
+        if (!unlockDate) {
+            valid = false;
+            error.unlockDate = "Liquidity unlock date is required.";
+        } else if (endDate && unlockDate <= endDate) {
+            error.unlockDate = "Liquidity unlock date must be later than presale end date.";
+        }
         setFormError(error)
         return valid
-    }, [wallet, searchToken, rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, softCapNumber, hardCapNumber, startDate, endDate, minContributionNumer, maxContributionNumer, depositAmountNumber, tokenAddress])
+    }, [wallet, searchToken, rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, softCapNumber, hardCapNumber, startDate, endDate, unlockDate, minContributionNumer, maxContributionNumer, depositAmountNumber, tokenAddress])
 
 
     const handleCreate = useCallback(async () => {
@@ -317,7 +331,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         }
         try {
             setPendingTx(true)
-            const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, rateNumber.toJSON(), rateDecimalsNumber.toJSON(), listingRateNumber.toJSON(), listingRateDecimalsNumber.toJSON(), liquidityPercentNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000), minContributionNumer.toJSON(), maxContributionNumer.toJSON(), whitelistEnabled, logo.trim())
+            const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, rateNumber.toJSON(), rateDecimalsNumber.toJSON(), listingRateNumber.toJSON(), listingRateDecimalsNumber.toJSON(), liquidityPercentNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000), Math.floor(unlockDate.getTime() / 1000), minContributionNumer.toJSON(), maxContributionNumer.toJSON(), whitelistEnabled, logo.trim())
             dispatch(fetchLaunchpadPublicDataAsync())
             dispatch(fetchLaunchpadUserDataAsync({account}))
             history.push(`/presale/view/${saleAddress}`)
@@ -328,7 +342,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         } finally {
           setPendingTx(false)
         }
-    }, [onCreateSale, dispatch, toastError, t, validateInputs, history, account, deployFee, wallet, searchToken, rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, softCapNumber, hardCapNumber, startDate, endDate, minContributionNumer, maxContributionNumer, whitelistEnabled, logo])
+    }, [onCreateSale, dispatch, toastError, t, validateInputs, history, account, deployFee, wallet, searchToken, rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, softCapNumber, hardCapNumber, startDate, endDate, unlockDate, minContributionNumer, maxContributionNumer, whitelistEnabled, logo])
 
     const renderApprovalOrCreateButton = () => {
         return  (
@@ -504,6 +518,18 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                                     selected={endDate}
                                     timeIntervals={1}
                                     placeholderText="Presale End Time"/>
+                                </StyledWrapperWithTooltip>
+                            </InputWrap>
+                            <InputWrap>
+                                <StyledWrapperWithTooltip
+                                    tooltip={t('Enter the liquidity unlock time in your local time.')}
+                                    error={formError.unlockDate}
+                                    >
+                                    <DateTimePikcer 
+                                    onChange={handleUnlockDatechange}
+                                    selected={unlockDate}
+                                    timeIntervals={1}
+                                    placeholderText="Liquidity Unlock Time"/>
                                 </StyledWrapperWithTooltip>
                             </InputWrap>
                             <InputWrap>

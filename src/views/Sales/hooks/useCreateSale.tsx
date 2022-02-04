@@ -9,9 +9,9 @@ export const useCreateSale = () => {
   const factory = useCrowpadSaleFactoryContract()
 
   const handleCreateSale = useCallback(
-    async (feeAmount, wallet, token, rate, rateDecimals, listingRate, listingRateDecimals, liqudityPercent, goal, cap, openingTime, closingTime, minContribution, maxContribution, whitelistEnabled, logo) => {
+    async (feeAmount, wallet, token, rate, rateDecimals, listingRate, listingRateDecimals, liqudityPercent, goal, cap, openingTime, closingTime, unlockTime, minContribution, maxContribution, whitelistEnabled, logo) => {
       const gasPrice = getGasPrice()
-      const args = [[rate, rateDecimals, listingRate, listingRateDecimals, liqudityPercent], wallet, ROUTER_ADDRESS, token, [goal, cap, minContribution, maxContribution, openingTime, closingTime], whitelistEnabled, logo];
+      const args = [[rate, rateDecimals, listingRate, listingRateDecimals, liqudityPercent], wallet, ROUTER_ADDRESS, token, [goal, cap, minContribution, maxContribution, openingTime, closingTime, unlockTime], whitelistEnabled, logo];
       const tx = await callWithEstimateGas(factory, 'createSale', args, { gasPrice}, 1000, feeAmount)
       const receipt = await tx.wait()
       if (receipt.status === 1) {
@@ -19,8 +19,6 @@ export const useCreateSale = () => {
         const ev = Array.from(receipt["events"]).filter((v) =>  {
           return v["event"] === "NewSaleCreated"
         }); 
-
-        console.log('events', ev)
 
         if (ev.length > 0) {
           const resArgs = ev[0]["args"];

@@ -14,7 +14,6 @@ export const useAirdropTokeen = () => {
       const gasPrice = getGasPrice()
 
       const args = [tokenAddress, receipts, amounts];
-      console.log('args', args);
 
       const tx = await callWithEstimateGas(airdropContract, 'airdropToken', args, { gasPrice})
       const receipt = await tx.wait()
