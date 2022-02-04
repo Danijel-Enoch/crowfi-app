@@ -79,7 +79,7 @@ const SaleWhitelistSection: React.FC<SaleWhitelistSectionProps> = ({account, sal
                 {t("Whitelist feature is enabled.")}
                 </Text>
                 <Text fontSize="14px" mb="16px" textAlign="center">
-                {t("Please provide the wallet addressess you want to add or remove in whitelist.")}
+                {t("Please provide the wallet addresses you want to add or remove in whitelist.")}
                 </Text>
 
                 <StyledTextarea
