@@ -212,7 +212,7 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                         <InfoLabel>{t('Liquidity Unlock Time')}</InfoLabel>
                         <InfoValue>{ format(sale.unlockTime * 1000, 'yyyy/MM/dd hh:mm aa')}</InfoValue>
                     </InfoRow> 
-                    { sale.lockId && (
+                    { sale.lockId > 0 && (
                         <InfoRow>
                             <InfoLabel>{t('Locker')}</InfoLabel>
                             <Button scale="xs" variant="text" as="a" href={`/lockers/${sale.lockId}`}>
