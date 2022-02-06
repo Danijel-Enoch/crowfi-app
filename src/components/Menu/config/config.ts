@@ -41,16 +41,14 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     ],
   },
   {
-    label: t('Presale'),
-    href: '/presale',
-    icon: 'Groups',
-    items: []
-  },
-  {
     label: t('Utilities'),
-    href: '/token-factory',
+    href: '/launchpad',
     icon: 'Launchpad',
     items: [
+      {
+        label: t('Launchpad'),
+        href: '/presale',
+      },
       {
         label: t('Token Factory'),
         href: '/token-factory',

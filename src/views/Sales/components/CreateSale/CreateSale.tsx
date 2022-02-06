@@ -164,15 +164,28 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         return res
     }, [softCap])
 
-    const depositAmountNumber = useMemo(() => {
-        if (!rateNumber || !rateNumber.isFinite() || !listingRateNumber || !listingRateNumber.isFinite() || !liquidityPercentNumber || !liquidityPercentNumber.isFinite() || !hardCapNumber || !hardCapNumber.isFinite()) {
+    const presaleAmountNumber = useMemo(() => {
+        if (!rateNumber || !rateNumber.isFinite() || !hardCapNumber || !hardCapNumber.isFinite()) {
             return BIG_ZERO
         }
 
-        const presaleAmount = hardCapNumber.multipliedBy(rateNumber).div(BIG_TEN.pow(rateDecimalsNumber))
-        const liquidityAmount = hardCapNumber.multipliedBy(liquidityPercentNumber).div(100).multipliedBy(listingRateNumber).div(BIG_TEN.pow(listingRateDecimalsNumber))
-        return presaleAmount.plus(liquidityAmount)
-    }, [rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, hardCapNumber])
+        return hardCapNumber.multipliedBy(rateNumber).div(BIG_TEN.pow(rateDecimalsNumber))
+    }, [rateNumber, rateDecimalsNumber, hardCapNumber])
+
+    const liquidityAmountNumber = useMemo(() => {
+        if (!listingRateNumber || !listingRateNumber.isFinite() || !liquidityPercentNumber || !liquidityPercentNumber.isFinite() || !hardCapNumber || !hardCapNumber.isFinite()) {
+            return BIG_ZERO
+        }
+
+        return hardCapNumber.multipliedBy(liquidityPercentNumber).div(100).multipliedBy(listingRateNumber).div(BIG_TEN.pow(listingRateDecimalsNumber))
+    }, [listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, hardCapNumber])
+
+    const depositAmountNumber = useMemo(() => {
+        if (presaleAmountNumber.eq(0) || liquidityAmountNumber.eq(0)) {
+            return BIG_ZERO
+        }
+        return presaleAmountNumber.plus(liquidityAmountNumber)
+    }, [presaleAmountNumber, liquidityAmountNumber])
 
     const [approval, approveCallback] = useApproveCallback(searchToken && depositAmountNumber && depositAmountNumber.isFinite() ? new TokenAmount(searchToken, JSBI.BigInt(depositAmountNumber.toFixed(0))) : undefined, getCrowpadSaleFactoryAddress())
 
@@ -589,20 +602,57 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                                 
                             </StyledList>
 
-                            {searchToken && (
-                                <>
-                                <Flex mt="24px">
-                                    <Text fontSize="14px" color="secondary" mr="16px">
-                                        {t('Required Token Amount')}:
-                                    </Text>
-                                    { depositAmountNumber && (
-                                        <Text fontSize="14px" color="primary">
-                                            {getFullDisplayBalance(depositAmountNumber, searchToken.decimals)} {searchToken.symbol}
-                                        </Text>
-                                    )}
-                                </Flex>
-                                </>
-                            )}
+                            <Heading color="primary" mt="24px">
+                                {t('Calculator:')}
+                            </Heading>
+                            <Flex mt="8px">
+                                <Text fontSize="14px" color="secondary" mr="16px">
+                                    {t('Estimated Funds Raised')}:
+                                </Text>
+                                <Text fontSize="14px" color="primary">
+                                    {hardCap} {t('CRO')}
+                                </Text>
+                            </Flex>
+                            <Flex>
+                                <Text fontSize="14px" color="secondary" mr="16px">
+                                    {t('Total Tokens Used')}:
+                                </Text>
+                                <Text fontSize="14px" color="primary">
+                                    {depositAmountNumber && searchToken? getFullDisplayBalance(depositAmountNumber, searchToken.decimals) : ''} {searchToken ? searchToken.symbol : ''}
+                                </Text>
+                            </Flex>
+                            <Flex>
+                                <Text fontSize="14px" color="secondary" mr="16px">
+                                    {t('Tokens For Pre Sale')}:
+                                </Text>
+                                <Text fontSize="14px" color="primary">
+                                    {presaleAmountNumber && searchToken? getFullDisplayBalance(presaleAmountNumber, searchToken.decimals) : ''} {searchToken ? searchToken.symbol : ''}
+                                </Text>
+                            </Flex>
+                            <Flex>
+                                <Text fontSize="14px" color="secondary" mr="16px">
+                                    {t('Pre Sale Rate Per Token')}:
+                                </Text>
+                                <Text fontSize="14px" color="primary">
+                                    1 {t('CRO')} = {rate} {searchToken ? searchToken.symbol : ''}
+                                </Text>
+                            </Flex>
+                            <Flex>
+                                <Text fontSize="14px" color="secondary" mr="16px">
+                                    {t('Listing Price Per Token')}:
+                                </Text>
+                                <Text fontSize="14px" color="primary">
+                                    1 {t('CRO')} = {listingRate} {searchToken ? searchToken.symbol : ''}
+                                </Text>
+                            </Flex>
+                            <Flex>
+                                <Text fontSize="14px" color="secondary" mr="16px">
+                                    {t('% of Funds Raised To LP')}:
+                                </Text>
+                                <Text fontSize="14px" color="primary">
+                                    {liquidityPercent} %
+                                </Text>
+                            </Flex>
                             
                         </Flex>
                     </Flex>
