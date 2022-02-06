@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'contexts/Localization'
-import { Flex } from '@pancakeswap/uikit'
+import { Flex, Skeleton } from '@pancakeswap/uikit'
 import { SALE_FINALIZE_DEADLINE } from 'config/constants'
 import { getFullDisplayBalance } from 'utils/formatBalance'
+import { useToken } from 'hooks/Tokens'
 import { InfoRow, InfoLabel, InfoValue } from './styled'
 import { PaymentType, PublicSaleData } from '../../types'
 
@@ -13,6 +14,29 @@ export interface SaleStatusSectionProps {
 const SaleStatusSection: React.FC<SaleStatusSectionProps> = ({sale}) => {
 
     const { t } = useTranslation()
+    const baseToken = useToken(sale.baseToken)
+
+    const baseTokenSymbol = useMemo(() => {
+        if (sale.useETH) {
+            return 'CRO'
+        }
+        if (baseToken) {
+            return baseToken.symbol
+        }
+
+        return ''
+    }, [sale, baseToken])
+
+    const baseTokenDecimals = useMemo(() => {
+        if (sale.useETH) {
+            return 18
+        }
+        if (baseToken) {
+            return baseToken.decimals
+        }
+
+        return -1
+    }, [sale, baseToken])
 
     const status = useMemo(() => {
         const now = new Date().getTime() / 1000;
@@ -51,21 +75,21 @@ const SaleStatusSection: React.FC<SaleStatusSectionProps> = ({sale}) => {
                         <InfoLabel>{t('Sale Type')}</InfoLabel>
                         <InfoValue>{ sale.whitelistEnabled ? t('Private') : t('Public')}</InfoValue>
                     </InfoRow>
-                    {/* <InfoRow>
-                        <InfoLabel>{t('Payment Type')}</InfoLabel>
-                        <Flex>
-                            <InfoValue color={sale.paymentType === PaymentType.ESCROW ? "primary" : "gray"}>{t('Escrow')}</InfoValue>
-                            <InfoValue>{t('|')}</InfoValue>
-                            <InfoValue color={sale.paymentType === PaymentType.DIRECT ? "primary" : "gray"}>{t('Direct Payment')}</InfoValue>
-                        </Flex>
-                    </InfoRow> */}
                     <InfoRow>
                         <InfoLabel>{t('Minimum Contribution')}</InfoLabel>
-                        <InfoValue>{getFullDisplayBalance(sale.minContribution)} CRO</InfoValue>
+                        { baseTokenDecimals >= 0 ? (
+                            <InfoValue>{getFullDisplayBalance(sale.minContribution, baseTokenDecimals)} {baseTokenSymbol}</InfoValue>
+                        ) : (
+                            <Skeleton width="40px" height="30px"/>
+                        )}
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Maximum Contribution')}</InfoLabel>
-                        <InfoValue>{getFullDisplayBalance(sale.maxContribution)} CRO</InfoValue>
+                        { baseTokenDecimals >= 0 ? (
+                            <InfoValue>{getFullDisplayBalance(sale.maxContribution, baseTokenDecimals)} {baseTokenSymbol}</InfoValue>
+                        ) : (
+                            <Skeleton width="40px" height="30px"/>
+                        )}
                     </InfoRow>
                 </Flex>
             </Flex>

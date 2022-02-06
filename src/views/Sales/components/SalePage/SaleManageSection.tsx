@@ -26,6 +26,30 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
 
     const { t } = useTranslation()
     const { toastError, toastSuccess } = useToast()
+
+    const baseToken = useToken(sale.baseToken)
+
+    const baseTokenSymbol = useMemo(() => {
+        if (sale.useETH) {
+            return 'CRO'
+        }
+        if (baseToken) {
+            return baseToken.symbol
+        }
+
+        return ''
+    }, [sale, baseToken])
+
+    const baseTokenDecimals = useMemo(() => {
+        if (sale.useETH) {
+            return 18
+        }
+        if (baseToken) {
+            return baseToken.decimals
+        }
+
+        return -1
+    }, [sale, baseToken])
     
     const [closed, setClosed] = useState(false)
     const [expired, setExpired] = useState(false)
@@ -177,12 +201,16 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                 <Flex flexDirection="column" mt="8px" mb="16px">
                     <Progress primaryStep={sale.weiRaised.multipliedBy(100).div(sale.cap).toNumber()} />
                     <Flex justifyContent="space-between">
-                        <Text fontSize="12px">
-                            {getFullDisplayBalance(sale.weiRaised)} CRO
-                        </Text>
-                        <Text fontSize="12px">
-                            {getFullDisplayBalance(sale.cap)} CRO
-                        </Text>
+                        {baseTokenDecimals >= 0 && (
+                            <>
+                            <Text fontSize="12px">
+                                {getFullDisplayBalance(sale.weiRaised, baseTokenDecimals)} {baseTokenSymbol}
+                            </Text>
+                            <Text fontSize="12px">
+                                {getFullDisplayBalance(sale.cap, baseTokenDecimals)} {baseTokenSymbol}
+                            </Text>
+                            </>
+                        )}
                     </Flex>
                 </Flex>
                 { !sale.canceled && (closed || sale.weiRaised.eq(sale.cap)) && !sale.finalized && (

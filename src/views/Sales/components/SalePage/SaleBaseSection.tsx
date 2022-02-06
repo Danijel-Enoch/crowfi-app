@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'contexts/Localization'
 import { format } from 'date-fns'
@@ -47,7 +47,30 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
     const { t } = useTranslation()
     const { isMobile } = useMatchBreakpoints()
     const token = useToken(sale.token)
+    const baseToken = useToken(sale.baseToken)
     const totalSupply = useTotalSupply(token)
+
+    const baseTokenSymbol = useMemo(() => {
+        if (sale.useETH) {
+            return 'CRO'
+        }
+        if (baseToken) {
+            return baseToken.symbol
+        }
+
+        return ''
+    }, [sale, baseToken])
+
+    const baseTokenDecimals = useMemo(() => {
+        if (sale.useETH) {
+            return 18
+        }
+        if (baseToken) {
+            return baseToken.decimals
+        }
+
+        return -1
+    }, [sale, baseToken])
 
     return (
         <>
@@ -174,16 +197,16 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Presale Rate')}</InfoLabel>
-                        { token ? (
-                            <InfoValue>1 CRO = {getFullDisplayBalance(sale.rate.multipliedBy(BIG_TEN.pow(18 - sale.rateDecimals)), token.decimals)} {token ? token.symbol : ''}</InfoValue>
+                        { token && baseTokenDecimals >= 0? (
+                            <InfoValue>1 {baseTokenSymbol} = {getFullDisplayBalance(sale.rate.multipliedBy(BIG_TEN.pow(baseTokenDecimals - sale.rateDecimals)), token.decimals)} {token ? token.symbol : ''}</InfoValue>
                         ) : (
                             <Skeleton width="40px" height="30px"/>
                         )}
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Listing Rate')}</InfoLabel>
-                        { token ? (
-                            <InfoValue>1 CRO = {getFullDisplayBalance(sale.listingRate.multipliedBy(BIG_TEN.pow(18 - sale.listingRateDecimals)), token.decimals)} {token ? token.symbol : ''}</InfoValue>
+                        { token && baseTokenDecimals >= 0 ? (
+                            <InfoValue>1 {baseTokenSymbol} = {getFullDisplayBalance(sale.listingRate.multipliedBy(BIG_TEN.pow(baseTokenDecimals - sale.listingRateDecimals)), token.decimals)} {token ? token.symbol : ''}</InfoValue>
                         ) : (
                             <Skeleton width="40px" height="30px"/>
                         )}
@@ -194,11 +217,19 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Soft Cap')}</InfoLabel>
-                        <InfoValue>{getFullDisplayBalance(sale.goal)} CRO</InfoValue>
+                        { baseTokenDecimals >= 0 ? (
+                            <InfoValue>{getFullDisplayBalance(sale.goal, baseTokenDecimals)} {baseTokenSymbol}</InfoValue>
+                        ) : (
+                            <Skeleton width="40px" height="30px"/>
+                        )}
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Hard Cap')}</InfoLabel>
-                        <InfoValue>{getFullDisplayBalance(sale.cap)} CRO</InfoValue>
+                        { baseTokenDecimals >= 0 ? (
+                            <InfoValue>{getFullDisplayBalance(sale.cap, baseTokenDecimals)} {baseTokenSymbol}</InfoValue>
+                        ) : (
+                            <Skeleton width="40px" height="30px"/>
+                        )}
                     </InfoRow>
                     <InfoRow>
                         <InfoLabel>{t('Presale Start Time')}</InfoLabel>

@@ -24,6 +24,8 @@ export interface PublicSaleData {
     address: string
     token: string
     owner: string
+    useETH: boolean
+    baseToken: string
     wallet: string
     openingTime: number
     closingTime: number
