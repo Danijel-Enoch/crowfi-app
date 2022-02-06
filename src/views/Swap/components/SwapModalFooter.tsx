@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Trade, TradeType } from '@pancakeswap/sdk'
-import { Button, Text, AutoRenewIcon } from '@pancakeswap/uikit'
+import { Button, Text, AutoRenewIcon, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import { Field } from 'state/swap/actions'
 import {
@@ -38,6 +38,7 @@ export default function SwapModalFooter({
   disabledConfirm: boolean
 }) {
   const { t } = useTranslation()
+  const { isMobile } = useMatchBreakpoints()
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const slippageAdjustedAmounts = useMemo(
     () => computeSlippageAdjustedAmounts(trade, allowedSlippage),
@@ -74,6 +75,7 @@ export default function SwapModalFooter({
               {trade.tradeType === TradeType.EXACT_INPUT ? t('Minimum received') : t('Maximum sold')}
             </Text>
             <QuestionHelper
+              placement={isMobile ? "top" : "right-end"}
               text={t(
                 'Your transaction will revert if there is a large, unfavorable price movement before it is confirmed.',
               )}
@@ -97,6 +99,7 @@ export default function SwapModalFooter({
           <RowFixed>
             <Text fontSize="14px">{t('Price Impact')}</Text>
             <QuestionHelper
+              placement={isMobile ? "top" : "right-end"}
               text={t('The difference between the market price and your price due to trade size.')}
               ml="4px"
             />
@@ -107,6 +110,7 @@ export default function SwapModalFooter({
           <RowFixed>
             <Text fontSize="14px">{t('Liquidity Provider Fee')}</Text>
             <QuestionHelper
+              placement={isMobile ? "top" : "right-end"}
               text={
                 <>
                   <Text mb="12px">{t('For each trade a %amount% fee is paid', { amount: '0.25%' })}</Text>
