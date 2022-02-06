@@ -31,6 +31,14 @@ import {
   getPancakeSquadContract,
   getErc721CollectionContract,
   getPrivateSaleContract,
+  getSimpleTokenFactoryContract,
+  getTokenFactoryContract,
+  getAirdropperContract,
+  getStandardTokenContract,
+  getLiquidityGeneratorTokenContract,
+  getLockerContract,
+  getCrowpadSaleFactoryContract,
+  getCrowpadSaleContract,
 } from 'utils/contractHelpers'
 import { getMulticallAddress } from 'utils/addressHelpers'
 
@@ -42,6 +50,7 @@ import ENS_PUBLIC_RESOLVER_ABI from '../config/abi/ens-public-resolver.json'
 import ENS_ABI from '../config/abi/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../config/abi/erc20'
 import ERC20_ABI from '../config/abi/erc20.json'
+import PAIR_ABI from '../config/abi/uniswapPair.json'
 import WETH_ABI from '../config/abi/weth.json'
 import multiCallAbi from '../config/abi/Multicall.json'
 import { getContract } from '../utils'
@@ -49,6 +58,50 @@ import { getContract } from '../utils'
 /**
  * Helper hooks to get specific contracts (by ABI)
  */
+
+export const useCrowpadSaleContract = (address: string) => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getCrowpadSaleContract(address, library.getSigner()), [address, library])
+}
+
+export const useCrowpadSaleFactoryContract = () => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getCrowpadSaleFactoryContract(library.getSigner()), [library])
+}
+
+
+export const useAirdropperContract = () => {
+
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getAirdropperContract(library.getSigner()), [library])
+}
+
+export const useLockerContract = () => {
+
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getLockerContract(library.getSigner()), [library])
+}
+
+
+export const useSimpleTokenFactory = () => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getSimpleTokenFactoryContract(library.getSigner()), [library])
+}
+
+export const useTokenFactory = () => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getTokenFactoryContract(library.getSigner()), [library])
+}
+
+export const useStandardTokenContract = (address: string) => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getStandardTokenContract(address, library.getSigner()), [address, library])
+}
+
+export const useLiquidityGeneratorTokenContract = (address: string) =>  {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getLiquidityGeneratorTokenContract(address, library.getSigner()), [address, library])
+}
 
 export const useIfoV1Contract = (address: string) => {
   const { library } = useActiveWeb3React()
@@ -235,6 +288,10 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
+}
+
+export function useUniswapPairContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(tokenAddress, PAIR_ABI, withSignerIfPossible)
 }
 
 export function useWETHContract(withSignerIfPossible?: boolean): Contract | null {

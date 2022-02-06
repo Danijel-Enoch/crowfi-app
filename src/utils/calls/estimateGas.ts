@@ -1,4 +1,4 @@
-import { ethers, Contract, Overrides } from 'ethers'
+import { ethers, Contract, Overrides, BigNumberish } from 'ethers'
 
 /**
  * Estimate the gas needed to call a function, and add a 10% margin
@@ -13,11 +13,16 @@ export const estimateGas = async (
   methodName: string,
   methodArgs: any[],
   gasMarginPer10000: number,
+  value?: BigNumberish,
+  from?: string
 ) => {
   if (!contract[methodName]) {
     throw new Error(`Method ${methodName} doesn't exist on ${contract.address}`)
   }
-  const rawGasEstimation = await contract.estimateGas[methodName](...methodArgs)
+  let options = {}
+  if (value) options = {...options, value}
+  if (from) options = {...options, from}
+  const rawGasEstimation = await contract.estimateGas[methodName](...methodArgs, options)
   // By convention, ethers.BigNumber values are multiplied by 1000 to avoid dealing with real numbers
   const gasEstimation = rawGasEstimation
     .mul(ethers.BigNumber.from(10000).add(ethers.BigNumber.from(gasMarginPer10000)))
@@ -39,11 +44,17 @@ export const callWithEstimateGas = async (
   methodArgs: any[] = [],
   overrides: Overrides = {},
   gasMarginPer10000 = 1000,
+  value?: BigNumberish,
+  from?: string
 ): Promise<ethers.providers.TransactionResponse> => {
-  const gasEstimation = estimateGas(contract, methodName, methodArgs, gasMarginPer10000)
+  const gasEstimation = estimateGas(contract, methodName, methodArgs, gasMarginPer10000, value, from)
+  let extra = {}
+  if (value) extra = {...extra, value}
+  if (from) extra = {...extra, from}
   const tx = await contract[methodName](...methodArgs, {
     gasLimit: gasEstimation,
     ...overrides,
+    ...extra
   })
   return tx
 }

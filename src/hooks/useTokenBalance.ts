@@ -31,8 +31,8 @@ const useTokenBalance = (tokenAddress: string) => {
 
   useEffect(() => {
     const fetchBalance = async () => {
-      const contract = getBep20Contract(tokenAddress)
       try {
+        const contract = getBep20Contract(tokenAddress)
         const res = await contract.balanceOf(account)
         setBalanceState({ balance: new BigNumber(res.toString()), fetchStatus: SUCCESS })
       } catch (e) {

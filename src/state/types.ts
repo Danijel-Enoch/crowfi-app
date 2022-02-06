@@ -136,6 +136,132 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
 // Slices states
 
 
+export interface SerializedLaunchpadState {
+  userDataLoaded: boolean
+
+  totalSaleCount?: number
+  fee?: SerializedBigNumber
+
+  userSaleCount?: number
+}
+
+export interface DeserializedLaunchpadState {
+  userDataLoaded: boolean
+
+  totalSaleCount?: number
+  fee?: BigNumber
+
+  userSaleCount?: number
+}
+
+export enum LockType {
+  NORMAL = "NORMAL",
+  LIQUIDITY = "LIQUIDITY",
+  UNKNOWN = "UNKNOWN"
+}
+
+export interface SerializedLock {
+  type: LockType
+  id: string
+  tokenAddress: string
+  owner: string
+  amount: SerializedBigNumber
+  lockDate: number
+  unlockDate: number
+}
+
+export interface DeserializedLock {
+  type: LockType
+  id: string
+  tokenAddress: string
+  owner: string
+  amount: BigNumber
+  lockDate: number
+  unlockDate: number
+}
+
+export interface SerializedLockerUserData {
+  normalLockCount: number
+  lpLockCount: number
+
+  normalLocks?: SerializedLock[]
+  lpLocks?: SerializedLock[]
+}
+
+export interface DeserializedLockerUserData {
+  normalLockCount: number
+  lpLockCount: number
+
+  normalLocks?: DeserializedLock[]
+  lpLocks?: DeserializedLock[]
+}
+
+export interface SerializedLockerState {
+  userDataLoaded: boolean
+
+  toalLockCount?: number
+  totalTokenLockedCount?: number
+  fee?: SerializedBigNumber
+
+  userData?: SerializedLockerUserData
+}
+
+export interface DeserializedLockerState {
+  userDataLoaded: boolean
+
+  toalLockCount: number
+  totalTokenLockedCount: number
+  fee: BigNumber
+
+  userData?: DeserializedLockerUserData
+}
+
+export enum TokenType {
+  STANDARD = "STANDARD",
+  LIQUIDITY = "LIQUIDITY"
+}
+
+export interface SerializedTokenData {
+  type: number
+  address: string
+  name: string
+  symbol: string
+  decimals: number
+  totalSupply: SerializedBigNumber
+  taxFee?: SerializedBigNumber
+  lpFee?: SerializedBigNumber
+}
+
+export interface DeserializedTokenData {
+  type: TokenType
+  address: string
+  name: string
+  symbol: string
+  decimals: number
+  totalSupply: BigNumber
+  taxFee?: BigNumber
+  lpFee?: BigNumber
+}
+
+export interface SerializedTokenFactoryState {
+  userDataLoaded: boolean
+
+  deployFee?: SerializedBigNumber
+  lpDeployFee?: SerializedBigNumber
+  totalTokens?: SerializedBigNumber
+
+  userTokens?: SerializedTokenData[]
+}
+
+export interface DeserializedTokenFactoryState {
+  userDataLoaded: boolean
+
+  deployFee?: BigNumber
+  lpDeployFee?: BigNumber
+  totalTokens?: BigNumber
+  
+  userTokens?: DeserializedTokenData[]
+}
 
 export interface SerializedPrivateSalesState {
   data: SerializedPrivateSale[]
@@ -518,6 +644,9 @@ export interface State {
   farms: SerializedFarmsState
   privatesales: SerializedPrivateSalesState
   pools: PoolsState
+  tokenFactory: SerializedTokenFactoryState
+  locker: SerializedLockerState
+  launchpad: SerializedLaunchpadState
   voting: VotingState
   lottery: LotteryState
 }

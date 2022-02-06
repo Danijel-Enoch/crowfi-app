@@ -2,6 +2,7 @@
 import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, ETHER, Token, currencyEquals } from '@pancakeswap/sdk'
 import { useMemo } from 'react'
+import BigNumber from 'bignumber.js'
 import { arrayify } from 'ethers/lib/utils'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import {
@@ -16,7 +17,7 @@ import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import useUserAddedTokens from '../state/user/hooks/useUserAddedTokens'
 import { isAddress } from '../utils'
 
-import { useBytes32TokenContract, useTokenContract } from './useContract'
+import { useBytes32TokenContract, useTokenContract, useUniswapPairContract } from './useContract'
 import { filterTokens } from '../components/SearchModal/filtering'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
@@ -132,6 +133,48 @@ function parseStringOrBytes32(str: string | undefined, bytes32: string | undefin
     bytes32 && BYTES32_REGEX.test(bytes32) && arrayify(bytes32)[31] === 0
     ? parseBytes32String(bytes32)
     : defaultValue
+}
+
+export interface PairToken {
+  token0Address: string
+  token1Address: string
+  totalSupply: BigNumber
+  decimals: number
+}
+
+export function usePairToken(pairAddress?: string): PairToken | undefined | null {
+  const { chainId } = useActiveWeb3React()
+  const address = isAddress(pairAddress)
+  const tokenContract = useUniswapPairContract(address || undefined, false)
+  const token0Addr = useSingleCallResult(tokenContract, 'token0', undefined, NEVER_RELOAD)
+  const token1Addr = useSingleCallResult(tokenContract, 'token1', undefined, NEVER_RELOAD)
+  const totalSupply = useSingleCallResult(tokenContract, 'totalSupply', undefined, NEVER_RELOAD)
+  const decimals = useSingleCallResult(tokenContract, 'decimals', undefined, NEVER_RELOAD)
+
+  return useMemo(() => {
+    if (!chainId || !address) return undefined
+    if (decimals.loading || token1Addr.loading || token0Addr.loading || totalSupply.loading) return null
+    if (token0Addr.result) {
+      return {
+        token0Address: token0Addr.result[0],
+        token1Address: token1Addr.result[0],
+        totalSupply: new BigNumber(totalSupply.result[0]._hex),
+        decimals: decimals.result[0]
+      }
+    }
+    return undefined
+  }, [
+    address,
+    chainId,
+    decimals.loading,
+    decimals.result,
+    totalSupply.loading,
+    totalSupply.result,
+    token1Addr.result,
+    token1Addr.loading,
+    token0Addr.loading,
+    token0Addr.result,
+  ])
 }
 
 // undefined if invalid or does not exist

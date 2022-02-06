@@ -29,6 +29,12 @@ import {
   getNftMarketAddress,
   getNftSaleAddress,
   getPancakeSquadAddress,
+  getSimpleTokenFactoryAddress,
+  getTokenFactoryAddress,
+  getTokenFactoryManagerAddress,
+  getAirdropperAddress,
+  getLockerAddress,
+  getCrowpadSaleFactoryAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -65,12 +71,56 @@ import nftSaleAbi from 'config/abi/nftSale.json'
 import pancakeSquadAbi from 'config/abi/crowfiSquad.json'
 import erc721CollctionAbi from 'config/abi/erc721collection.json'
 import privateSaleAbi from 'config/abi/presale.json'
+import tokenFactoryManagerAbi from 'config/abi/tokenFactoryManager.json'
+import standardTokenFactoryAbi from 'config/abi/standardTokenFactory.json'
+import lpTokenFactoryAbi from 'config/abi/lpGeneratorTokenFactory.json'
+import standardTokenAbi from 'config/abi/standardToken.json'
+import lpGeneratorTokenAbi from 'config/abi/liquidityGeneratorToken.json'
+import crowpadAirdropper from 'config/abi/crowpadAirdropper.json'
+import crowLockABI from 'config/abi/crowLock.json'
+import crowpadSaleFactoryABI from 'config/abi/crowpadSaleFactory.json'
+import crowpadSaleABI from 'config/abi/crowpadSale.json'
 import { ERC20_ABI } from 'config/abi/erc20'
 import { ChainLinkOracleContract, FarmAuctionContract, PancakeProfileContract } from './types'
 
 const getContract = (abi: any, address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
   const signerOrProvider = signer ?? simpleRpcProvider
   return new ethers.Contract(address, abi, signerOrProvider)
+}
+
+export const getCrowpadSaleContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(crowpadSaleABI, address, signer)
+}
+
+export const getCrowpadSaleFactoryContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(crowpadSaleFactoryABI, getCrowpadSaleFactoryAddress(), signer)
+}
+
+export const getAirdropperContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(crowpadAirdropper, getAirdropperAddress(), signer)
+}
+
+export const getLockerContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(crowLockABI, getLockerAddress(), signer)
+}
+
+export const getTokenFactoryManagerContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(tokenFactoryManagerAbi, getTokenFactoryManagerAddress(), signer)
+}
+
+export const getSimpleTokenFactoryContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(standardTokenFactoryAbi, getSimpleTokenFactoryAddress(), signer)
+}
+
+export const getTokenFactoryContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(lpTokenFactoryAbi, getTokenFactoryAddress(), signer)
+}
+
+export const getStandardTokenContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(standardTokenAbi, address, signer)
+}
+export const getLiquidityGeneratorTokenContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(lpGeneratorTokenAbi, address, signer)
 }
 
 export const getBep20Contract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {

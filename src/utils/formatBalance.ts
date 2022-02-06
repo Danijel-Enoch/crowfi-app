@@ -26,6 +26,14 @@ export const getFullDisplayBalance = (balance: BigNumber, decimals = 18, display
   return getBalanceAmount(balance, decimals).toFixed(displayDecimals)
 }
 
+export const getFullDisplayBalanceExact = (balance: BigNumber, decimals = 18) => {
+  const amount = getBalanceAmount(balance, decimals)
+  if (new BigNumber(amount.toFixed()).eq(new BigNumber(amount.toFixed(decimals)))) {
+    return amount.toFixed()
+  }
+  return amount.toFixed(decimals)
+}
+
 export const formatNumber = (number: number, minPrecision = 2, maxPrecision = 2) => {
   const options = {
     minimumFractionDigits: minPrecision,

@@ -7,6 +7,29 @@ export const getAddress = (address: Address): string => {
   return address[chainId] ? address[chainId] : address[ChainId.MAINNET]
 }
 
+export const getAirdropperAddress = () => {
+  return getAddress(addresses.airdropper)
+}
+
+export const getLockerAddress = () => {
+  return getAddress(addresses.locker)
+}
+
+export const getTokenFactoryManagerAddress = () => {
+  return getAddress(addresses.tokenFactoryManager)
+}
+
+export const getSimpleTokenFactoryAddress = () => {
+  return getAddress(addresses.tokenSimpleFactory)
+}
+export const getTokenFactoryAddress = () => {
+  return getAddress(addresses.tokenFactory)
+}
+
+export const getCrowpadSaleFactoryAddress = () => {
+  return getAddress(addresses.launchpadSaleFactory)
+}
+
 export const getMasterChefAddress = () => {
   return getAddress(addresses.masterChef)
 }
