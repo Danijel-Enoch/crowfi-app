@@ -91,6 +91,19 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "TokensDeposited",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "purchaser",
@@ -456,6 +469,106 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getConfiguration",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "saleRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "saleRateDecimals",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "listingRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "listingRateDecimals",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "liquidityPercent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address payable",
+            "name": "wallet",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "router",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "baseToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "softCap",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "hardCap",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minContribution",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxContribution",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "unlockTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "whitelistEnabled",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct ICrowpadSale.InitParams",
+        "name": "params",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
