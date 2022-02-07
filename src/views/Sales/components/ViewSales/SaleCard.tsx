@@ -49,7 +49,7 @@ export interface SaleCardProps {
 const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
   const { t } = useTranslation()
   const token = useToken(sale.token)
-  const baseToken = useToken(sale.baseToken)
+  const baseToken = useToken(sale.useETH ? undefined : sale.baseToken)
 
   const baseTokenSymbol = useMemo(() => {
       if (sale.useETH) {

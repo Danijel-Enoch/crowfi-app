@@ -10,11 +10,13 @@ import useENS from 'hooks/ENS/useENS'
 import { useTotalSaleCount } from 'state/launchpad/hooks'
 import SaleCard from './SaleCard'
 import { findSales, getSales, getUserSales } from '../../hooks/getSales'
+import { getMyContributions } from '../../hooks/getSalesByQuery'    
 import { PublicSaleData } from '../../types'
 
 export enum ViewMode {
     ALL = 'ALL',
-    USER = 'USER'
+    OWNER = 'OWNER',
+    CONTRIBUTOR = 'CONTRIBUTOR'
 }
 
 export interface PageData {
@@ -41,11 +43,11 @@ const ViewSales: React.FC = () => {
     const { address: searchTokenAddress } = useENS(searchQuery)
     const totalSaleCount = useTotalSaleCount()
 
-    const menuItems = ['All Presales', 'My Presales']
-    const menuItemsOnMobile = ['All Presales', 'My Presales']
+    const menuItems = ['All Presales', 'My Presales', 'My Contributions']
+    const menuItemsOnMobile = ['All Presales', 'My Presales', 'My Contributions']
 
     const onMenuClick = (index: number) =>  {
-        const allViewModes = [ViewMode.ALL, ViewMode.USER]
+        const allViewModes = [ViewMode.ALL, ViewMode.OWNER, ViewMode.CONTRIBUTOR]
         const nViewMode = allViewModes[index]
         if (nViewMode !== viewMode) {
             setViewMode(nViewMode)
@@ -61,10 +63,17 @@ const ViewSales: React.FC = () => {
                 if (searchTokenAddress) {
                     const data = await findSales(searchTokenAddress)
                     setPageData({data, page: 0, totalCount: totalSaleCount})
-                } else if (viewMode === ViewMode.USER) {
+                } else if (viewMode === ViewMode.OWNER) {
                     if (account && totalSaleCount > 0) {
                         const data = await getUserSales(account)
                         setPageData({data, page: 0, totalCount: totalSaleCount})
+                    } else {
+                        setPageData({data: undefined, page: 0, totalCount: 0})
+                    }
+                } else if (viewMode === ViewMode.CONTRIBUTOR) {
+                    if (account && totalSaleCount > 0) {
+                        const res = await getMyContributions(account);
+                        setPageData({data:res, page: 0, totalCount: totalSaleCount})
                     } else {
                         setPageData({data: undefined, page: 0, totalCount: 0})
                     }

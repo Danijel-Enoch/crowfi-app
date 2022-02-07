@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { AddressZero } from '@ethersproject/constants'
 import { useTranslation } from 'contexts/Localization'
 import { Text, Flex,  Message, Progress, Button } from '@pancakeswap/uikit'
 import { JSBI, Token, TokenAmount } from '@pancakeswap/sdk'
@@ -42,8 +43,8 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
 
     const token = useToken(sale.token)
 
-    const baseToken = useToken(sale.baseToken)
-    const {balance: baseTokenBalance} = useTokenBalance(sale.baseToken)
+    const baseToken = useToken(sale.useETH ? undefined : sale.baseToken)
+    const {balance: baseTokenBalance} = useTokenBalance(sale.useETH ? undefined : sale.baseToken)
     const {balance: BNBBalance} = useGetBnbBalance()
     const baseTokenSymbol = useMemo(() => {
         if (sale.useETH) {

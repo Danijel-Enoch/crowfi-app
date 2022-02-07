@@ -29,7 +29,7 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
     const { t } = useTranslation()
     const { toastError, toastSuccess } = useToast()
 
-    const baseToken = useToken(sale.baseToken)
+    const baseToken = useToken(sale.useETH ? undefined : sale.baseToken)
 
     const baseTokenSymbol = useMemo(() => {
         if (sale.useETH) {

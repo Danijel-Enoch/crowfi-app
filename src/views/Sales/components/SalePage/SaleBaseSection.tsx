@@ -47,7 +47,7 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
     const { t } = useTranslation()
     const { isMobile } = useMatchBreakpoints()
     const token = useToken(sale.token)
-    const baseToken = useToken(sale.baseToken)
+    const baseToken = useToken(sale.useETH ? undefined : sale.baseToken)
     const totalSupply = useTotalSupply(token)
 
     const baseTokenSymbol = useMemo(() => {
