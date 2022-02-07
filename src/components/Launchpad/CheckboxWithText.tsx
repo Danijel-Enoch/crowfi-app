@@ -16,6 +16,7 @@ const CheckboxGroup = styled(Flex)`
 const StyledText = styled(Text)`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 14px;
+  flex: 1;
 `
 
 const StyledCheckbox = styled(Checkbox)`

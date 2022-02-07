@@ -37,7 +37,7 @@ const DeFiSection = () => {
                     justifyContent="flex-start"
                     mt={[null, null, null, '64px']}
                     >
-                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color="white">
+                        <LandingHeading scale="sm" mb="24px" mr={["32px", "0px"]} textAlign={["left", null, null, "center"]} color="white">
                         {t('Trade Token With Ease')}
                         </LandingHeading>
                         <FuturaText scale="md" textAlign="justify" color="white">
@@ -53,7 +53,7 @@ const DeFiSection = () => {
                     justifyContent="flex-start"
                     mt={[null, null, null, '64px']}
                     >
-                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color="white">
+                        <LandingHeading scale="sm" mb="24px" mr={["32px", "32px", "0px", null]} textAlign={["left", null, null, "center"]} color="white">
                         {t('Become a Liquidity Provider')}
                         </LandingHeading>
                         <FuturaText scale="md" textAlign="justify" color="white">
@@ -69,7 +69,7 @@ const DeFiSection = () => {
                     justifyContent="flex-start"
                     mt={[null, null, null, '64px']}
                     >
-                        <LandingHeading scale="sm" mb="24px" textAlign={["left", null, null, "center"]} color="white">
+                        <LandingHeading scale="sm" mb="24px" mr={["32px", "32px", "0px", null]} textAlign={["left", null, null, "center"]} color="white">
                         {t('Put Your Crows To Work')}
                         </LandingHeading>
                         <FuturaText scale="md" textAlign="justify" color="white">
