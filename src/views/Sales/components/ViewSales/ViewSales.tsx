@@ -132,7 +132,11 @@ const ViewSales: React.FC = () => {
                     {t('Presales Created')}
                 </Text>
             </Flex>
-            <BoxButtonMenu onItemClick={onMenuClick} items={menuItems} mobileItems={menuItemsOnMobile}/>
+            <Flex justifyContent="center">
+                <Flex maxWidth={["calc(100vw - 48px)", null, null, "100%"]}>
+                <BoxButtonMenu onItemClick={onMenuClick} items={menuItems} mobileItems={menuItemsOnMobile}/>
+                </Flex>
+            </Flex>
 
             {renderContent()}
 
