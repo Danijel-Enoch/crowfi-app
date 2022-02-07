@@ -88,7 +88,7 @@ const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
                  {t('Rate')}
                </Text>
                <Text color="primary" fontSize="16px">
-                 {(t('1 CRO = %rate% %symbol%', {rate: sale.rate.toJSON(), symbol: token ? token.symbol : ''}))}
+                 1 {baseTokenSymbol} = { token && baseTokenDecimals >= 0 ? getFullDisplayBalance(sale.rate.multipliedBy(BIG_TEN.pow(baseTokenDecimals - sale.rateDecimals)), token.decimals) : ''} {token ? token.symbol : ''}
                </Text>
              </Flex>
             </Flex>

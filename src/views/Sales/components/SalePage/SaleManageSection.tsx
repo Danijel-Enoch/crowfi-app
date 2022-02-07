@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'contexts/Localization'
 import { Text, Flex,  Message, Progress, Button, Heading, Skeleton } from '@pancakeswap/uikit'
+import { JSBI, TokenAmount } from '@pancakeswap/sdk'
 import { StyledNumericalInput } from 'components/Launchpad/StyledControls'
 import { SALE_FINALIZE_DEADLINE } from 'config/constants'
 import Dots from 'components/Loader/Dots'
@@ -8,6 +9,7 @@ import { getFullDisplayBalance } from 'utils/formatBalance'
 import { useToken } from 'hooks/Tokens'
 import useInterval from 'hooks/useInterval'
 import useToast from 'hooks/useToast'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { BIG_TEN } from 'utils/bigNumber'
 import { BigNumber} from 'bignumber.js'
@@ -63,7 +65,9 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
     const liquidityTokenNumber = sale.cap.multipliedBy(sale.liquidity).div(100).multipliedBy(sale.listingRate).div(BIG_TEN.pow(sale.listingRateDecimals))
     const requiredTokenNumber = capTokenNumber.plus(liquidityTokenNumber)
 
-    const { onDeposite } = useDepositeSale(sale.token)
+    const [approval, approveCallback] = useApproveCallback(token ? new TokenAmount(token, JSBI.BigInt(requiredTokenNumber)) : undefined, sale.address)
+
+    const { onDeposite } = useDepositeSale(sale.address)
 
     const { onFinalize } = useFinalizeSale(sale.address)
 
@@ -85,8 +89,8 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
     const handleDeposit = useCallback(async () => {
         try {
             setDepositing(true)
-            const amount = requiredTokenNumber.minus(balanceTokenNumber)
-            const receipt = await onDeposite(amount.toFixed(0, 2), sale.address)
+            const amount = requiredTokenNumber
+            const receipt = await onDeposite()
             onReloadSale()
             toastSuccess(
             `${t('Deposited')}!`,
@@ -102,7 +106,7 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
         } finally {
             setDepositing(false)
         }
-    }, [toastError, toastSuccess, t, onDeposite, onReloadSale, requiredTokenNumber, balanceTokenNumber, token, sale.address])
+    }, [toastError, toastSuccess, t, onDeposite, onReloadSale, requiredTokenNumber, token])
 
     const handleFinalize = useCallback(async () => {
         try {
@@ -140,6 +144,18 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
         }
     }, [toastError, toastSuccess, t, onCancel, onReloadSale])
 
+    const renderApprovalOrDepositButton = () => {
+        return approval === ApprovalState.APPROVED ? (
+            <Button disabled={depositing}
+                onClick={handleDeposit}>{ depositing ? (<Dots>{t('Depositing')}</Dots>) : t('Deposit')}
+            </Button>
+        ) : (
+            <Button disabled={approval === ApprovalState.PENDING || approval === ApprovalState.UNKNOWN} onClick={approveCallback}>
+            {approval === ApprovalState.PENDING ? (<Dots>{t('Approving')}</Dots>) : t('Approve')}
+            </Button>
+        )
+    }
+
     return (
         <>
             <Flex flexDirection="column" width="100%">
@@ -150,18 +166,24 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                     )}
                     </Text>
                 </Message>
-                { !sale.canceled && !closed && !expired && !sale.finalized && token && balanceAmount && balanceTokenNumber.lt(requiredTokenNumber) && (
+                { !sale.canceled && !closed && !expired && !sale.finalized && !sale.deposited && (
                     <>
+                    { token ? (
                     <Heading fontSize="20px" color="red" textAlign="center">
-                        {t('Complete your setup by depositing %amount% %symbol%!', {amount: getFullDisplayBalance(requiredTokenNumber.minus(balanceTokenNumber), token.decimals), symbol: token.symbol})}
+                    {t('Complete your setup by depositing %amount% %symbol%!', {amount: getFullDisplayBalance(requiredTokenNumber, token.decimals), symbol: token.symbol})}
                     </Heading>
+                    ) : (
+                    <Heading fontSize="20px" color="red" textAlign="center">
+                        {t('Complete your setup by depositing ...')}
+                    </Heading>
+                    )}
+                    
                     <Text fontSize="14px" textAlign="center" mt="16px">
                         {t('If your token take taxes on transfer, please exclude the presale address from the transfer before deposit tokens!')}
                     </Text>
 
                     <Flex justifyContent="center" mt="16px" mb="16px">
-                        <Button disabled={depositing}
-                            onClick={handleDeposit}>{ depositing ? (<Dots>{t('Depositing')}</Dots>) : t('Deposit')}</Button>
+                        {renderApprovalOrDepositButton()}
                     </Flex>
                     </>
                 )}

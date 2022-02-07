@@ -42,6 +42,7 @@ export interface PublicSaleData {
     weiRaised: BigNumber
     finalized: boolean
     canceled: boolean
+    deposited: boolean
     logo?: string
     whitelistEnabled?: boolean
     paymentType?: PaymentType

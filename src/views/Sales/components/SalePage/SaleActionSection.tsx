@@ -96,7 +96,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
 
     const valueNumber = baseTokenDecimals < 0 ? BIG_ZERO : new BigNumber(value).multipliedBy(BIG_TEN.pow(baseTokenDecimals))
 
-    const [approval, approveCallback] = useApproveCallback(baseToken ? new TokenAmount(baseToken, JSBI.BigInt(value)) : undefined, sale.address)
+    const [approval, approveCallback] = useApproveCallback(baseToken && valueNumber.gt(0) && valueNumber.isFinite() ? new TokenAmount(baseToken, JSBI.BigInt(value)) : undefined, sale.address)
 
     const { onBuySale, onBuySaleETH } = useBuySale(sale.address)
     const { onClaimSale } = useClaimSale(sale.address)
@@ -195,13 +195,13 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
 
 
     const renderApprovalOrPurchaseButton = () => {
-        return (sale.whitelistEnabled && !whitelisted) || !baseToken || approval === ApprovalState.APPROVED ? (
+        return (sale.whitelistEnabled && !whitelisted) || !sale.deposited || !baseToken || approval === ApprovalState.APPROVED ? (
             <Button 
                 scale="sm" 
-                disabled={!buyable || pendingTx || !valueNumber || !valueNumber.isFinite() || valueNumber.eq(0) || valueNumber.gt(maxNumber) || (sale.whitelistEnabled && !whitelisted)} 
+                disabled={!buyable || pendingTx || !valueNumber || !valueNumber.isFinite() || valueNumber.eq(0) || valueNumber.gt(maxNumber) || (sale.whitelistEnabled && !whitelisted) || !sale.deposited} 
                 onClick={handleBuy}
             >
-                { pendingTx ? (<Dots>{t('Purchasing')}</Dots>) : (sale.whitelistEnabled && !whitelisted) ? t('You are not in whitelist') : t('Purchase')}
+                { pendingTx ? (<Dots>{t('Purchasing')}</Dots>) : (sale.whitelistEnabled && !whitelisted) ? t('You are not in whitelist') : !sale.deposited ? t('Incomplete Setup') : t('Purchase')}
             </Button>
         ) : (
             <Button mt="8px" width="100%" disabled={approval === ApprovalState.PENDING || approval === ApprovalState.UNKNOWN} onClick={approveCallback}>

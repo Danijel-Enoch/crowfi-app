@@ -9,7 +9,7 @@ import { PaymentType, PublicSaleData, PublicSaleMetaData } from "../types";
 export const findSales = async (token: string) : Promise<PublicSaleData[]> => {
     const saleFactoryContract = getCrowpadSaleFactoryContract()
     const saleAddresses: string[]|null = await saleFactoryContract.getSalesForToken(0, 100)
-    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled', 'baseToken']
+    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled', 'baseToken', 'deposited']
 
     if (!saleAddresses || saleAddresses.length === 0) {
         return [];
@@ -28,7 +28,7 @@ export const findSales = async (token: string) : Promise<PublicSaleData[]> => {
 
     const response = await multicall(crowpadSaleABI, calls)
     const res = response.reduce((accum: any[][], item, index) => {
-        const chunk = Math.floor(index / 17)
+        const chunk = Math.floor(index / 18)
         const chunks = accum
         chunks[chunk] = ([] as any[]).concat(accum[chunk] || [], item)
         return chunks
@@ -53,6 +53,7 @@ export const findSales = async (token: string) : Promise<PublicSaleData[]> => {
             canceled: item[15],
             baseToken: item[16],
             useETH: item[16] === AddressZero,
+            deposited: item[17],
         }
     })
 
@@ -66,7 +67,7 @@ export const getSales = async (start: number, count: number) : Promise<PublicSal
 
     const saleFactoryContract = getCrowpadSaleFactoryContract()
     const saleAddresses: string[] = await saleFactoryContract.getSales(start, start+count)
-    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled', 'baseToken']
+    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled', 'baseToken', 'deposited']
 
     const calls = saleAddresses.reduce((accum, address, index) => {
         fields.forEach((field) => {
@@ -81,7 +82,7 @@ export const getSales = async (start: number, count: number) : Promise<PublicSal
 
     const response = await multicall(crowpadSaleABI, calls)
     const res = response.reduce((accum: any[][], item, index) => {
-        const chunk = Math.floor(index / 17)
+        const chunk = Math.floor(index / 18)
         const chunks = accum
         chunks[chunk] = ([] as any[]).concat(accum[chunk] || [], item)
         return chunks
@@ -106,6 +107,7 @@ export const getSales = async (start: number, count: number) : Promise<PublicSal
             canceled: item[15],
             baseToken: item[16],
             useETH: item[16] === AddressZero,
+            deposited: item[17],
         }
     })
 
@@ -115,7 +117,7 @@ export const getSales = async (start: number, count: number) : Promise<PublicSal
 export const getUserSales = async (account: string) : Promise<PublicSaleData[]> => {
     const saleFactoryContract = getCrowpadSaleFactoryContract()
     const saleAddresses: string[] = await saleFactoryContract.getSalesForUser(account)
-    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled', 'baseToken']
+    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'canceled', 'baseToken', 'deposited']
 
     if (!saleAddresses || saleAddresses.length === 0) {
         return [];
@@ -134,7 +136,7 @@ export const getUserSales = async (account: string) : Promise<PublicSaleData[]> 
 
     const response = await multicall(crowpadSaleABI, calls)
     const res = response.reduce((accum: any[][], item, index) => {
-        const chunk = Math.floor(index / 17)
+        const chunk = Math.floor(index / 18)
         const chunks = accum
         chunks[chunk] = ([] as any[]).concat(accum[chunk] || [], item)
         return chunks
@@ -159,6 +161,7 @@ export const getUserSales = async (account: string) : Promise<PublicSaleData[]> 
             canceled: item[15],
             baseToken: item[16],
             useETH: item[16] === AddressZero,
+            deposited: item[17]
         }
     })
 
@@ -207,7 +210,7 @@ export const getSaleUserData = async (address?: string, account?: string) : Prom
 }
 
 export const getSale = async (address: string) : Promise<PublicSaleData> => {
-    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'investorMinCap', 'investorHardCap', 'whitelistEnabled', 'canceled', 'liquidityUnlockTime', 'lockId', 'baseToken']
+    const fields = ['owner', 'token', 'wallet', 'weiRaised', 'goal', 'cap', 'rate', 'rateDecimals', 'listingRate', 'listingRateDecimals', 'liquidityPercent', 'openingTime', 'closingTime', 'finalized', 'logo', 'investorMinCap', 'investorHardCap', 'whitelistEnabled', 'canceled', 'liquidityUnlockTime', 'lockId', 'baseToken', 'deposited']
 
     const calls = fields.map((field) =>  {
         return {
@@ -239,7 +242,8 @@ export const getSale = async (address: string) : Promise<PublicSaleData> => {
         [canceled],
         [liquidityUnlockTime_],
         [lockId_],
-        [baseToken]
+        [baseToken],
+        [deposited]
     ] = await multicall(crowpadSaleABI, calls)
     return {
         address,
@@ -267,6 +271,7 @@ export const getSale = async (address: string) : Promise<PublicSaleData> => {
         paymentType:  new BigNumber(closingTime_._hex).toNumber() === 0 ? PaymentType.DIRECT : PaymentType.ESCROW,
         unlockTime: new BigNumber(liquidityUnlockTime_._hex).toNumber(),
         lockId: new BigNumber(lockId_._hex).toNumber(),
+        deposited,
     }
 }
 

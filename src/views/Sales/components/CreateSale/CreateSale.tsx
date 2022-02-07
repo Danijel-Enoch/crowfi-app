@@ -218,8 +218,6 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         return presaleAmountNumber.plus(liquidityAmountNumber)
     }, [presaleAmountNumber, liquidityAmountNumber])
 
-    const [approval, approveCallback] = useApproveCallback(searchToken && depositAmountNumber && depositAmountNumber.isFinite() ? new TokenAmount(searchToken, JSBI.BigInt(depositAmountNumber.toFixed(0))) : undefined, getCrowpadSaleFactoryAddress())
-
     const [onPresentDesclaimer] = useModal(
         <DesclaimerModal onAgree={() => {
             setAgreed(true)
