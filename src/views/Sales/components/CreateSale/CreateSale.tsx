@@ -556,7 +556,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                             </InputWrap>
                             <InputWrap>
                                 <StyledWrapperWithTooltip
-                                    tooltip={t('Enter your desired listing prce in %symbol%: (If I pay 1 %symbol%, how many tokens do I get?)', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})}
+                                    tooltip={t('Enter your desired listing price in %symbol%: (If I pay 1 %symbol%, how many tokens do I get?)', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})}
                                     error={formError.listingRate}
                                         >
                                     <StyledNumericalInput placeholder={t('Listing Rate')} value={listingRate} onUserInput={(value) => {
