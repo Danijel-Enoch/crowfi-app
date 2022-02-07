@@ -24,6 +24,8 @@ export interface PublicSaleData {
     address: string
     token: string
     owner: string
+    useETH: boolean
+    baseToken: string
     wallet: string
     openingTime: number
     closingTime: number
@@ -40,6 +42,7 @@ export interface PublicSaleData {
     weiRaised: BigNumber
     finalized: boolean
     canceled: boolean
+    deposited: boolean
     logo?: string
     whitelistEnabled?: boolean
     paymentType?: PaymentType

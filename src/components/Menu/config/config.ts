@@ -42,7 +42,7 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
   },
   {
     label: t('Utilities'),
-    href: '/launchpad',
+    href: '/presale',
     icon: 'Launchpad',
     items: [
       {

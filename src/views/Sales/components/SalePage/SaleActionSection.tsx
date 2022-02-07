@@ -1,13 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'contexts/Localization'
 import { Text, Flex,  Message, Progress, Button } from '@pancakeswap/uikit'
-import { Token } from '@pancakeswap/sdk'
+import { JSBI, Token, TokenAmount } from '@pancakeswap/sdk'
 import { StyledNumericalInput } from 'components/Launchpad/StyledControls'
 import Dots from 'components/Loader/Dots'
-import { getFullDisplayBalance } from 'utils/formatBalance'
+import ConnectWalletButton from 'components/ConnectWalletButton'
+import { formatBigNumber, getFullDisplayBalance } from 'utils/formatBalance'
 import { SALE_FINALIZE_DEADLINE } from 'config/constants'
 import useInterval from 'hooks/useInterval'
 import useToast from 'hooks/useToast'
+import useTokenBalance, { useGetBnbBalance } from 'hooks/useTokenBalance'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { useToken } from 'hooks/Tokens'
 import { BIG_TEN, BIG_ZERO } from 'utils/bigNumber'
 import { BigNumber} from 'bignumber.js'
@@ -15,6 +18,7 @@ import SaleTimer from './SaleTimer'
 import { PublicSaleData } from '../../types'
 import { useBuySale, useClaimRefundSale, useClaimSale } from '../../hooks/useBuySale'
 import { getSaleUserData } from '../../hooks/getSales'
+import SaleBaseSection from './SaleBaseSection'
 
 export interface SaleActionSectionProps {
     sale: PublicSaleData
@@ -37,6 +41,31 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
     const [whitelisted, setWhitelisted] = useState(true)
 
     const token = useToken(sale.token)
+
+    const baseToken = useToken(sale.baseToken)
+    const {balance: baseTokenBalance} = useTokenBalance(sale.baseToken)
+    const {balance: BNBBalance} = useGetBnbBalance()
+    const baseTokenSymbol = useMemo(() => {
+        if (sale.useETH) {
+            return 'CRO'
+        }
+        if (baseToken) {
+            return baseToken.symbol
+        }
+
+        return ''
+    }, [sale, baseToken])
+
+    const baseTokenDecimals = useMemo(() => {
+        if (sale.useETH) {
+            return 18
+        }
+        if (baseToken) {
+            return baseToken.decimals
+        }
+
+        return -1
+    }, [sale, baseToken])
 
     const [loadContribution, setLoadContribution] = useState(false)
 
@@ -65,9 +94,11 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
         return remaining.gt(remainingContrib) ? remainingContrib : remaining;
     }, [sale, contribution])
 
-    const valueNumber = new BigNumber(value).multipliedBy(BIG_TEN.pow(18))
+    const valueNumber = baseTokenDecimals < 0 ? BIG_ZERO : new BigNumber(value).multipliedBy(BIG_TEN.pow(baseTokenDecimals))
 
-    const { onBuySale } = useBuySale(sale.address)
+    const [approval, approveCallback] = useApproveCallback(baseToken && valueNumber.gt(0) && valueNumber.isFinite() ? new TokenAmount(baseToken, JSBI.BigInt(value)) : undefined, sale.address)
+
+    const { onBuySale, onBuySaleETH } = useBuySale(sale.address)
     const { onClaimSale } = useClaimSale(sale.address)
     const { onClaimRefundSale } = useClaimRefundSale(sale.address)
 
@@ -92,20 +123,23 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
         }
     }, 1000)
 
-    const handleClickMax = () => {
-        setValue(getFullDisplayBalance(maxNumber))
-    }
+
+    const handleClickMax = useCallback(() => {
+        if (baseTokenDecimals >= 0) {
+            setValue(getFullDisplayBalance(maxNumber, baseTokenDecimals))
+        }
+    }, [baseTokenDecimals, maxNumber])
 
     const handleBuy = useCallback(async () => {
         try {
             setPendingTx(true)
-            const receipt = await onBuySale(account, valueNumber.toString())
+            const receipt = sale.useETH ? await onBuySaleETH(account, valueNumber.toString()) : await onBuySale(account, valueNumber.toString())
             onReloadSale()
             setLoadContribution(!loadContribution)
             toastSuccess(
             `${t('Purchased')}!`,
             t('You have been purchased %amount% tokens successfully', {
-                amount: valueNumber.multipliedBy(sale.rate).div(BIG_TEN.pow(18)).toJSON()
+                amount: getFullDisplayBalance(valueNumber.multipliedBy(sale.rate).div(BIG_TEN.pow(sale.rateDecimals)), token.decimals)
             }),
             )
         } catch (e) {
@@ -115,7 +149,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
         } finally {
             setPendingTx(false)
         }
-    }, [toastError, toastSuccess, t, onBuySale, onReloadSale, sale, valueNumber, account, loadContribution])
+    }, [toastError, toastSuccess, t, onBuySale, onBuySaleETH, onReloadSale, sale, valueNumber, account, loadContribution, token])
 
     const handleClaim = useCallback(async () => {
         try {
@@ -158,6 +192,24 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
         }
     }, [toastError, toastSuccess, t, onClaimRefundSale, onReloadSale, account, loadContribution])
 
+
+
+    const renderApprovalOrPurchaseButton = () => {
+        return (sale.whitelistEnabled && !whitelisted) || !sale.deposited || !baseToken || approval === ApprovalState.APPROVED ? (
+            <Button 
+                scale="sm" 
+                disabled={!buyable || pendingTx || !valueNumber || !valueNumber.isFinite() || valueNumber.eq(0) || valueNumber.gt(maxNumber) || (sale.whitelistEnabled && !whitelisted) || !sale.deposited} 
+                onClick={handleBuy}
+            >
+                { pendingTx ? (<Dots>{t('Purchasing')}</Dots>) : (sale.whitelistEnabled && !whitelisted) ? t('You are not in whitelist') : !sale.deposited ? t('Incomplete Setup') : t('Purchase')}
+            </Button>
+        ) : (
+            <Button mt="8px" width="100%" disabled={approval === ApprovalState.PENDING || approval === ApprovalState.UNKNOWN} onClick={approveCallback}>
+            {approval === ApprovalState.PENDING ? (<Dots>{t('Approving')}</Dots>) : t('Approve')}
+            </Button>
+        )
+    }
+
     return (
         <>
             <Flex flexDirection="column" width="100%">
@@ -180,20 +232,24 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                 <Flex flexDirection="column" mt="8px">
                     <Progress primaryStep={sale.weiRaised.multipliedBy(100).div(sale.cap).toNumber()} />
                     <Flex justifyContent="space-between">
-                        <Text fontSize="12px">
-                            {getFullDisplayBalance(sale.weiRaised)} CRO
-                        </Text>
-                        <Text fontSize="12px">
-                            {getFullDisplayBalance(sale.cap)} CRO
-                        </Text>
+                        { baseTokenDecimals >= 0 && (
+                            <>
+                            <Text fontSize="12px">
+                                {getFullDisplayBalance(sale.weiRaised, baseTokenDecimals)} {baseTokenSymbol}
+                            </Text>
+                            <Text fontSize="12px">
+                                {getFullDisplayBalance(sale.cap, baseTokenDecimals)} {baseTokenSymbol}
+                            </Text>
+                            </>
+                        )}
                     </Flex>
                 </Flex>
                 { showClaim && account === sale.owner && (
                     <></>
                 )}
-                {contribution && contribution.isFinite() && (
+                {contribution && contribution.isFinite() && baseTokenDecimals >= 0 && (
                 <Text fontSize="14px" fontStyle="bold" mt="8px" textAlign="center">
-                    {t('Your Contribution: %amount% %currency%', {amount: getFullDisplayBalance(contribution), currency:'CRO'})}
+                    {t('Your Contribution: %amount% %currency%', {amount: getFullDisplayBalance(contribution, baseTokenDecimals), currency:baseTokenSymbol})}
                 </Text>
                 )}
                 
@@ -204,6 +260,9 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                 )}
                 { sale.canceled && contribution && contribution.isFinite() && contribution.gt(0) && (
                     <Flex justifyContent="center" mt="8px">
+                        { !account ? (
+                            <ConnectWalletButton mt="8px" width="100%" />
+                        ) : (
                         <Button 
                             scale="sm" 
                             disabled={claimingRefund || !balanceEth || balanceEth.lte(0)} 
@@ -211,6 +270,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                         >
                             { claimingRefund ? (<Dots>{t('Claiming')}</Dots>) : t('Claim Refund')}
                         </Button>
+                        )}
                     </Flex>
                 )}
                 { !sale.canceled && (
@@ -218,9 +278,15 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
 
                     { showBuy && (
                         <>
-                        <Text fontSize="14px" fontStyle="bold" mt="8px">
-                            {t('Amount (max: %amount% %currency%)', {amount: getFullDisplayBalance(maxNumber), currency:'CRO'})}
-                        </Text>
+                        <Flex justifyContent="space-between">
+                            <Text fontSize="14px" fontStyle="bold" mt="8px">
+                                {t('Amount (max: %amount% %currency%)', {amount: getFullDisplayBalance(maxNumber, baseTokenDecimals), currency:baseTokenSymbol})}
+                            </Text>
+                            <Text fontSize="14px" fontStyle="bold" mt="8px">
+                                {t('Balance: %amount% %currency%', {amount: sale.useETH ? formatBigNumber(BNBBalance) : getFullDisplayBalance(baseTokenBalance, baseTokenDecimals), currency:baseTokenSymbol})}
+                            </Text>
+                        </Flex>
+                        
                         <Flex position="relative">
                             <StyledNumericalInput
                                 value={value}
@@ -228,21 +294,20 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                             <Button scale="xs" style={{position: 'absolute', right: '12px', top: '10px'}} onClick={handleClickMax}>{t('MAX')}</Button>
                         </Flex>
                         <Flex justifyContent="center" mt="8px">
-                            <Button 
-                                scale="sm" 
-                                disabled={!buyable || pendingTx || !valueNumber || !valueNumber.isFinite() || valueNumber.eq(0) || valueNumber.gt(maxNumber) || (sale.whitelistEnabled && !whitelisted)} 
-                                onClick={handleBuy}
-                            >
-                                { pendingTx ? (<Dots>{t('Purchasing')}</Dots>) : (sale.whitelistEnabled && !whitelisted) ? t('You are not in whitelist') : t('Purchase')}
-                            </Button>
+                        {!account ? <ConnectWalletButton mt="8px" width="100%" /> : renderApprovalOrPurchaseButton()}
                         </Flex>
                         </>
                     )}
                     { showClaim && (
                     <Flex justifyContent="center" mt="8px">
-                        <Button scale="sm" disabled={pendingTx || !balance || !balance.isFinite() || balance.eq(0) || (!expired && !sale.finalized) } onClick={handleClaim}>
-                            { pendingTx ? (<Dots>{t('Claiming')}</Dots>) : t('Claim')}
-                        </Button>
+                        { !account ? (
+                            <ConnectWalletButton mt="8px" width="100%" />
+                        ) : (
+                            <Button scale="sm" disabled={pendingTx || !balance || !balance.isFinite() || balance.eq(0) || (!expired && !sale.finalized) } onClick={handleClaim}>
+                                { pendingTx ? (<Dots>{t('Claiming')}</Dots>) : t('Claim')}
+                            </Button>
+                        )
+                        }
                     </Flex>
                     )}
                     </>

@@ -4,18 +4,17 @@ import { ROUTER_ADDRESS } from 'config/constants'
 import getGasPrice from 'utils/getGasPrice'
 import { callWithEstimateGas } from 'utils/calls'
 
-export const useDepositeSale = (token: string) => {
-  const tokenContract = useERC20(token)
+export const useDepositeSale = (address: string) => {
+  const saleContract = useCrowpadSaleContract(address)
 
   const handleDeposite = useCallback(
-    async (amount, sale) => {
+    async () => {
         const gasPrice = getGasPrice()
-        const args = [sale, amount];
-        const tx = await callWithEstimateGas(tokenContract, 'transfer', args, { gasPrice})
+        const tx = await callWithEstimateGas(saleContract, 'deposit', [], { gasPrice})
         const receipt = await tx.wait()
         return receipt
     },
-    [tokenContract],
+    [saleContract],
   )
 
   return { onDeposite: handleDeposite }

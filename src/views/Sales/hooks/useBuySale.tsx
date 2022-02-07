@@ -6,7 +6,7 @@ import getGasPrice from 'utils/getGasPrice'
 export const useBuySale = (address: string) => {
   const saleContract = useCrowpadSaleContract(address)
 
-  const handleBuy = useCallback(async (account: string, amount: string) => {
+  const handleBuyETH = useCallback(async (account: string, amount: string) => {
 
     const gasPrice = getGasPrice()
     const tx = await callWithEstimateGas(saleContract, 'buyTokens', [account], {gasPrice}, 1000, amount)
@@ -14,7 +14,15 @@ export const useBuySale = (address: string) => {
     return receipt.status
   }, [saleContract])
 
-  return { onBuySale: handleBuy }
+  const handleBuy = useCallback(async (account: string, amount: string) => {
+
+    const gasPrice = getGasPrice()
+    const tx = await callWithEstimateGas(saleContract, 'buyTokensWithTokens', [account, amount], {gasPrice})
+    const receipt = await tx.wait()
+    return receipt.status
+  }, [saleContract])
+
+  return { onBuySaleETH: handleBuyETH, onBuySale: handleBuy }
 }
 
 export const useClaimSale = (address: string) => {

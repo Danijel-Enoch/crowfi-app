@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { AddressZero } from '@ethersproject/constants'
 import { useHistory } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import { Text, Flex, Box, Input, Heading, Button, Radio, useModal, useTooltip, HelpIcon } from '@pancakeswap/uikit'
@@ -6,6 +7,7 @@ import { JSBI, Token, TokenAmount } from '@pancakeswap/sdk'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
+import tokens from 'config/constants/tokens'
 import { useAppDispatch } from 'state'
 import { useSaleDeployFee } from 'state/launchpad/hooks'
 import { fetchLaunchpadPublicDataAsync, fetchLaunchpadUserDataAsync } from 'state/launchpad'
@@ -80,11 +82,13 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
     const { t } = useTranslation()
     const { theme } = useTheme()
     const history = useHistory()
+    const usdcToken: Token = tokens.usdc
     const { account } = useWeb3React()
     const dispatch = useAppDispatch()
     const { toastError, toastSuccess } = useToast()
     const [pendingTx, setPendingTx] = useState(false)
     const [ agreed, setAgreed ] = useState<boolean>(false)
+    const [ useUSDC, setUseUSDC ] = useState<boolean>(false)
     const [ presentedDesclaimer, setPresentedDesclaimer ] = useState<boolean>(false)
     const [ logo, setLogo ] = useState<string>('')
     const [ rate, setRate ] = useState<string>('')
@@ -107,11 +111,20 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
       } = useTooltip("In a private sale, only whitelisted investors can contribute.", {
         placement: 'bottom',
       })
+    const {
+        targetRef: purchaseTypeTargetRef,
+        tooltip: purchaseTypeTooltipElement,
+        tooltipVisible: purchaseTypeTooltipVisible,
+    } = useTooltip("Your investors can contribute with $CRO or $USDC", {
+        placement: 'bottom',
+    })
     const deployFee = useSaleDeployFee()
+    const baseTokenDecimals = useMemo(() => {
+        return useUSDC ? usdcToken.decimals : 18;
+    }, [useUSDC, usdcToken])
 
-    const minContributionNumer = new BigNumber(minContribution).multipliedBy(BIG_TEN.pow(18))
-    const maxContributionNumer = new BigNumber(maxContribution).multipliedBy(BIG_TEN.pow(18))
-    const hardCapNumber = new BigNumber(hardCap).multipliedBy(BIG_TEN.pow(18))
+    const minContributionNumer = new BigNumber(minContribution).multipliedBy(BIG_TEN.pow(baseTokenDecimals))
+    const maxContributionNumer = new BigNumber(maxContribution).multipliedBy(BIG_TEN.pow(baseTokenDecimals))
     const { onCreateSale } = useCreateSale()
 
     const [tokenAddress, setTokenAddress] = useState<string>('')
@@ -123,8 +136,11 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         if (!searchToken || !res || !res.isFinite() || res.eq(0)) {
             return BIG_ZERO
         }
-        return new BigNumber(res.decimalPlaces() + 18 - searchToken.decimals)
-    }, [rate, searchToken])
+        if (baseTokenDecimals < searchToken.decimals) {
+            return new BigNumber(res.decimalPlaces())
+        }
+        return new BigNumber(res.decimalPlaces() + baseTokenDecimals - searchToken.decimals)
+    }, [rate, searchToken, baseTokenDecimals])
 
     const rateNumber = useMemo(() => {
         const res = new BigNumber(rate)
@@ -132,16 +148,23 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
             return BIG_ZERO
         }
 
+        if (baseTokenDecimals < searchToken.decimals) {
+            return res.multipliedBy(BIG_TEN.pow(res.decimalPlaces() + searchToken.decimals - baseTokenDecimals))
+        }
+
         return res.multipliedBy(BIG_TEN.pow(res.decimalPlaces()))
-    }, [rate, searchToken])
+    }, [rate, searchToken, baseTokenDecimals])
 
     const listingRateDecimalsNumber = useMemo(() => {
         const res = new BigNumber(listingRate)
         if (!searchToken || !res || !res.isFinite() || res.eq(0)) {
             return BIG_ZERO
         }
-        return new BigNumber(res.decimalPlaces() + 18 - searchToken.decimals)
-    }, [listingRate, searchToken])
+        if (baseTokenDecimals < searchToken.decimals) {
+            return new BigNumber(res.decimalPlaces())
+        }
+        return new BigNumber(res.decimalPlaces() + baseTokenDecimals - searchToken.decimals)
+    }, [listingRate, searchToken, baseTokenDecimals])
 
     const listingRateNumber = useMemo(() => {
         const res = new BigNumber(listingRate)
@@ -149,20 +172,28 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
             return BIG_ZERO
         }
 
+        if (baseTokenDecimals < searchToken.decimals) {
+            return res.multipliedBy(BIG_TEN.pow(res.decimalPlaces() + searchToken.decimals - baseTokenDecimals))
+        }
+
         return res.multipliedBy(BIG_TEN.pow(res.decimalPlaces()))
-    }, [listingRate, searchToken])
+    }, [listingRate, searchToken, baseTokenDecimals])
 
     const liquidityPercentNumber = useMemo(() => {
         return new BigNumber(liquidityPercent)
     }, [liquidityPercent])
 
     const softCapNumber = useMemo(() => {
-        const res = new BigNumber(softCap).multipliedBy(BIG_TEN.pow(18))
-        if (res && res.isFinite() && res.lte(BIG_TEN.pow(15))) {
-            return BIG_TEN.pow(15)
+        const res = new BigNumber(softCap).multipliedBy(BIG_TEN.pow(baseTokenDecimals))
+        if (res && res.isFinite() && res.lte(BIG_TEN.pow(baseTokenDecimals - 3))) {
+            return BIG_TEN.pow(baseTokenDecimals - 3)
         }
         return res
-    }, [softCap])
+    }, [softCap, baseTokenDecimals])
+
+    const hardCapNumber = useMemo(() => {
+        return new BigNumber(hardCap).multipliedBy(BIG_TEN.pow(baseTokenDecimals))
+    }, [hardCap, baseTokenDecimals])
 
     const presaleAmountNumber = useMemo(() => {
         if (!rateNumber || !rateNumber.isFinite() || !hardCapNumber || !hardCapNumber.isFinite()) {
@@ -186,8 +217,6 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         }
         return presaleAmountNumber.plus(liquidityAmountNumber)
     }, [presaleAmountNumber, liquidityAmountNumber])
-
-    const [approval, approveCallback] = useApproveCallback(searchToken && depositAmountNumber && depositAmountNumber.isFinite() ? new TokenAmount(searchToken, JSBI.BigInt(depositAmountNumber.toFixed(0))) : undefined, getCrowpadSaleFactoryAddress())
 
     const [onPresentDesclaimer] = useModal(
         <DesclaimerModal onAgree={() => {
@@ -344,7 +373,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         }
         try {
             setPendingTx(true)
-            const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, rateNumber.toJSON(), rateDecimalsNumber.toJSON(), listingRateNumber.toJSON(), listingRateDecimalsNumber.toJSON(), liquidityPercentNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000), Math.floor(unlockDate.getTime() / 1000), minContributionNumer.toJSON(), maxContributionNumer.toJSON(), whitelistEnabled, logo.trim())
+            const saleAddress = await onCreateSale(deployFee, wallet, searchToken.address, useUSDC ? usdcToken.address : AddressZero, rateNumber.toJSON(), rateDecimalsNumber.toJSON(), listingRateNumber.toJSON(), listingRateDecimalsNumber.toJSON(), liquidityPercentNumber.toJSON(), softCapNumber.toJSON(), hardCapNumber.toJSON(), Math.floor(startDate.getTime() / 1000), Math.floor(endDate.getTime() / 1000), Math.floor(unlockDate.getTime() / 1000), minContributionNumer.toJSON(), maxContributionNumer.toJSON(), whitelistEnabled, logo.trim())
             dispatch(fetchLaunchpadPublicDataAsync())
             dispatch(fetchLaunchpadUserDataAsync({account}))
             history.push(`/presale/view/${saleAddress}`)
@@ -355,7 +384,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         } finally {
           setPendingTx(false)
         }
-    }, [onCreateSale, dispatch, toastError, t, validateInputs, history, account, deployFee, wallet, searchToken, rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, softCapNumber, hardCapNumber, startDate, endDate, unlockDate, minContributionNumer, maxContributionNumer, whitelistEnabled, logo])
+    }, [onCreateSale, dispatch, toastError, t, validateInputs, history, account, deployFee, wallet, searchToken, rateNumber, rateDecimalsNumber, listingRateNumber, listingRateDecimalsNumber, liquidityPercentNumber, softCapNumber, hardCapNumber, startDate, endDate, unlockDate, minContributionNumer, maxContributionNumer, whitelistEnabled, logo, useUSDC, usdcToken])
 
     const renderApprovalOrCreateButton = () => {
         return  (
@@ -375,6 +404,33 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                 <Flex flexDirection="row" justifyContent="center" mt="24px">
                     <Flex flexDirection={["column", "column", "column", "row"]} maxWidth="960px" width="100%">
                         <Flex flexDirection="column" flex="1" order={[1, 1, 1, 0]}>
+                            <InputWrap>
+                                    <Flex  alignItems="center">
+                                        <Text color="primary">
+                                            {t('Contribution Currency:')}
+                                        </Text>
+                                        <span ref={purchaseTypeTargetRef}>
+                                            <HelpIcon color="textSubtle" width="20px" ml="6px" mt="4px" />
+                                        </span>
+                                        { purchaseTypeTooltipVisible && purchaseTypeTooltipElement}
+                                    </Flex>
+                                    <Flex>
+                                        <Flex flex="1">
+                                            <RadioWithText
+                                                checked={!useUSDC}
+                                                onClick={() => setUseUSDC(false)}
+                                                text={t('CRO')}
+                                                />
+                                        </Flex>
+                                        <Flex flex="1">
+                                            <RadioWithText
+                                                checked={useUSDC}
+                                                onClick={() => setUseUSDC(true)}
+                                                text={t('USDC')}
+                                                />
+                                        </Flex>
+                                    </Flex>
+                                </InputWrap>
                             <InputWrap>
                                 <StyledWrapperWithTooltip
                                     error={formError.token}
@@ -414,7 +470,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                             )}
                             <InputWrap>
                                 <StyledWrapperWithTooltip
-                                    tooltip={t('Enter your wallet address which you want to receive CRO from your investors.')}
+                                    tooltip={t('Enter your wallet address which you want to receive %symbol% from your investors.', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})}
                                     error={formError.wallet}
                                     >
                                     <StyledAddressInput
@@ -428,7 +484,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                             </InputWrap>
                             <InputWrap>
                                 <StyledWrapperWithTooltip
-                                    tooltip={t('Enter your presale price in CRO: (If I pay 1 CRO, how many tokens do I get?)')}
+                                    tooltip={t('Enter your presale price in %symbol%: (If I pay 1 %symbol%, how many tokens do I get?)', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})}
                                     error={formError.rate}
                                     >
                                     <StyledNumericalInput placeholder={t('Presale Rate, ex. 500')} value={rate} onUserInput={
@@ -441,10 +497,10 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                             <Flex flexDirection={["column", null, null, "row"]}>
                                 <InputWrap style={{flex: 1}}>
                                     <StyledWrapperWithTooltip
-                                        tooltip={t('Enter your desired softcap in CRO (For a small or near 0 soft cap set your softcap to 0.001)')}
+                                        tooltip={t('Enter your desired softcap in %symbol% (For a small or near 0 soft cap set your softcap to 0.001)', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})}
                                         error={formError.softCap}
                                             >
-                                        <StyledNumericalInput placeholder={t('Soft Cap ex.50 CRO')} value={softCap} onUserInput={(value) => {
+                                        <StyledNumericalInput placeholder={t('Soft Cap ex.50 %symbol%', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})} value={softCap} onUserInput={(value) => {
                                             setSoftCap(value)
                                             setFormError({...formError, softCap: null})
                                         } }/>
@@ -453,10 +509,10 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                                 <InputWrap style={{flex: 1}}>
 
                                     <StyledWrapperWithTooltip
-                                            tooltip={t('Enter your desired hardcap in CRO')}
+                                            tooltip={t('Enter your desired hardcap in %symbol%', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})}
                                             error={formError.hardCap}
                                                 >
-                                        <StyledNumericalInput placeholder={t('Hard Cap ex.100 CRO')} value={hardCap} onUserInput={(value) => {
+                                        <StyledNumericalInput placeholder={t('Hard Cap ex.100 %symbol%', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})} value={hardCap} onUserInput={(value) => {
                                             setHardCap(value)
                                             setFormError({...formError, hardCap: null})
                                         }}/>
@@ -466,7 +522,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                             <Flex flexDirection={["column", null, null, "row"]}>
                                 <InputWrap style={{flex: 1}}>
                                     <StyledWrapperWithTooltip
-                                        tooltip={t('Enter your desired minimum contribution in CRO. ex. 0.1 CRO')}
+                                        tooltip={t('Enter your desired minimum contribution in %symbol%. ex. 0.1 %symbol', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})}
                                         error={formError.minContribution}
                                             >
                                         <StyledNumericalInput placeholder={t('Min contribution')} style={{marginRight: "4px"}} value={minContribution} onUserInput={(value) => {
@@ -477,7 +533,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                                 </InputWrap>
                                 <InputWrap style={{flex: 1}}>
                                     <StyledWrapperWithTooltip
-                                        tooltip={t('Enter your desired maximum contribution in CRO. ex. 2 CRO')}
+                                        tooltip={t('Enter your desired maximum contribution in %symbol%. ex. 2 %symbol%', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})}
                                         error={formError.maxContribution}
                                             >
                                         <StyledNumericalInput placeholder={t('Max Contribution')} style={{marginLeft: "4px"}} value={maxContribution} onUserInput={(value) => {
@@ -500,7 +556,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                             </InputWrap>
                             <InputWrap>
                                 <StyledWrapperWithTooltip
-                                    tooltip={t('Enter your desired listing prce in CRO: (If I pay 1 CRO, how many tokens do I get?)')}
+                                    tooltip={t('Enter your desired listing prce in %symbol%: (If I pay 1 %symbol%, how many tokens do I get?)', {symbol: useUSDC ? usdcToken.symbol : 'CRO'})}
                                     error={formError.listingRate}
                                         >
                                     <StyledNumericalInput placeholder={t('Listing Rate')} value={listingRate} onUserInput={(value) => {
@@ -610,7 +666,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                                     {t('Estimated Funds Raised')}:
                                 </Text>
                                 <Text fontSize="14px" color="primary">
-                                    {hardCap} {t('CRO')}
+                                    {hardCap} {useUSDC ? usdcToken.symbol : 'CRO'}
                                 </Text>
                             </Flex>
                             <Flex>
@@ -634,7 +690,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                                     {t('Pre Sale Rate Per Token')}:
                                 </Text>
                                 <Text fontSize="14px" color="primary">
-                                    1 {t('CRO')} = {rate} {searchToken ? searchToken.symbol : ''}
+                                    1 {useUSDC ? usdcToken.symbol : 'CRO'} = {rate} {searchToken ? searchToken.symbol : ''}
                                 </Text>
                             </Flex>
                             <Flex>
@@ -642,7 +698,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                                     {t('Listing Price Per Token')}:
                                 </Text>
                                 <Text fontSize="14px" color="primary">
-                                    1 {t('CRO')} = {listingRate} {searchToken ? searchToken.symbol : ''}
+                                    1 {useUSDC ? usdcToken.symbol : 'CRO'} = {listingRate} {searchToken ? searchToken.symbol : ''}
                                 </Text>
                             </Flex>
                             <Flex>

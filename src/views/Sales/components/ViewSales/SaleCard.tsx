@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { Flex, Text, LinkExternal } from '@pancakeswap/uikit'
@@ -49,6 +49,29 @@ export interface SaleCardProps {
 const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
   const { t } = useTranslation()
   const token = useToken(sale.token)
+  const baseToken = useToken(sale.baseToken)
+
+  const baseTokenSymbol = useMemo(() => {
+      if (sale.useETH) {
+          return 'CRO'
+      }
+      if (baseToken) {
+          return baseToken.symbol
+      }
+
+      return ''
+  }, [sale, baseToken])
+
+  const baseTokenDecimals = useMemo(() => {
+      if (sale.useETH) {
+          return 18
+      }
+      if (baseToken) {
+          return baseToken.decimals
+      }
+
+      return -1
+  }, [sale, baseToken])
 
   return (
     <LinkWrapper to={`/presale/view/${sale.address}`}>
@@ -65,7 +88,7 @@ const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
                  {t('Rate')}
                </Text>
                <Text color="primary" fontSize="16px">
-                 {(t('1 CRO = %rate% %symbol%', {rate: sale.rate.toJSON(), symbol: token ? token.symbol : ''}))}
+                 1 {baseTokenSymbol} = { token && baseTokenDecimals >= 0 ? getFullDisplayBalance(sale.rate.multipliedBy(BIG_TEN.pow(baseTokenDecimals - sale.rateDecimals)), token.decimals) : ''} {token ? token.symbol : ''}
                </Text>
              </Flex>
             </Flex>
@@ -75,7 +98,7 @@ const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
                  {t('Soft Cap / Hard Cap')}
                </Text>
                <Text color="primary" fontSize="16px">
-                 {(t('%soft% CRO - %hard% CRO', {soft: getFullDisplayBalance(sale.goal), hard: getFullDisplayBalance(sale.cap)}))}
+                 {(t('%soft% %currency% - %hard% %currency%', {soft: getFullDisplayBalance(sale.goal, baseTokenDecimals), hard: getFullDisplayBalance(sale.cap, baseTokenDecimals), currency: baseTokenSymbol}))}
                </Text>
              </Flex>
            </Flex>
@@ -114,7 +137,7 @@ const SaleCard: React.FC<SaleCardProps> = ({sale}) => {
                 {sale.weiRaised.multipliedBy(100).div(sale.cap).toFixed(0)}%
                 </Text>
                 <Text color="primary" fontSize="10px">
-                  {getFullDisplayBalance(sale.cap)} {t('CRO')}
+                  {getFullDisplayBalance(sale.cap, baseTokenDecimals)} {baseTokenSymbol}
                 </Text>
               </Flex>
             </Flex>
