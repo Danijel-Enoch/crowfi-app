@@ -119,6 +119,7 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
         placement: 'bottom',
     })
     const deployFee = useSaleDeployFee()
+    const deployFeeNumber = new BigNumber(deployFee)
     const baseTokenDecimals = useMemo(() => {
         return useUSDC ? usdcToken.decimals : 18;
     }, [useUSDC, usdcToken])
@@ -654,6 +655,9 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                             <StyledList>
                                 <li>
                                 {t('This process is entirely decentralized, we cannot be held responsible for incorrect entry of information or be held liable for anything related to your use of our platform.')}
+                                </li>
+                                <li>
+                                {t('Deploy Fee: %amount% %currency%', {amount: getFullDisplayBalance(deployFeeNumber), currency: 'CRO'})}
                                 </li>
                                 
                             </StyledList>
