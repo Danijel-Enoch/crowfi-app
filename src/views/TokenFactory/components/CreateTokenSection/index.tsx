@@ -82,7 +82,7 @@ const CreateTokenSection: React.FC = () => {
             if (deployFee) {
                 return (
                     <Text fontSize='12px' color="secondary">
-                        ${getFullDisplayBalance(deployFee, ETHER.decimals)} ${ETHER.symbol}
+                        {getFullDisplayBalance(deployFee, ETHER.decimals)} {ETHER.symbol}
                     </Text>
                 )
             } 
@@ -93,7 +93,7 @@ const CreateTokenSection: React.FC = () => {
         if (liquidityDeployFee) {
             return (
                 <Text fontSize='12px' color="secondary">
-                    ${getFullDisplayBalance(liquidityDeployFee, ETHER.decimals)} ${ETHER.symbol}
+                    {getFullDisplayBalance(liquidityDeployFee, ETHER.decimals)} {ETHER.symbol}
                 </Text>
             )
         } 

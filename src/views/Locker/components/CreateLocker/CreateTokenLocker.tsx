@@ -114,7 +114,7 @@ const CreateTokenLocker: React.FC = () => {
         if (lockerFeeNumber && lockerFeeNumber.isFinite()) {
             return (
                 <Text fontSize='12px' color="secondary">
-                    {getFullDisplayBalance(lockerFeeNumber, ETHER.decimals)} ${ETHER.symbol}
+                    {getFullDisplayBalance(lockerFeeNumber, ETHER.decimals)} {ETHER.symbol}
                 </Text>
             )
         } 
