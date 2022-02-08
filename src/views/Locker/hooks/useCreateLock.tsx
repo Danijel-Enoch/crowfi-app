@@ -8,10 +8,10 @@ export const useCreateLock = () => {
   const locker = useLockerContract()
 
   const handleCreatLock = useCallback(
-    async (owner, tokenAddress, isLpToken, amount, unlockDate) => {
+    async (feeAmount, owner, tokenAddress, isLpToken, amount, unlockDate) => {
         const gasPrice = getGasPrice()
         const args = [owner, tokenAddress, isLpToken, amount, unlockDate];
-        const tx = await callWithEstimateGas(locker, 'lock', args, { gasPrice})
+        const tx = await callWithEstimateGas(locker, 'lock', args, { gasPrice}, 1000, feeAmount)
         const receipt = await tx.wait()
         return receipt.status
     },
