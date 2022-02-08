@@ -67,3 +67,7 @@ export const useMyLiquidityLockCount = () =>  {
 export const useLockerUserDataLoaded = () =>  {
   return useSelector((state: State) => state.locker.userDataLoaded)
 }
+
+export const useLockerFee = () =>  {
+  return useSelector((state: State) => state.locker.fee)
+}

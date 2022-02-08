@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { Text, Flex,  Heading, Button, Skeleton, useModal } from '@pancakeswap/uikit'
-import { JSBI, Token, TokenAmount } from '@pancakeswap/sdk'
+import { ETHER, JSBI, Token, TokenAmount } from '@pancakeswap/sdk'
 import { StyledInput, StyledAddressInput, StyledNumericalInput } from 'components/Launchpad/StyledControls'
 import { useAppDispatch } from 'state'
 import { fetchLockerPublicDataAsync, fetchLockerUserDataAsync } from 'state/locker'
@@ -23,6 +23,7 @@ import Dots from 'components/Loader/Dots'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import BigNumber from 'bignumber.js'
 import { LockType } from 'state/types'
+import { useLockerFee } from 'state/locker/hooks'
 import SuccessModal from './SuccessModal'
 import { OwnerType } from '../../types'
 import { useCreateLock } from '../../hooks/useCreateLock'
@@ -61,6 +62,8 @@ const CreateTokenLocker: React.FC = () => {
     const { theme } = useTheme()
     const { account } = useWeb3React()
     const dispatch = useAppDispatch()
+    const lockerFee = useLockerFee()
+    const lockerFeeNumber = new BigNumber(lockerFee)
     const { toastError, toastSuccess } = useToast()
     const [ownerType, setOwnerType] = useState<OwnerType>(OwnerType.ME)
     const [unlockDate, setUnlockDate] = useState<Date|null>(null)
@@ -69,7 +72,7 @@ const CreateTokenLocker: React.FC = () => {
     const [tokenAddress, setTokenAddress] = useState<string>('')
     const [pendingTx, setPendingTx] = useState(false)
     const searchToken = useToken(tokenAddress)
-    const searchPair = usePairToken(tokenAddress)
+    const searchPair = undefined
     const token0 = useToken(searchPair ? searchPair.token0Address : null)
     const token1 = useToken(searchPair ? searchPair.token1Address : null)
     const amountNumber = useMemo(() => {
@@ -107,6 +110,19 @@ const CreateTokenLocker: React.FC = () => {
         setOwnerType(OwnerType.ME)
     }
 
+    const renderDeployFee = () => {
+        if (lockerFeeNumber && lockerFeeNumber.isFinite()) {
+            return (
+                <Text fontSize='12px' color="secondary">
+                    {getFullDisplayBalance(lockerFeeNumber, ETHER.decimals)} ${ETHER.symbol}
+                </Text>
+            )
+        } 
+
+        return <Skeleton width="100px" height="30px" />
+    }
+
+
     const [onPresentSuccess] = useModal(
         <SuccessModal
             token={searchToken}
@@ -123,7 +139,7 @@ const CreateTokenLocker: React.FC = () => {
         try {
             setPendingTx(true)
             const owner = ownerType === OwnerType.ME ? account : otherAddress
-            await onCreateLock(owner, searchToken.address, type === LockType.LIQUIDITY, amountNumber.toJSON(), Math.floor(unlockDate.getTime() / 1000))
+            await onCreateLock(lockerFee, owner, searchToken.address, type === LockType.LIQUIDITY, amountNumber.toJSON(), Math.floor(unlockDate.getTime() / 1000))
             dispatch(fetchLockerPublicDataAsync())
             dispatch(fetchLockerUserDataAsync({account}))
             onPresentSuccess()
@@ -133,7 +149,7 @@ const CreateTokenLocker: React.FC = () => {
         } finally {
           setPendingTx(false)
         }
-      }, [onCreateLock, onPresentSuccess, dispatch, toastError, t, account, type, searchToken, amountNumber, unlockDate, ownerType, otherAddress])
+      }, [onCreateLock, onPresentSuccess, dispatch, toastError, t, account, type, searchToken, amountNumber, unlockDate, ownerType, otherAddress, lockerFee])
 
     const renderTokenInfo = () => {
         if (searchPair) {
@@ -270,6 +286,11 @@ const CreateTokenLocker: React.FC = () => {
                             </li>
                             
                         </StyledList>
+
+                        <Flex mt="24px" alignItems="center">
+                            <Text fontSize='12px' color="secondary" mr="12px">{t('Lock fee')}:</Text>
+                            {renderDeployFee()}
+                        </Flex>
                         </Flex>
                     </Flex>
                 </Flex>
