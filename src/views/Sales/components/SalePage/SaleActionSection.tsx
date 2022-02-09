@@ -90,7 +90,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
 
     const maxNumber = useMemo(() => {
         const remaining = sale.cap.minus(sale.weiRaised)
-        const remainingContrib = sale.maxContribution.minus(contribution)
+        const remainingContrib = contribution && contribution.isFinite() ? sale.maxContribution.minus(contribution) : sale.maxContribution
 
         return remaining.gt(remainingContrib) ? remainingContrib : remaining;
     }, [sale, contribution])
