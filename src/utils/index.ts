@@ -20,7 +20,7 @@ export function isAddress(value: any): string | false {
 
 export function getBscScanLink(
   data: string | number,
-  type: 'transaction' | 'token' | 'address' | 'block' | 'countdown',
+  type: 'transaction' | 'token' | 'address' | 'block' | 'countdown' | 'token-holders',
   chainId: ChainId = parseInt(process.env.REACT_APP_CHAIN_ID, 10),
 ): string {
   switch (type) {
@@ -29,6 +29,9 @@ export function getBscScanLink(
     }
     case 'token': {
       return `${BASE_BSC_SCAN_URLS[chainId]}/token/${data}`
+    }
+    case 'token-holders': {
+      return `${BASE_BSC_SCAN_URLS[chainId]}/token/${data}#balances`
     }
     case 'block': {
       return `${BASE_BSC_SCAN_URLS[chainId]}/block/${data}`
