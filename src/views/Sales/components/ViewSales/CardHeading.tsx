@@ -54,7 +54,10 @@ const CardHeading: React.FC<CardHeadingProps> = ({ token, sale }) => {
     }
 
     if (sale.closingTime < now) {
-      return t('Closed')
+      if (sale.weiRaised.gte(sale.goal)) {
+        return t('Successful')
+      }
+      return t('Failed')
     }
 
     if (sale.openingTime < now) {
@@ -66,7 +69,7 @@ const CardHeading: React.FC<CardHeadingProps> = ({ token, sale }) => {
   }, [sale, t])
 
   const statusColor = useMemo(() => {
-    if (status === 'Closed') {
+    if (status === 'Closed' || status === 'Failed') {
       return 'red'
     }
     if (status === 'canceled') {
@@ -77,7 +80,7 @@ const CardHeading: React.FC<CardHeadingProps> = ({ token, sale }) => {
       return 'primary'
     }
 
-    if (status === 'Finalized') {
+    if (status === 'Finalized' || status === 'Successful') {
       return 'green'
     }
 
