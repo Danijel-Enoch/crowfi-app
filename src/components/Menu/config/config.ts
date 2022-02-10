@@ -61,6 +61,10 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         label: t('Airdropper'),
         href: '/airdropper',
       },
+      {
+        label: t('New Pairs'),
+        href: '/ape',
+      },
     ]
   },
   {

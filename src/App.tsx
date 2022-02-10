@@ -48,6 +48,7 @@ const Locker = lazy(() => import('./views/Locker/Locker'))
 const LockerPage = lazy(() => import('./views/Locker/components/LockerPage/LockerPage'))
 const Airdropper = lazy(() => import('./views/Airdropper/Airdropper'))
 const SalePage = lazy(() => import('./views/Sales/components/SalePage/SalePage'))
+const Ape = lazy(() => import('./views/Ape/Ape'))
 
 
 // This config is required for number formatting
@@ -117,6 +118,9 @@ const App: React.FC = () => {
             <Route exact strict path="/lockers/:address" component={LockerPage} />
             <Route exact path="/airdropper">
               <Airdropper />
+            </Route>
+            <Route exact path="/ape">
+              <Ape />
             </Route>
             {/* Using this format because these components use routes injected props. We need to rework them with hooks */}
             <Route exact strict path="/swap" component={Swap} />
