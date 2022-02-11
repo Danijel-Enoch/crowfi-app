@@ -2,14 +2,14 @@ import { useEffect } from 'react'
 import { connectorLocalStorageKey, ConnectorNames } from '@pancakeswap/uikit'
 import useAuth from 'hooks/useAuth'
 
-const _binanceChainListener = async () =>
+const _cdcListener = async () =>
   new Promise<void>((resolve) =>
-    Object.defineProperty(window, 'BinanceChain', {
+    Object.defineProperty(window, 'desktopWallet', {
       get() {
-        return this.bsc
+        return this.cdc
       },
-      set(bsc) {
-        this.bsc = bsc
+      set(cdc) {
+        this.cdc = cdc
 
         resolve()
       },
@@ -23,18 +23,20 @@ const useEagerConnect = () => {
     const connectorId = window.localStorage.getItem(connectorLocalStorageKey) as ConnectorNames
 
     if (connectorId) {
-      const isConnectorBinanceChain = connectorId === ConnectorNames.BSC
-      const isBinanceChainDefined = Reflect.has(window, 'BinanceChain')
+      const isConnectCDC = connectorId === ConnectorNames.CDC
+      const isCDCDefined = Reflect.has(window, 'desktopWallet')
 
       // Currently BSC extension doesn't always inject in time.
       // We must check to see if it exists, and if not, wait for it before proceeding.
-      if (isConnectorBinanceChain && !isBinanceChainDefined) {
-        _binanceChainListener().then(() => login(connectorId))
+      if (isConnectCDC && !isCDCDefined) {
+        _cdcListener().then(() => login(connectorId))
 
         return
       }
 
       login(connectorId)
+    } else if (Reflect.has(window, 'desktopWallet')) {
+      login(ConnectorNames.CDC)
     }
   }, [login])
 }
