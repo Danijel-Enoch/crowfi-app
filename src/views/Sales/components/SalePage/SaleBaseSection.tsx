@@ -97,42 +97,42 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                             </Flex>
                             <Flex flexDirection="row">
                                 { sale.meta && sale.meta.website && (
-                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.website}>
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.website} target="_blank">
                                         <LanguageIcon width="16px" color="primary" />
                                     </StyledIconButton>
                                 )}
                                 { sale.meta && sale.meta.facebook && (
-                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.facebook}>
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.facebook} target="_blank">
                                         <FacebookIcon width="16px" color="primary" />
                                     </StyledIconButton>
                                 )}
                                 { sale.meta && sale.meta.twitter && (
-                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.twitter}>
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.twitter} target="_blank">
                                         <TwitterIcon width="16px" color="primary" />
                                     </StyledIconButton>
                                 )}
                                 { sale.meta && sale.meta.instagram && (
-                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.instagram}>
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.instagram} target="_blank">
                                         <InstagramIcon width="16px" color="primary" />
                                     </StyledIconButton>
                                 )}
                                 { sale.meta && sale.meta.telegram && (
-                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.telegram}>
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.telegram} target="_blank">
                                         <TelegramIcon width="16px" color="primary" />
                                     </StyledIconButton>
                                 )}
                                 { sale.meta && sale.meta.discord && (
-                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.discord}>
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.discord} target="_blank">
                                         <DiscordIcon width="16px" color="primary" />
                                     </StyledIconButton>
                                 )}
                                 { sale.meta && sale.meta.github && (
-                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.github}>
+                                    <StyledIconButton variant="primary" scale="sm" as="a" href={sale.meta.github} target="_blank">
                                         <GithubIcon width="16px" color="primary" />
                                     </StyledIconButton>
                                 )}
                                 { sale.meta && sale.meta.reddit && (
-                                    <StyledIconButton variant="primary" scale="sm" mr="8px" as="a" href={sale.meta.reddit}>
+                                    <StyledIconButton variant="primary" scale="sm" mr="8px" as="a" href={sale.meta.reddit} target="_blank">
                                         <RedditIcon width="16px" color="primary" />
                                     </StyledIconButton>
                                 )}

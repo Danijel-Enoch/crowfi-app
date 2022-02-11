@@ -4,12 +4,14 @@ import { BscConnector } from '@binance-chain/bsc-connector'
 import { ConnectorNames } from '@pancakeswap/uikit'
 import { ethers } from 'ethers'
 import getNodeUrl from './getRpcUrl'
+import { CronosConnector } from './CronosConnecter/CronosConnecter'
 
 const POLLING_INTERVAL = 12000
 const rpcUrl = getNodeUrl()
 const chainId = parseInt(process.env.REACT_APP_CHAIN_ID, 10)
 
 const injected = new InjectedConnector({ supportedChainIds: [chainId] })
+const cronosConnector = new CronosConnector({ supportedChainIds: [chainId] })
 
 const walletconnect = new WalletConnectConnector({
   rpc: { [chainId]: rpcUrl },
@@ -23,6 +25,8 @@ export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
   [ConnectorNames.Injected]: injected,
   [ConnectorNames.WalletConnect]: walletconnect,
   [ConnectorNames.BSC]: bscConnector,
+  [ConnectorNames.CDC]: cronosConnector,
+  [ConnectorNames.Metamask]: injected,
 }
 
 export const getLibrary = (provider): ethers.providers.Web3Provider => {
