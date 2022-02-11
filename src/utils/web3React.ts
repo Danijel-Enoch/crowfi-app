@@ -26,6 +26,7 @@ export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
   [ConnectorNames.WalletConnect]: walletconnect,
   [ConnectorNames.BSC]: bscConnector,
   [ConnectorNames.CDC]: cronosConnector,
+  [ConnectorNames.Metamask]: injected,
 }
 
 export const getLibrary = (provider): ethers.providers.Web3Provider => {
