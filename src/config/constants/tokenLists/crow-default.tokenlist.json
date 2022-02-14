@@ -59,6 +59,14 @@
       "logoURI": "https://crowfi.app/images/tokens/0xf9872a4ea77278f06613a817d563012bfc7761b3.svg"
     },
     {
+      "name": "CroVision",
+      "symbol": "CROVIS",
+      "address": "0xe10a51c2ddbbac2732707a9fd389c3c8cf894367",
+      "chainId": 25,
+      "decimals": 18,
+      "logoURI": "https://crowfi.app/images/tokens/0xe10a51c2ddbbac2732707a9fd389c3c8cf894367.svg"
+    },
+    {
       "name": "WCRO Token",
       "symbol": "WCRO",
       "address": "0xDd7FBd7e655DE4B8eccb2B3254F6B69B569F0A9a",
