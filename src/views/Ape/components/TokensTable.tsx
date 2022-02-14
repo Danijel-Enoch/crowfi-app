@@ -110,7 +110,7 @@ const DataRow: React.FC<{
                 <Text>{index + 1}</Text>
             </Flex>
             <Flex alignItems="center">
-                <TokenPairImage variant="inverted" primaryToken={pairData.token0} secondaryToken={pairData.token1} width={64} height={64} />
+                <TokenPairImage variant="inverted" primaryToken={pairData.token1} secondaryToken={pairData.token0} width={64} height={64} />
                 <Text ml="8px">{pairData.name}</Text>
             </Flex>
             <Text fontWeight={400}>{format(new Date(pairData.timestamp * 1000), 'MMM. dd yyyy, hh:mm aa')}</Text>
