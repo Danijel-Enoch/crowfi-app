@@ -4,6 +4,9 @@ import { Button, ChevronDownIcon, Text, useModal, Flex } from '@pancakeswap/uiki
 import styled from 'styled-components'
 import { useTranslation } from 'contexts/Localization'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { useTokenData } from 'state/info/hooks'
+import { wrappedCurrency } from 'utils/wrappedCurrency'
+import BigNumber from 'bignumber.js'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import { CurrencyLogo, DoubleCurrencyLogo } from '../Logo'
@@ -52,6 +55,14 @@ const Container = styled.div<{ hideInput: boolean }>`
 const StyledButton = styled(Button)`
   flex-grow: 1;
 `
+
+const USDPriceText = styled(Text)`
+  font-size: 12px;
+  color: rgba(0,0,0, 0.6);
+  position: absolute;
+  bottom: 0;
+`;
+
 interface CurrencyInputPanelProps {
   value: string
   onUserInput: (value: string) => void
@@ -93,7 +104,11 @@ export default function CurrencyInputPanel({
   showCommonBases,
 }: CurrencyInputPanelProps) {
   const { account } = useActiveWeb3React()
+  const { chainId } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const wcurrency = wrappedCurrency(currency, chainId)
+  const tokenData = useTokenData(wcurrency ? wcurrency.address.toLowerCase() : undefined)
+  const valueNumber = new BigNumber(value)
   const { t } = useTranslation()
   const translatedLabel = label || t('Input')
 
@@ -124,7 +139,7 @@ export default function CurrencyInputPanel({
             </RowBetween>
           </LabelRow>
         )}
-        <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={disableCurrencySelect}>
+        <InputRow style={hideInput ? { padding: '0', borderRadius: '8px', position: 'relative' } : {position: 'relative'}} selected={disableCurrencySelect}>
           {!hideInput && (
             <>
               <NumericalInput
@@ -173,6 +188,9 @@ export default function CurrencyInputPanel({
               {!disableCurrencySelect && <ChevronDownIcon />}
             </Flex>
           </CurrencySelectButton>
+          <USDPriceText>
+            ${tokenData && valueNumber && valueNumber.isFinite() ? (tokenData.priceUSD * valueNumber.toNumber()).toFixed(3) : '0'}
+          </USDPriceText>
         </InputRow>
         { showPercentButtons && (
           <PercentButtonsRow>

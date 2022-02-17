@@ -8,6 +8,7 @@ import UnsupportedCurrencyFooter from 'components/UnsupportedCurrencyFooter'
 import { RouteComponentProps } from 'react-router-dom'
 import { useTranslation } from 'contexts/Localization'
 import SwapWarningTokens from 'config/constants/swapWarningTokens'
+import { TokenUpdater } from 'state/info/updaters'
 import AddressInputPanel from './components/AddressInputPanel'
 import { GreyCard } from '../../components/Card'
 import Column, { AutoColumn } from '../../components/Layout/Column'
@@ -313,6 +314,8 @@ export default function Swap({ history }: RouteComponentProps) {
   )
 
   return (
+    <>
+    <TokenUpdater/>
     <Page2>
       <AppBody>
         <AppHeader title={t('Exchange')} subtitle={t('Trade tokens in an instant')} />
@@ -510,5 +513,6 @@ export default function Swap({ history }: RouteComponentProps) {
         <UnsupportedCurrencyFooter currencies={[currencies.INPUT, currencies.OUTPUT]} />
       )}
     </Page2>
+    </>
   )
 }
