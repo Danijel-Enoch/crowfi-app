@@ -63,7 +63,7 @@
       "symbol": "CROVIS",
       "address": "0xe10a51c2ddbbac2732707a9fd389c3c8cf894367",
       "chainId": 25,
-      "decimals": 18,
+      "decimals": 9,
       "logoURI": "https://crowfi.app/images/tokens/0xe10a51c2ddbbac2732707a9fd389c3c8cf894367.svg"
     },
     {
