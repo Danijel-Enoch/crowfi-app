@@ -67,6 +67,14 @@
       "logoURI": "https://crowfi.app/images/tokens/0xe10a51c2ddbbac2732707a9fd389c3c8cf894367.svg"
     },
     {
+      "name": "PadloMoon",
+      "symbol": "PDM",
+      "address": "0x9d5ade1e4dd84e3e0818542bf37f24f22648d946",
+      "chainId": 25,
+      "decimals": 12,
+      "logoURI": "https://crowfi.app/images/tokens/0x9d5ade1e4dd84e3e0818542bf37f24f22648d946.svg"
+    },
+    {
       "name": "WCRO Token",
       "symbol": "WCRO",
       "address": "0xDd7FBd7e655DE4B8eccb2B3254F6B69B569F0A9a",
