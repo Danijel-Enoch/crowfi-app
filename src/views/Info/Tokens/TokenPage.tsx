@@ -151,7 +151,7 @@ const TokenPage: React.FC<RouteComponentProps<{ address: string }>> = ({
               </Breadcrumbs>
               <Flex justifyContent={[null, null, 'flex-end']} mt={['8px', '8px', 0]}>
                 <LinkExternal mr="8px" color="white" href={getBscScanLink(address, 'address')}>
-                  {t('View on BscScan')}
+                  {t('View on Explorer')}
                 </LinkExternal>
                 {cmcLink && (
                   <StyledCMCLink href={cmcLink} rel="noopener noreferrer nofollow" target="_blank" color="white">
