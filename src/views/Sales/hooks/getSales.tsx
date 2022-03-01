@@ -1,6 +1,7 @@
 import { getCrowpadSaleContract, getCrowpadSaleFactoryContract } from "utils/contractHelpers";
 import { AddressZero } from '@ethersproject/constants'
 import crowpadSaleABI from 'config/abi/crowpadSale.json'
+import { LAUNCHPAD_BLACKLIST } from "config/constants/launchpad";
 import multicall from "utils/multicall";
 import BigNumber from "bignumber.js";
 import { BIG_ZERO } from "utils/bigNumber";
@@ -55,6 +56,8 @@ export const findSales = async (token: string) : Promise<PublicSaleData[]> => {
             useETH: item[16] === AddressZero,
             deposited: item[17],
         }
+    }).filter((item) => {
+        return !LAUNCHPAD_BLACKLIST.includes(item.address.toLowerCase())
     })
 
     return res
@@ -109,6 +112,8 @@ export const getSales = async (start: number, count: number) : Promise<PublicSal
             useETH: item[16] === AddressZero,
             deposited: item[17],
         }
+    }).filter((item) => {
+        return !LAUNCHPAD_BLACKLIST.includes(item.address.toLowerCase())
     })
 
     return res

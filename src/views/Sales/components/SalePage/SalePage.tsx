@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { isAddress } from 'ethers/lib/utils'
 import { Breadcrumbs, Flex, Text, ChevronRightIcon, Spinner, LogoIcon, Heading, Button, useMatchBreakpoints } from '@pancakeswap/uikit'
+import { LAUNCHPAD_BLACKLIST } from 'config/constants/launchpad'
 import { PageBGWrapper } from 'components/Launchpad/StyledControls'
 import { useTranslation } from 'contexts/Localization'
 import useRefresh from 'hooks/useRefresh'
@@ -78,6 +79,12 @@ const SalePage: React.FC<RouteComponentProps<{address: string}>> = ({
     useEffect(() => {
         const fetchSale = async() => {
             if (!isAddress(routeAddress)) {
+                setIsValid(false)
+                setLoaded(true)
+                return
+            }
+
+            if (LAUNCHPAD_BLACKLIST.includes(routeAddress.toLowerCase())) {
                 setIsValid(false)
                 setLoaded(true)
                 return
