@@ -11,10 +11,11 @@ import SaleBaseSection from './SaleBaseSection'
 import SaleActionSection from './SaleActionSection'
 import SaleStatusSection from './SaleStatusSection'
 import { getSale } from '../../hooks/getSales'
-import { PublicSaleData } from '../../types'
+import { PublicSaleData, SaleContractVersion } from '../../types'
 import SaleManageSection from './SaleManageSection'
 import SaleEditMetaSection from './SaleEditMetaSection'
 import SaleWhitelistSection from './SaleWhitelistSection'
+import SaleAirdropSection from './SaleAirdropSection'
 
 const StyledSection = styled(Flex)`
     filter: ${({ theme }) => theme.card.dropShadow};
@@ -96,6 +97,11 @@ const SalePageContent: React.FC<SalePageContentProps> = ({
                             { !sale.canceled && !sale.finalized && (
                                 <StyledSection>
                                     <SaleWhitelistSection sale={sale} account={account} onReloadSale={onReloadSale}/>
+                                </StyledSection>
+                            )}
+                            { !sale.canceled && !sale.finalized && sale.version !== SaleContractVersion.DEFAULT &&  (
+                                <StyledSection>
+                                    <SaleAirdropSection sale={sale} account={account} onReloadSale={onReloadSale}/>
                                 </StyledSection>
                             )}
                             </>

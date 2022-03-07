@@ -4,7 +4,7 @@ import crowpadSaleABI from 'config/abi/crowpadSale.json'
 import multicall from "utils/multicall";
 import BigNumber from "bignumber.js";
 import { BIG_ZERO } from "utils/bigNumber";
-import { PaymentType, PublicSaleData, PublicSaleMetaData } from "../types";
+import { PaymentType, PublicSaleData, PublicSaleMetaData, SaleContractVersion } from "../types";
 
 export const findSales = async (token: string) : Promise<PublicSaleData[]> => {
     const saleFactoryContract = getCrowpadSaleFactoryContract()
@@ -245,7 +245,29 @@ export const getSale = async (address: string) : Promise<PublicSaleData> => {
         [baseToken],
         [deposited]
     ] = await multicall(crowpadSaleABI, calls)
+
+    /*
+    v1 contract methods
+    */
+    let version = SaleContractVersion.DEFAULT
+    try {
+        const contract = getCrowpadSaleContract(address)
+        const res = await contract.VERSION()
+        version = new BigNumber(res._hex).toNumber()
+    } catch {
+        version = SaleContractVersion.DEFAULT
+    }
+
+    let airdropEnabled = false;
+    try {
+        const contract = getCrowpadSaleContract(address)
+        airdropEnabled = await contract.airdropEnabled()
+    } catch {
+        airdropEnabled = false;
+    }
+    
     return {
+        version,
         address,
         owner,
         token,
@@ -272,6 +294,7 @@ export const getSale = async (address: string) : Promise<PublicSaleData> => {
         unlockTime: new BigNumber(liquidityUnlockTime_._hex).toNumber(),
         lockId: new BigNumber(lockId_._hex).toNumber(),
         deposited,
+        airdropEnabled
     }
 }
 

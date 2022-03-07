@@ -48,7 +48,14 @@ export const useClaimRefundSale = (address: string) => {
     return receipt.status
   }, [saleContract])
 
-  return { onClaimRefundSale: handleClaimRefund }
+  const handleEmergencyWithdraw = useCallback(async () => {
+    const gasPrice = getGasPrice()
+    const tx = await callWithEstimateGas(saleContract, 'emergencyWithdraw', [], {gasPrice})
+    const receipt = await tx.wait()
+    return receipt.status
+  }, [saleContract])
+
+  return { onClaimRefundSale: handleClaimRefund, onEmergencyWithdraw: handleEmergencyWithdraw }
 }
 
 export const useFinalizeSale = (address: string) => {

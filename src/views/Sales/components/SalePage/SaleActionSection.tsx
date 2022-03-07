@@ -16,7 +16,7 @@ import { useToken } from 'hooks/Tokens'
 import { BIG_TEN, BIG_ZERO } from 'utils/bigNumber'
 import { BigNumber} from 'bignumber.js'
 import SaleTimer from './SaleTimer'
-import { PublicSaleData } from '../../types'
+import { PublicSaleData, SaleContractVersion } from '../../types'
 import { useBuySale, useClaimRefundSale, useClaimSale } from '../../hooks/useBuySale'
 import { getSaleUserData } from '../../hooks/getSales'
 import SaleBaseSection from './SaleBaseSection'
@@ -34,6 +34,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
     const [value, setValue] = useState('')
     const [text, setText] = useState('')
     const [pendingTx, setPendingTx] = useState(false)
+    const [emergencyWithdrawing, setEmergencyWithdrawing] = useState(false)
     const [claimingRefund, setClaimingRefund] = useState(false)
     const [expired, setExpired] = useState(sale.finalized)
     const [buyable, setBuyable] = useState(false)
@@ -101,7 +102,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
 
     const { onBuySale, onBuySaleETH } = useBuySale(sale.address)
     const { onClaimSale } = useClaimSale(sale.address)
-    const { onClaimRefundSale } = useClaimRefundSale(sale.address)
+    const { onClaimRefundSale, onEmergencyWithdraw } = useClaimRefundSale(sale.address)
 
 
     useInterval(() => {
@@ -113,7 +114,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
             setBuyable(false)
             setShowbuy(false)
             setShowClaim(true)
-        } else if (now > sale.openingTime && sale.weiRaised.lte(sale.cap)) {
+        } else if (now > sale.openingTime && sale.weiRaised.lt(sale.cap)) {
             setBuyable(true)
             setShowbuy(true)
             setShowClaim(false)
@@ -193,6 +194,25 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
         }
     }, [toastError, toastSuccess, t, onClaimRefundSale, onReloadSale, account, loadContribution])
 
+    const handleEmergencyWithdraw = useCallback(async () => {
+        try {
+            setEmergencyWithdrawing(true)
+            await onEmergencyWithdraw()
+            onReloadSale()
+            setLoadContribution(!loadContribution)
+            toastSuccess(
+            `${t('Success')}!`,
+            t('You have been withdrawed the fund successfully'),
+            )
+        } catch (e) {
+            console.log('e', e)
+            toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+
+        } finally {
+            setEmergencyWithdrawing(false)
+        }
+    }, [toastError, toastSuccess, t, onEmergencyWithdraw, onReloadSale, loadContribution])
+
 
 
     const renderApprovalOrPurchaseButton = () => {
@@ -258,6 +278,18 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                     <Text fontSize="14px" fontStyle="bold" mt="8px" textAlign="center">
                         {t('Claimable : %amount% %currency%', {amount: getFullDisplayBalance(balance, token.decimals), currency:token.symbol})}
                     </Text>
+                )}
+
+                { sale.version !== SaleContractVersion.DEFAULT && !!account && !sale.canceled && showBuy && contribution && contribution.isFinite() && contribution.gt(0) && (
+                    <Flex justifyContent="center" mt="8px">
+                        <Button 
+                            scale="sm" 
+                            disabled={!buyable || emergencyWithdrawing || !balanceEth || balanceEth.lte(0)} 
+                            onClick={handleEmergencyWithdraw}
+                        >
+                            { emergencyWithdrawing ? (<Dots>{t('Processing')}</Dots>) : t('Emergency Withdraw')}
+                        </Button>
+                    </Flex>
                 )}
                 { sale.canceled && contribution && contribution.isFinite() && contribution.gt(0) && (
                     <Flex justifyContent="center" mt="8px">

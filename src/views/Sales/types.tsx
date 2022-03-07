@@ -1,5 +1,10 @@
 import BigNumber from "bignumber.js";
 
+export enum SaleContractVersion {
+    DEFAULT = 0,
+    VERSION_1 = 1
+}
+
 export enum TokenType {
     STANDARD = "STANDARD",
     LIQUIDITY = "LIQUIDITY"
@@ -21,6 +26,7 @@ export enum PaymentType {
 }
 
 export interface PublicSaleData {
+    version?: SaleContractVersion
     address: string
     token: string
     owner: string
@@ -43,6 +49,7 @@ export interface PublicSaleData {
     finalized: boolean
     canceled: boolean
     deposited: boolean
+    airdropEnabled?: boolean
     logo?: string
     whitelistEnabled?: boolean
     paymentType?: PaymentType

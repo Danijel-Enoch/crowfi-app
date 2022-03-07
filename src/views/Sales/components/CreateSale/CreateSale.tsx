@@ -475,13 +475,13 @@ const CreateSale: React.FC<CreateProps> = ({onDisagree, routeAddress}) => {
                                                 text={t('USDC')}
                                                 />
                                         </Flex>
-                                        <Flex flex="1">
+                                        {/* <Flex flex="1">
                                             <RadioWithText
                                                 checked={contributionType === ContributionType.CUSTOM}
                                                 onClick={() => setContributionType(ContributionType.CUSTOM)}
                                                 text={t('Custom Token')}
                                                 />
-                                        </Flex>
+                                        </Flex> */}
                                     </Flex>
                                 </InputWrap>
                             
