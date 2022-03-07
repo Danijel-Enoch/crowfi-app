@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'contexts/Localization'
 import { format } from 'date-fns'
 import styled from 'styled-components'
-import { Flex, Text, Button, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton, PencilIcon, RedditIcon, DiscordIcon, InstagramIcon, FacebookIcon } from '@pancakeswap/uikit'
+import { Flex, Text, Button, Heading, TwitterIcon, IconButton, GithubIcon, TelegramIcon, LanguageIcon, LinkExternal, useMatchBreakpoints, Skeleton, PencilIcon, RedditIcon, DiscordIcon, InstagramIcon, FacebookIcon, useTooltip, HelpIcon } from '@pancakeswap/uikit'
 import TokenAddress from 'components/TokenAddress'
 import { getBscScanLink } from 'utils'
 import { BIG_TEN } from 'utils/bigNumber'
@@ -12,7 +12,7 @@ import { getFullDisplayBalance } from 'utils/formatBalance'
 import { useToken } from 'hooks/Tokens'
 import useTotalSupply from 'hooks/useTotalSupply'
 import { InfoRow, InfoLabel, InfoValue } from './styled'
-import { PublicSaleData } from '../../types'
+import { PublicSaleData, SaleContractVersion } from '../../types'
 
 const LogoWrapper = styled.div`
     width: 80px;
@@ -49,6 +49,20 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
     const token = useToken(sale.token)
     const baseToken = useToken(sale.useETH ? undefined : sale.baseToken)
     const totalSupply = useTotalSupply(token)
+    const {
+        targetRef: airdropTooltipTargetRef,
+        tooltip: airdropTooltipElement,
+        tooltipVisible: airdropTooltipVisible,
+      } = useTooltip(
+      <>
+      <ul>
+      <li>If enabled, tokens will be airdropped to the investors once the owner finalize this presale.</li>
+      <li>Also refunds will be airdropped if the owner cancel this presale.</li>
+      <li>Otherwise, if disabled, the investors need to claim tokens/refunds after the presale is closed</li>
+      </ul>
+      </>, {
+        placement: 'bottom',
+      })
 
     const baseTokenSymbol = useMemo(() => {
         if (sale.useETH) {
@@ -251,6 +265,20 @@ const SaleBaseSection: React.FC<SaleBaseSectionProps> = ({account, sale, onEditM
                             </Button>
                         </InfoRow> 
                     )}
+                    <InfoRow>
+                        <InfoLabel>{t('Airdrop Tokens')}</InfoLabel>
+                        <Flex alignItems="center">
+                            <InfoValue>{sale.airdropEnabled ? 'Enabled' : 'Disabled'}</InfoValue>
+                            <span ref={airdropTooltipTargetRef}>
+                                <HelpIcon color="textSubtle" width="20px" ml="6px" mt="4px" />
+                            </span>
+                            { airdropTooltipVisible && airdropTooltipElement}
+                        </Flex>
+                    </InfoRow> 
+                    <InfoRow>
+                        <InfoLabel>{t('Contract Version')}</InfoLabel>
+                        <InfoValue>{sale.version === SaleContractVersion.VERSION_1 ? 'Latest' : sale.version + 1}</InfoValue>
+                    </InfoRow> 
                 </Flex>
             </Flex>
         </>

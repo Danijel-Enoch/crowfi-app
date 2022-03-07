@@ -211,7 +211,7 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                         sale.finalized || expired ? (
                             <Flex justifyContent="center" mt="16px" mb="16px">
                                 <Text fontSize="16px">
-                                    { t('Finalized') }
+                                    { sale.finalized ? t('Finalized') : t('Expired')}
                                 </Text>
                             </Flex>
                         ) : (
@@ -235,7 +235,7 @@ const SaleManageSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                         )}
                     </Flex>
                 </Flex>
-                { !sale.canceled && (closed || sale.weiRaised.eq(sale.cap)) && !sale.finalized && (
+                { !sale.canceled && (closed || sale.weiRaised.eq(sale.cap)) && !sale.finalized && !expired && (
                     <Flex justifyContent="center" mt="16px" mb="16px">
                         <Button disabled={pendingTx} onClick={handleFinalize}>
                             { pendingTx ? (<Dots>{t('Finalizing')}</Dots>) : t('Finalize')}
