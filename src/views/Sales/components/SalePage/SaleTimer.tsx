@@ -38,7 +38,7 @@ const SaleTimer: React.FC<{ startTime: number, endTime: number }> = ({ startTime
       setHours('')
       setMinutes('')
       setSeconds('')
-      setText('Finalized')
+      setText('Expired')
       return;
     }
 
