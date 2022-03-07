@@ -49,7 +49,7 @@ const SaleStatusSection: React.FC<SaleStatusSectionProps> = ({sale}) => {
         }
 
         if (sale.closingTime + SALE_FINALIZE_DEADLINE < now) {
-            return t('Finalized')
+            return t('Expired')
         }
 
         if (sale.closingTime < now) {

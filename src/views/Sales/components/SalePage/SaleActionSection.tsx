@@ -291,7 +291,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                         </Button>
                     </Flex>
                 )}
-                { sale.canceled && contribution && contribution.isFinite() && contribution.gt(0) && (
+                { (sale.canceled || (!sale.finalized && expired)) && contribution && contribution.isFinite() && contribution.gt(0) && (
                     <Flex justifyContent="center" mt="8px">
                         { !account ? (
                             <ConnectWalletButton mt="8px" width="100%" />
@@ -331,12 +331,12 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                         </Flex>
                         </>
                     )}
-                    { showClaim && (
+                    { showClaim && (!expired || sale.finalized) && (
                     <Flex justifyContent="center" mt="8px">
                         { !account ? (
                             <ConnectWalletButton mt="8px" width="100%" />
                         ) : (
-                            <Button scale="sm" disabled={pendingTx || !balance || !balance.isFinite() || balance.eq(0) || (!expired && !sale.finalized) } onClick={handleClaim}>
+                            <Button scale="sm" disabled={pendingTx || !balance || !balance.isFinite() || balance.eq(0) || !sale.finalized } onClick={handleClaim}>
                                 { pendingTx ? (<Dots>{t('Claiming')}</Dots>) : t('Claim')}
                             </Button>
                         )
