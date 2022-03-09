@@ -1,10 +1,12 @@
 import React, {useEffect, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
-import { Flex, Heading, Skeleton, Text } from '@pancakeswap/uikit'
+import { Box, Flex, Heading, Skeleton, Text } from '@pancakeswap/uikit'
+import { useWeb3React } from '@web3-react/core'
+import { SALE_FINALIZE_DEADLINE } from 'config/constants'
 import { useTranslation } from 'contexts/Localization'
 import BoxButtonMenu from 'components/BoxButtonMenu'
 import FlexLayout from 'components/Layout/Flex'
-import { useWeb3React } from '@web3-react/core'
+import Select from 'components/Select/Select'
 import { useAppDispatch } from 'state'
 import useENS from 'hooks/ENS/useENS'
 import { useTotalSaleCount } from 'state/launchpad/hooks'
@@ -17,6 +19,12 @@ export enum ViewMode {
     ALL = 'ALL',
     OWNER = 'OWNER',
     CONTRIBUTOR = 'CONTRIBUTOR'
+}
+
+export enum StatusFilter {
+    ALL,
+    FINISHED,
+    ONGOING
 }
 
 export interface PageData {
@@ -33,6 +41,7 @@ const ViewSales: React.FC = () => {
     const [ viewMode, setViewMode ] = useState(ViewMode.ALL)
     const { account } = useWeb3React()
     const dispatch = useAppDispatch()
+    const [statusFilter, setStatusFilter] = useState<StatusFilter>(StatusFilter.ALL)
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [isLoading, setIsLoading] = useState(true)
     const [pageData, setPageData] = useState<PageData>({
@@ -42,6 +51,16 @@ const ViewSales: React.FC = () => {
     })
     const { address: searchTokenAddress } = useENS(searchQuery)
     const totalSaleCount = useTotalSaleCount()
+
+    const statusArray = [
+        { label: t('All'), value: StatusFilter.ALL },
+        { label: t('Finished'), value: StatusFilter.FINISHED },
+        { label: t('Ongoing'), value: StatusFilter.ONGOING },
+    ]
+
+    const handleStatusChange = (option) =>  {
+        setStatusFilter(option.value)
+    }
 
     const menuItems = ['All Presales', 'My Presales', 'My Contributions']
     const menuItemsOnMobile = ['All Presales', 'My Presales', 'My Contributions']
@@ -79,7 +98,7 @@ const ViewSales: React.FC = () => {
                     }
                 } else if (totalSaleCount > 0) {
                         const data = await getSales(0, Math.min(itemPerPage, totalSaleCount))
-                        setPageData({data, page: 0, totalCount: totalSaleCount})
+                        setPageData({data:data.reverse(), page: 0, totalCount: totalSaleCount})
                 } else {
                     setPageData({data: undefined, page: 0, totalCount: 0})
                 }
@@ -94,6 +113,22 @@ const ViewSales: React.FC = () => {
 
     }, [dispatch, account, viewMode, totalSaleCount, pageData.page, itemPerPage, searchTokenAddress])
 
+    const filteredArray = useMemo(() => {
+        if (statusFilter === StatusFilter.ALL) {
+            return pageData.data
+        }
+
+        if (statusFilter === StatusFilter.FINISHED) {
+            return pageData.data?.filter((item) => {
+                return item.finalized || item.canceled || item.closingTime + SALE_FINALIZE_DEADLINE < new Date().getTime() / 1000
+            })
+        }
+
+        return pageData.data?.filter((item) => {
+            return !item.finalized && !item.canceled && item.closingTime + SALE_FINALIZE_DEADLINE > new Date().getTime() / 1000
+        })
+    }, [pageData, statusFilter])
+
     const renderContent = () => {
         if (isLoading) {
             return (
@@ -104,7 +139,7 @@ const ViewSales: React.FC = () => {
         return (
             <FlexLayout>
             {
-                pageData.data ? pageData.data.map((sale) => (
+                filteredArray ? filteredArray.map((sale) => (
                     <SaleCard 
                         key={sale.address}
                         sale={sale}
@@ -136,6 +171,17 @@ const ViewSales: React.FC = () => {
                 <Flex maxWidth={["calc(100vw - 48px)", null, null, "100%"]}>
                 <BoxButtonMenu onItemClick={onMenuClick} items={menuItems} mobileItems={menuItemsOnMobile}/>
                 </Flex>
+            </Flex>
+            <Flex flexDirection="row" justifyContent="center" alignItems="center" mb="24px">
+                <Box minWidth="min(320px, 100%)">
+                    <Select
+                        textColor={theme.colors.primary}
+                        width="auto"
+                        options={statusArray}
+                        onOptionChange={handleStatusChange}
+                        defaultOptionIndex={0}
+                        />
+                </Box>
             </Flex>
 
             {renderContent()}
