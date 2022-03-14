@@ -45,7 +45,10 @@ const SaleStatusSection: React.FC<SaleStatusSectionProps> = ({sale}) => {
             return t('Canceled')
         }
         if (sale.finalized) {
-            return t('Finalized')
+            if (sale.weiRaised.gte(sale.goal)) {
+                return t('Finalized')
+            }
+            return t('Finalized (Failed)')
         }
 
         if (sale.closingTime + SALE_FINALIZE_DEADLINE < now) {
