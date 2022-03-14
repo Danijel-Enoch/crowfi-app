@@ -291,7 +291,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                         </Button>
                     </Flex>
                 )}
-                { (sale.canceled || (!sale.finalized && expired)) && contribution && contribution.isFinite() && contribution.gt(0) && (
+                { (sale.canceled || (sale.finalized && sale.weiRaised.lt(sale.goal)) || (!sale.finalized && expired)) && contribution && contribution.isFinite() && contribution.gt(0) && (
                     <Flex justifyContent="center" mt="8px">
                         { !account ? (
                             <ConnectWalletButton mt="8px" width="100%" />
@@ -331,7 +331,7 @@ const SaleActionSection: React.FC<SaleActionSectionProps> = ({account, sale, onR
                         </Flex>
                         </>
                     )}
-                    { showClaim && (!expired || sale.finalized) && (
+                    { showClaim && (!expired || sale.finalized) && sale.weiRaised.gte(sale.goal) && (
                     <Flex justifyContent="center" mt="8px">
                         { !account ? (
                             <ConnectWalletButton mt="8px" width="100%" />
