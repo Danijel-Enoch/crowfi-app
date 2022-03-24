@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import useRefresh from 'hooks/useRefresh'
 import { useTranslation } from 'contexts/Localization'
 import Container from 'components/Layout/Container'
+import ConnectWalletButton from 'components/ConnectWalletButton'
 import { findNft, getNftBids, getNftsWithQueryParams, useGetActiveSaleForNFT, useGetNFTBalance, useGetNFTMeta } from '../../hooks/useGetNFT'
 import { Auction, BalanceResponse, Listing, NFTCollection, NFTMeta, NFTResponse, BidResponse } from '../../hooks/types'
 import AssetMedia from './AssetMedia'
@@ -130,10 +131,13 @@ const Asset: React.FC = () => {
             setLoaded(true)
             setNeedReload(false)
         }
-            
-        fetchData()
+
+        if (account) {
+            fetchData()
+        }
         
-    }, [onGetNFTMeta, onGetNFTAuction, onGetNFTSell, needReload, slowRefresh, contractAddress, tokenId, chainId])
+        
+    }, [onGetNFTMeta, onGetNFTAuction, onGetNFTSell, account, needReload, slowRefresh, contractAddress, tokenId, chainId])
 
     const reloadSaleInfo = async () => {
         if (!nft) {
@@ -200,7 +204,14 @@ const Asset: React.FC = () => {
     
     return (
         <>
-        { !loaded && (
+        { !account && (
+            <BlankPage>
+                <LogoIcon width="64px" mb="8px" />
+                <Text mb="16px">{t('Please connect with your wallet.')}</Text>
+                <ConnectWalletButton/>
+            </BlankPage>
+        )}
+        { account && !loaded && (
             <BlankPage>
                 <SpinnerWrapper >
                     <FullWidthFlex justifyContent="center" alignItems="center">
@@ -209,7 +220,7 @@ const Asset: React.FC = () => {
                 </SpinnerWrapper>
             </BlankPage>
         )}
-        { loaded && !isValid && (
+        { account && loaded && !isValid && (
             <BlankPage>
                 <LogoIcon width="64px" mb="8px" />
                 <Heading scale="xxl">404</Heading>
@@ -220,7 +231,7 @@ const Asset: React.FC = () => {
             </BlankPage>
         )}
 
-        { loaded && isValid && renderContent()}
+        { account && loaded && isValid && renderContent()}
         </>
     )
 }

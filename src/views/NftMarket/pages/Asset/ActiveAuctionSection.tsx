@@ -57,7 +57,7 @@ const ActiveAuctionSection: React.FC<ActiveAuctionSectionProps> = ({account, nft
     const { theme } = useTheme()
     const {onCancelAuction} = useCancelAuction()
 
-    const payToken = useToken(auction.payToken)
+    const payToken = useToken(auction.useEth ? null : auction.payToken)
     const bidAmount = useMemo(() => {
         if (auction.lastBidder === AddressZero) {
             return auction.lastPrice

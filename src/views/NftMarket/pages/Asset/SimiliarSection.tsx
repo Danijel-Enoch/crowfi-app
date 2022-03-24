@@ -61,7 +61,7 @@ const SimiliarSection: React.FC<SimiliarSectionProps> = ({metadata, items}) => {
                     <ItemsContainer flexWrap="wrap" itemSize={ItemSize.SMALL}>
                         {items && items.map((item) => {
                             return (
-                            <Flex padding="8px" flexDirection="column">
+                            <Flex padding="8px" flexDirection="column" key={item.id}>
                                 <AssetCard asset={item}/>
                             </Flex>
                             )
