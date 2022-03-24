@@ -173,7 +173,7 @@ const Asset: React.FC = () => {
                             flex={["1", null, null, "3"]}
                         >
                             <AssetMedia metadata={meta} />
-                            <AssetInfoSection metadata={meta} tokenAddress={nft.collection?.contract} tokenId={nft.tokenId}/>
+                            <AssetInfoSection metadata={meta} tokenAddress={nft.collection?.contract} tokenId={nft.tokenId} nft={nft}/>
                         </Flex>
                         <Flex
                             flexDirection="column"

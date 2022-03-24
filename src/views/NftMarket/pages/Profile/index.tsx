@@ -17,6 +17,8 @@ import Assets from './Assets'
 import AuthGuard from '../Auth'
 import { useUpdateProfile } from '../../hooks/useProfile'
 import Collections from './Collections'
+import AssetsCreated from './AssetsCreated'
+import AssetsCollected from './AssetsCollected'
 
 const Wrapper = styled(Flex).attrs({flexDirection: "column"})`
     background-color: white;
@@ -142,9 +144,9 @@ const Profile: React.FC = () => {
                             <Text>{t('Collections')}</Text>
                         </TabToggle2>
                     </TabToggleGroup2>
-                    <Route exact path={`${path}`} component={Assets} />
-                    <Route exact path={`${path}/created`} component={Assets} />
-                    <Route exact path={`${path}/sales`} component={Assets} />
+                    <Route exact path={`${path}`} component={AssetsCollected} />
+                    <Route exact path={`${path}/created`} component={AssetsCreated} />
+                    <Route exact path={`${path}/sales`} component={AssetsCollected} />
                     <Route exact path={`${path}/collections`}>
                         <Collections account={profile.address}/>
                     </Route>

@@ -1,6 +1,7 @@
 import { API_PROFILE } from 'config/constants/endpoints'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useProfileTokenData } from 'state/profile/hooks'
+import { NFTsAPIResponse } from './types'
 
 export const useUpdateProfile = () => {
     const [tokenData] = useProfileTokenData()
@@ -46,4 +47,46 @@ export const useUpdateProfile = () => {
         onUpdatePortfolio: handleUpdatePortfolio,
         onUpdateBanner: handleUpdateBanner
     }
+}
+
+
+export const useFetchMyProfile = () => {
+  const [tokenData] = useProfileTokenData()
+
+  const handleFetchNftsCollected = useCallback(async() => {
+    const response = await fetch(`${API_PROFILE}/me/nfts/collected`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${tokenData.accessToken}`
+      }
+    })
+
+    if (response.ok) {
+        const data: NFTsAPIResponse = await response.json()
+        return data?.nfts
+    }
+
+    return []
+  }, [tokenData])
+
+  const handleFetchNftsCreated = useCallback(async() => {
+    const response = await fetch(`${API_PROFILE}/me/nfts/created`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${tokenData.accessToken}`
+      }
+    })
+
+    if (response.ok) {
+        const data: NFTsAPIResponse = await response.json()
+        return data?.nfts
+    }
+
+    return []
+  }, [tokenData])
+
+  return {
+      onFetchNftsCollected: handleFetchNftsCollected,
+      onFetchNftsCreated: handleFetchNftsCreated
+  }
 }

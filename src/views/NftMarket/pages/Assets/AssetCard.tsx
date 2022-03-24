@@ -12,12 +12,12 @@ const Wrapper = styled.div`
 
 
 const LinkWrapper = styled(Link)`
-  text-decoration: none;
-  width: 100%;
-  :hover {
-    cursor: pointer;
-    opacity: 0.7;
-  }
+    text-decoration: none;
+    width: 100%;
+    :hover {
+        cursor: pointer;
+        opacity: 0.7;
+    }
 `
 
 const Card = styled(Flex).attrs({flexDirection:"column"})`

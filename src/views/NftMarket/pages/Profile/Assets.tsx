@@ -5,6 +5,7 @@ import styled, {css} from 'styled-components'
 import AssetCard from '../Assets/AssetCard'
 import {ItemSize} from '../Assets/types'
 import AssetsNav from './AssetsNav'
+import { NFTResponse } from '../../hooks/types'
 
 const ItemsContainer = styled(Flex).attrs({flexWrap: "wrap"})<{itemSize: ItemSize}>`
     
@@ -35,29 +36,28 @@ const ItemsContainer = styled(Flex).attrs({flexWrap: "wrap"})<{itemSize: ItemSiz
     }
 `
 
+interface AssetsProps {
+    items: NFTResponse[]
+}
 
-const Assets: React.FC = () => {
+const Assets: React.FC<AssetsProps> = ({items}) => {
 
     const { t } = useTranslation()
     const [itemSize, setItemSize] = useState(ItemSize.LARGE)
-
-    const items = [1, 1, 1, 1, 1, 1, 1, 1, 1,1, 1,1 ,1 ,1,1]
+    
 
     return (
         <Flex flexDirection="column">
             <AssetsNav itemSize={itemSize} onItemSizeChange={(size) => setItemSize(size)}/>
-            <Flex flex="1">
-                <ItemsContainer flexWrap="wrap" itemSize={itemSize}>
-                    {items.map((item) => {
-                        return (
-                        <Flex padding="8px" flexDirection="column">
-                            <AssetCard/>
-                        </Flex>
-                        )
-                    })}
-                </ItemsContainer>
-                
-            </Flex>
+            <ItemsContainer flexWrap="wrap" itemSize={itemSize}>
+                {items && items.map((item) => {
+                    return (
+                    <Flex padding="8px" flexDirection="column">
+                        <AssetCard asset={item}/>
+                    </Flex>
+                    )
+                })}
+            </ItemsContainer>
         </Flex>
     )
 }
