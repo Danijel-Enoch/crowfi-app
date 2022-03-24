@@ -66,6 +66,9 @@ export interface NFTResponse {
   contractType?: NFTContractType
   tokenId?: string
   tokenUri?: string
+  currentPrice?: number
+  lastPrice?: number
+  bestOffer?: number
   thumbnail?: string
   hash?: string
   owner?: string

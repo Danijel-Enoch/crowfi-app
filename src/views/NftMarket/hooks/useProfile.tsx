@@ -85,8 +85,25 @@ export const useFetchMyProfile = () => {
     return []
   }, [tokenData])
 
+  const handleFetchNftsOnSale = useCallback(async() => {
+    const response = await fetch(`${API_PROFILE}/me/nfts/on-sale`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${tokenData.accessToken}`
+      }
+    })
+
+    if (response.ok) {
+        const data: NFTsAPIResponse = await response.json()
+        return data?.nfts
+    }
+
+    return []
+  }, [tokenData])
+
   return {
       onFetchNftsCollected: handleFetchNftsCollected,
-      onFetchNftsCreated: handleFetchNftsCreated
+      onFetchNftsCreated: handleFetchNftsCreated,
+      onFetchNftsOnSale: handleFetchNftsOnSale
   }
 }

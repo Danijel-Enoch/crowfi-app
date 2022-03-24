@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Flex, Text } from '@pancakeswap/uikit'
+import { ETHER } from '@pancakeswap/sdk'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
@@ -55,11 +56,11 @@ const AssetCard: React.FC<AssetCardProps> = ({asset}) => {
                                 {t('Price')}
                             </Text>
                             <Text textAlign="right" fontSize="12px">
-                                11.00 CRO
+                                {asset?.currentPrice ? asset?.currentPrice : '0'} {ETHER.symbol}
                             </Text>
-                            <Text textAlign="right" fontSize="12px">
+                            {/* <Text textAlign="right" fontSize="12px">
                                 3 hours left
-                            </Text>
+                            </Text> */}
                         </Flex>
                     </Flex>
                 </Card>
