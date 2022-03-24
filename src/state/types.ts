@@ -24,6 +24,29 @@ export interface BigNumberToJson {
 
 export type SerializedBigNumber = string
 
+export enum NFTAssetType {
+  Image = 'image',
+  Video = 'video',
+  Audio = 'audio'
+}
+
+export enum NFTContractType {
+  ERC721 = 0,
+  ERC1155 = 1
+}
+
+export enum ProfileLoginStatus {
+  NOT_CONNECTED,
+  NOT_LOGGEDIN,
+  EXPIRED,
+  LOGGEDIN,
+}
+
+export interface ProfileAccessTokenData {
+  accessToken: string
+  expiresAt: number
+}
+
 interface SerializedPrivateSaleUserData {
   quoteAllowance: string
   tempAllowance: string

@@ -64,6 +64,32 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     ]
   },
   {
+    label: t('NFT'),
+    href: '/nft',
+    icon: 'Nft',
+    items: [
+      {
+        label: t('Explore'),
+        href: '/nft/explore-collections',
+      },
+      {
+        label: t('Collections'),
+        href: '/nft/collections',
+      },
+      {
+        label: t('Assets'),
+        href: '/nft/assets',
+      },
+      {
+        type: DropdownMenuItemType.DIVIDER,
+      },
+      {
+        label: t('Create NFT'),
+        href: '/nft/create',
+      },
+    ]
+  },
+  {
     label: '',
     href: undefined,
     icon: 'More',
