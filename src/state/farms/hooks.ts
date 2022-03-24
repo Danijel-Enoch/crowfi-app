@@ -157,6 +157,17 @@ export const usePriceCakeBusd = (): BigNumber => {
 
   return cakePriceBusd
 }
+export const usePriceBnbBusd = (): BigNumber => {
+  const farm = useFarmFromPid(3)
+
+  const priceBusdAsString = farm.tokenPriceBusd
+
+  const bnbPriceBusd = useMemo(() => {
+    return new BigNumber(priceBusdAsString)
+  }, [priceBusdAsString])
+
+  return bnbPriceBusd
+}
 
 export const useTVLStaked = (): BigNumber => {
   const farms = useFarms()

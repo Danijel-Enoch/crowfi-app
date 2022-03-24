@@ -1,6 +1,13 @@
 import BigNumber from "bignumber.js";
 import { NFTAssetType, NFTContractType } from "state/types";
 
+export enum NFTFilterStatus {
+  BUY_NOW = "buy_now",
+  ON_AUCTION = "on_auction",
+  MINTED = "minted",
+  HAS_OFFER = "has_offer"
+}
+
 export interface UserResponse {
   name?: string
   address?: string
@@ -77,7 +84,8 @@ export interface NFTResponse {
 }
 
 export interface NFTsAPIResponse {
-  nfts: NFTResponse[]
+  rows: NFTResponse[]
+  count: number
 }
 
 export interface NFTAPIResponse {

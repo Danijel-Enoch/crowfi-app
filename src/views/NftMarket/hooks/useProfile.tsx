@@ -63,7 +63,7 @@ export const useFetchMyProfile = () => {
 
     if (response.ok) {
         const data: NFTsAPIResponse = await response.json()
-        return data?.nfts
+        return data?.rows
     }
 
     return []
@@ -79,7 +79,7 @@ export const useFetchMyProfile = () => {
 
     if (response.ok) {
         const data: NFTsAPIResponse = await response.json()
-        return data?.nfts
+        return data?.rows
     }
 
     return []
@@ -95,7 +95,7 @@ export const useFetchMyProfile = () => {
 
     if (response.ok) {
         const data: NFTsAPIResponse = await response.json()
-        return data?.nfts
+        return data?.rows
     }
 
     return []

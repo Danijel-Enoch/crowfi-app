@@ -103,8 +103,8 @@ const Collection: React.FC<RouteComponentProps<{slug: string}>> = ({
                     setIsValid(true)
                     setCollection(collection_)
 
-                    const nfts_ = await getNftsWithQueryParams({collectionId: collection_.id})
-                    setNfts(nfts_)
+                    const {rows, count} = await getNftsWithQueryParams({collectionId: collection_.id})
+                    setNfts(rows)
                 }
             } catch (e) {
                 setIsValid(false)

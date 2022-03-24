@@ -120,9 +120,8 @@ const Asset: React.FC = () => {
                     setBids(bids_)
                 })
 
-                getNftsWithQueryParams({collectionId: nft_.collection.id}).then((similars_) => {
-                    console.log(similars_)
-                    setSimilars(similars_.filter((item) => item.id !== nft_.id))
+                getNftsWithQueryParams({collectionId: nft_.collection.id}).then((res) => {
+                    setSimilars(res.rows.filter((item) => item.id !== nft_.id))
                 })
             } catch (e) {
                 console.log(e)

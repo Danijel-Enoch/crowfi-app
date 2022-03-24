@@ -12,7 +12,8 @@ export interface CollectionAPIResponse {
   collection: NFTCollection
 }
 export interface CollectionsAPIResponse {
-  collections: NFTCollection[]
+  rows: NFTCollection[]
+  count: number
 }
 export const getCollectionsWithQueryParams = async (params:any): Promise<NFTCollection[]> => {
   const url = new URL(`${API_PROFILE}/collections`)
@@ -20,7 +21,7 @@ export const getCollectionsWithQueryParams = async (params:any): Promise<NFTColl
   const response = await fetch(url.toString())
   if (response.ok) {
     const res: CollectionsAPIResponse = await response.json()
-    return res.collections
+    return res.rows
   }
   return []
 }

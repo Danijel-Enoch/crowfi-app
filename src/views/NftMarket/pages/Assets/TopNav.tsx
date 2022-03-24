@@ -22,11 +22,12 @@ enum AssetSortOption {
 }
 
 interface TopNavProps {
+    itemCount?: number
     itemSize: ItemSize
     onItemSizeChange: (itemSize) => void
 }
 
-const TopNav: React.FC<TopNavProps> = ({itemSize, onItemSizeChange}) => {
+const TopNav: React.FC<TopNavProps> = ({itemCount, itemSize, onItemSizeChange}) => {
 
     const { t } = useTranslation()
     const { theme } = useTheme()
@@ -50,7 +51,7 @@ const TopNav: React.FC<TopNavProps> = ({itemSize, onItemSizeChange}) => {
     return (
         <Flex flexWrap="wrap" alignItems="center">
             <Flex flex="1">
-                <Text padding="8px">13 {t('Items')}</Text>
+                <Text padding="8px">{itemCount} {t('Items')}</Text>
             </Flex>
             <Flex padding="8px">
                 <SortSelect

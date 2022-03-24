@@ -173,38 +173,19 @@ export const useGetActiveSaleForNFT = () => {
     return { onGetNFTAuction: getNFTAuction, onGetNFTSell: getNFTSell }
 }
 
-export const getNftAuctions = async(params:any) => {
-    const url = new URL(`${API_PROFILE}/auctions`)
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-    const response = await fetch(url.toString())
-    if (response.ok) {
-      const res: NFTsAPIResponse = await response.json()
-      return res.nfts
-    }
-    return []
-}
 
-export const getNftListings = async(params:any) => {
-    const url = new URL(`${API_PROFILE}/listings`)
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-    const response = await fetch(url.toString())
-    if (response.ok) {
-      const res: NFTsAPIResponse = await response.json()
-      return res.nfts
-    }
-    return []
-}
-
-
-export const getNftsWithQueryParams = async (params:any) => {
+export const getNftsWithQueryParams = async (params:any): Promise<NFTsAPIResponse> => {
     const url = new URL(`${API_PROFILE}/nfts`)
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     const response = await fetch(url.toString())
     if (response.ok) {
       const res: NFTsAPIResponse = await response.json()
-      return res.nfts
+      return res
     }
-    return []
+    return {
+        rows: [],
+        count: 0
+    }
 }
 
 

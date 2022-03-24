@@ -48,7 +48,7 @@ const SearchResult: React.FC<SearchResultProps> = ({isFilterOpen, itemSize, item
     const { t } = useTranslation()
 
     return (
-        <Flex flex="1">
+        <Flex flexDirection="column">
             <ItemsContainer flexWrap="wrap" itemSize={itemSize} isFilterOpen={isFilterOpen}>
                 {items && items.map((item) => {
                     return (
