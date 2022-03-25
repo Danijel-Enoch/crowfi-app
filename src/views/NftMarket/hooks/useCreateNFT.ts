@@ -8,7 +8,7 @@ import { getERC1155TokenContract, getERC721TokenContract } from "utils/contractH
 import useActiveWeb3React from "hooks/useActiveWeb3React"
 import { useProfileTokenData } from "state/profile/hooks"
 import BigNumber from "bignumber.js"
-import { NFTResponse } from "./types"
+import { NFTResponse, NFTTrait } from "./types"
 
 interface MintNFTResponse {
     nftId: string,
@@ -51,7 +51,7 @@ export const useMintNFT = (account: string) => {
             type: assetType,
             creator: account
         }
-        if (attributes) metadata.attributes = attributes
+        if (attributes && attributes.length > 0) metadata.attributes = attributes
         if (description && description.length > 0) metadata.description = description
         if (externalLink && externalLink.length > 0) metadata.external_url = externalLink
         if (animationUrl && animationUrl.length > 0) metadata.animation_url = animationUrl
@@ -96,7 +96,8 @@ export const useRegisterNFT = () => {
         tokenUri: string,
         thumbnail: string,
         mediaType: NFTAssetType,
-        supply: number
+        supply: number,
+        traits?: NFTTrait[]
     ) => {
 
         const response = await fetch(`${API_PROFILE}/nfts`, {
@@ -115,7 +116,8 @@ export const useRegisterNFT = () => {
                 tokenUri,
                 thumbnail,
                 mediaType,
-                supply
+                supply,
+                traits
             }),
         })
 

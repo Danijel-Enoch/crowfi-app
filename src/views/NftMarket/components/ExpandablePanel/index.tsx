@@ -15,7 +15,7 @@ const Wrapper = styled(Flex).attrs({flexDirection: "column"})<{hasTopBorder:bool
     border-bottom-width: ${({ hasBottomBorder }) => hasBottomBorder ? '1px' : '0px'};
 `
 const Header = styled(Flex).attrs({justifyContent: 'space-between'})<{expanded: boolean, enabled: boolean}>`
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(231, 241, 248, 0.3);
     border-bottom: ${({ expanded, theme }) => expanded ? `1px solid ${theme.colors.cardBorder}` : 'unset'};
     padding: 8px;
     min-height: 48px;

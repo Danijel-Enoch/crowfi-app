@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Heading, Flex, Text, Button, AddIcon } from '@pancakeswap/uikit'
+import { Heading, Flex, Text, Button, AddIcon, useModal } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import { escapeRegExp } from 'lodash'
 import { useTranslation } from 'contexts/Localization'
@@ -15,9 +15,13 @@ import Dots from 'components/Loader/Dots'
 import useToast from 'hooks/useToast'
 import { useProfileLoggedIn } from 'state/profile/hooks'
 import AuthGuard from '../Auth'
-import { NFTCollection } from '../../hooks/types'
+import { NFTAttribute, NFTCollection, NFTTrait } from '../../hooks/types'
 import { getCollectionsWithQueryParams } from '../../hooks/useCollections'
 import { useMintNFT, useRegisterNFT } from '../../hooks/useCreateNFT'
+import TextTraitModal from '../../components/TraitModal/TextTraitModal'
+import TextTrait from '../../components/TextTrait'
+import NumberTraitModal from '../../components/TraitModal/NumberTraitModal'
+import NumberTrait from '../../components/NumberTrait'
 
 const StyledPageBody = styled(Flex)`
     filter: ${({ theme }) => theme.card.dropShadow};
@@ -62,6 +66,12 @@ const StyledErrorLabel = styled(Text)`
   alpha: 0.8;
   font-size: 10px;
 `
+/* eslint-disable camelcase */
+interface Trait {
+    trait_type: string
+    value: any
+    max_value?: any
+}
 
 interface FormErrors {
     media?: string
@@ -93,6 +103,8 @@ const CreateNFT: React.FC = () => {
     const [collections, setCollections] = useState(null)
     const [collection, setCollection] = useState<NFTCollection>(null)
     const [collectionOptions, setCollectionOptions] = useState([])
+    const [textTraits, setTextTraits] = useState<NFTAttribute[]>([])
+    const [numberTraits, setNumberTraits] = useState<NFTAttribute[]>([])
     const { slowRefresh } = useRefresh()
 
     const {onMintNFT} = useMintNFT(account)
@@ -201,6 +213,24 @@ const CreateNFT: React.FC = () => {
             const assetType_ = assetType
             const collection_ = collection
             const supply_ = supply
+            const properties: any[] = [
+                ...textTraits.map((item) => {
+                    return {
+                        trait_type: item.trait_type,
+                        value: item.value
+                    }
+                }),
+                ...numberTraits.map((item) => {
+                    const res: NFTTrait = {
+                        trait_type: item.trait_type,
+                        value: item.value * 1
+                    }
+                    if (item.max_value && item.max_value.length > 0) {
+                        res.max_value = item.max_value * 1
+                    }
+                    return res
+                })
+            ]
             const {nftId, tokenUri, thumbnail} = await onMintNFT(
                 collection_.contract, 
                 parseInt(supply_),
@@ -209,7 +239,8 @@ const CreateNFT: React.FC = () => {
                 name_, 
                 previewFile, 
                 externalLink, 
-                description
+                description,
+                properties
             )
             const nft = await onRegisterNFT(
                 name_, 
@@ -220,7 +251,8 @@ const CreateNFT: React.FC = () => {
                 tokenUri,
                 thumbnail,
                 assetType_,
-                parseInt(supply_)
+                parseInt(supply_),
+                properties
             )
             history.push(`/nft/asset/${collection_.contract}/${nftId}`)
             
@@ -230,7 +262,23 @@ const CreateNFT: React.FC = () => {
         } finally {
             setPendingTx(false)
         }
-    }, [toastError, validateInputs, onMintNFT, onRegisterNFT, collection, history, assetFile, assetType, name, previewFile, externalLink, description, supply])
+    }, [toastError, validateInputs, onMintNFT, onRegisterNFT, collection, history, assetFile, assetType, name, previewFile, externalLink, description, supply, numberTraits, textTraits])
+
+    const handleSaveTextTraits = async (traits) => {
+        setTextTraits(traits)
+    }
+
+    const handleSaveNumberTraits = async (traits) => {
+        setNumberTraits(traits)
+    }
+
+    const [onPresentTextTraitModal] = useModal(
+        <TextTraitModal attributes={textTraits} onComplete={handleSaveTextTraits}/>
+    )
+
+    const [onPresentNumberTraitModal] = useModal(
+        <NumberTraitModal attributes={numberTraits} onComplete={handleSaveNumberTraits}/>
+    )
     
     if (loginStatus !== ProfileLoginStatus.LOGGEDIN) {
         return <AuthGuard/>
@@ -331,7 +379,7 @@ const CreateNFT: React.FC = () => {
                     </FieldGroup>
 
                     <FieldGroup>
-                        <Flex justifyContent="space-between">
+                        <Flex justifyContent="space-between" alignItems="center" mb="8px">
                             <Flex flexDirection="column">
                                 <Label>{t('Properties')}</Label>
                                 <LabelDesc>
@@ -339,9 +387,42 @@ const CreateNFT: React.FC = () => {
                                 </LabelDesc>
                             </Flex>
 
-                            <Button variant="secondary" color="secondary" style={{padding: "0px 12px"}}>
+                            <Button variant="secondary" color="secondary" style={{padding: "0px 12px"}} onClick={onPresentTextTraitModal}>
                                 <AddIcon width="24px" color="primary"/>
                             </Button>
+                        </Flex>
+                        <Flex justifyContent="start" flexWrap="wrap">
+                            {textTraits.map((trait) => {
+                                return (
+                                    <Flex marginRight="8px" marginBottom="4px" key={trait.id}>
+                                        <TextTrait trait={trait}/>
+                                    </Flex>
+                                )
+                            })}
+                        </Flex>
+                    </FieldGroup>
+
+                    <FieldGroup>
+                        <Flex justifyContent="space-between" alignItems="center" mb="8px">
+                            <Flex flexDirection="column">
+                                <Label>{t('Stats')}</Label>
+                                <LabelDesc>
+                                    {t("Numerical traits that show as numbers")}
+                                </LabelDesc>
+                            </Flex>
+
+                            <Button variant="secondary" color="secondary" style={{padding: "0px 12px"}} onClick={onPresentNumberTraitModal}>
+                                <AddIcon width="24px" color="primary"/>
+                            </Button>
+                        </Flex>
+                        <Flex justifyContent="start" flexWrap="wrap">
+                            {numberTraits.map((trait) => {
+                                return (
+                                    <Flex marginRight="8px" marginBottom="4px" key={trait.id}>
+                                        <NumberTrait trait={trait}/>
+                                    </Flex>
+                                )
+                            })}
                         </Flex>
                     </FieldGroup>
 

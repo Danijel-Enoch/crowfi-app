@@ -21,6 +21,20 @@ export enum NFTActivityType {
   TRANSFER = 9
 }
 
+/* eslint-disable camelcase */
+export interface NFTAttribute {
+  id?: any
+  trait_type: string
+  value: any
+  displayName?: string
+  max_value?: any
+}
+export interface NFTTrait {
+  trait_type: string
+  value: any
+  max_value?: any
+}
+
 export interface UserResponse {
   name?: string
   address?: string
@@ -61,8 +75,10 @@ export interface NFTCollection {
 
 /* eslint-disable camelcase */
 export interface NFTMetaAttribute {
+    id?:any
     trait_type: string
     value: string|number
+    max_value?: string|number
 }
 
 export interface NFTProperty {
