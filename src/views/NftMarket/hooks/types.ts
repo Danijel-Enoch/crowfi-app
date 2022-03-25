@@ -8,9 +8,25 @@ export enum NFTFilterStatus {
   HAS_OFFER = "has_offer"
 }
 
+export enum NFTActivityType {
+  MINT = 0,
+  AUCTION = 1,
+  AUCTION_CANCELED = 2,
+  AUCTION_TAKED = 3,
+  AUCTION_TAKED_BACK = 4,
+  LISTING = 5,
+  LISTING_CANCELED = 6,
+  LISTING_DONE = 7,
+  BID = 8,
+  TRANSFER = 9
+}
+
 export interface UserResponse {
   name?: string
   address?: string
+  createdAt?: string
+  portfolio?: string
+  banner?: string
 }
 export interface TokenResponse {
   name?: string
@@ -166,6 +182,24 @@ export interface BidResponse {
 
 export interface BidsAPIResponse {
   bids: BidResponse[]
+}
+
+export interface ActivityResponse {
+  id: number
+  type: NFTActivityType
+  eth: boolean
+  price?: number
+  priceRaw?: number
+  amount?: number
+  creationTime: number
+  txId: string
+  from?: UserResponse
+  to?: UserResponse
+}
+
+export interface ActivitiesAPIResponse {
+  rows: ActivityResponse[]
+  count: number
 }
 
 export interface Auction {

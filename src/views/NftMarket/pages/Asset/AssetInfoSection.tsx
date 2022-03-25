@@ -33,8 +33,6 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, tokenAddre
 
     const { t } = useTranslation()
 
-    console.log(nft?.collection)
-
     
     return (
         <>

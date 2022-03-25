@@ -9,7 +9,7 @@ import { API_PROFILE } from "config/constants/endpoints"
 import { getNftMarketAddress } from "utils/addressHelpers"
 import multicall from "utils/multicall"
 import { useNftMarketContract } from "hooks/useContract"
-import { Auction, BalancesAPIResponse, BidsAPIResponse, Listing, NFTAPIResponse, NFTCollection, NFTMeta, NFTsAPIResponse } from "./types"
+import { ActivitiesAPIResponse, Auction, BalancesAPIResponse, BidsAPIResponse, Listing, NFTAPIResponse, NFTCollection, NFTMeta, NFTsAPIResponse } from "./types"
 
 export const useGetNFTMeta = () => {
     const { library } = useActiveWeb3React()
@@ -219,4 +219,14 @@ export const getNftBids = async (id: number) => {
       return res.bids
     }
     return []
+}
+export const getNftActivities = async (id: number) => {
+    const url = new URL(`${API_PROFILE}/activities`)
+    url.searchParams.append('nftId',id.toString())
+    const response = await fetch(url.toString())
+    if (response.ok) {
+      const res: ActivitiesAPIResponse = await response.json()
+      return res
+    }
+    return {rows: [], count: 0}
 }

@@ -78,7 +78,7 @@ const CreateNFT: React.FC = () => {
     const { t } = useTranslation()
     const { account } = useWeb3React()
     const { toastError, toastSuccess } = useToast()
-    const loginStatus = useProfileLoggedIn()
+    const {loginStatus} = useProfileLoggedIn()
     const [pendingTx, setPendingTx] = useState(false)
     const [formError, setFormError] = useState<FormErrors>({})
     const [assetType, setAssetType] = useState(NFTAssetType.Image)

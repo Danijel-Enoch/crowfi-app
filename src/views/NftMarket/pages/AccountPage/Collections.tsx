@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Flex, Text } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import styled, {css} from 'styled-components'
+import { useProfileLoggedIn } from 'state/profile/hooks'
+import { ProfileLoginStatus } from 'state/types'
 import useRefresh from 'hooks/useRefresh'
 import AssetCard from '../Assets/AssetCard'
 import {ItemSize} from '../Assets/types'
@@ -39,9 +41,16 @@ interface CollectionsProps {
 const Collections: React.FC<CollectionsProps> = ({account}) => {
 
     const { t } = useTranslation()
+    const {loginStatus, profileAddress} = useProfileLoggedIn()
     const [itemSize, setItemSize] = useState(ItemSize.LARGE)
     const [collections, setCollections] = useState([])
     const { slowRefresh } = useRefresh()
+
+    const isMe = useMemo(() => {
+
+        return loginStatus === ProfileLoginStatus.LOGGEDIN && account?.toLowerCase() === profileAddress.toLowerCase()
+
+    }, [account, profileAddress, loginStatus])
 
     useEffect(() => {
         const fetchCollections = async() => {
@@ -59,7 +68,7 @@ const Collections: React.FC<CollectionsProps> = ({account}) => {
 
     return (
         <Flex flexDirection="column">
-            <CollectionsNav itemSize={itemSize} onItemSizeChange={(size) => setItemSize(size)}/>
+            <CollectionsNav itemSize={itemSize} onItemSizeChange={(size) => setItemSize(size)} showCreate={isMe}/>
             <Flex flexDirection="column">
                 <ItemsContainer flexWrap="wrap">
                     {collections.map((item) => {

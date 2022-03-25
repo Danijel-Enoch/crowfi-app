@@ -114,8 +114,6 @@ export const useCancelAuction = () => {
 
     const handleCancelAuction = useCallback(async (auctionId: string) => {
         const params = [auctionId]
-        
-        console.log('cancel auction', params)
         const gasPrice = getGasPrice()
         const tx = await callWithEstimateGas(
             marketplaceContract,

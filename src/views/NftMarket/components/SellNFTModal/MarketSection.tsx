@@ -61,7 +61,6 @@ const MarketSection: React.FC<MarketSectionProps> = ({ nft, account, available, 
 
     try {
       setPendingTx(true)
-      console.log(nft)
       const marketId = await onListMarket(
         useToken, 
         nft.id.toString(),

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import {useDropzone} from 'react-dropzone'
-import { Button, CloseIcon, NoProfileAvatarIcon } from '@pancakeswap/uikit'
+import { Button, CloseIcon, NoProfileAvatarIcon, Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import Loading from 'components/Loading'
 
@@ -67,11 +67,12 @@ const Changebutton = styled(Button).attrs({variant:"text", color:"white"})`
 `
 
 interface PortraitProps {
-  onSelect: (file: File) => void
+  onSelect?: (file: File) => void
   image?: string
+  enabled?: boolean
 }
 
-const Portrait: React.FC<PortraitProps> = ({onSelect, image}) => {
+const Portrait: React.FC<PortraitProps> = ({onSelect, image, enabled}) => {
 
     const { t } = useTranslation()
     const [file, setFile] = useState(null)
@@ -95,6 +96,7 @@ const Portrait: React.FC<PortraitProps> = ({onSelect, image}) => {
     return (
         <>
         <Wrapper >
+            { enabled ? (
             <Dropzone {...getRootProps()}>
                 <input {...getInputProps} style={{display:"none"}}/>
                 {!image && (
@@ -113,9 +115,26 @@ const Portrait: React.FC<PortraitProps> = ({onSelect, image}) => {
                     </>
                 )}
             </Dropzone>
+            ) : (
+                <Flex>
+                {image ? (
+                    <>
+                    <Image src={image}/> 
+                    </>
+                ) : (
+                    <Placeholder>
+                        <NoProfileAvatarIcon width="160px"/>
+                    </Placeholder>
+                )}
+                </Flex>
+            )}
         </Wrapper>
         </>
     )
+}
+
+Portrait.defaultProps = {
+    enabled: true
 }
 
 export default Portrait 

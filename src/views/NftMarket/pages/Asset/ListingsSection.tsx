@@ -12,8 +12,9 @@ import useToast from 'hooks/useToast'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import { getBscScanLink } from 'utils'
-import truncateHash from 'utils/truncateHash'
+import truncateHash, {truncateAddress} from 'utils/truncateHash'
 import { getNftMarketAddress } from 'utils/addressHelpers'
+import { LinkWrapper } from 'components/Launchpad/StyledControls'
 import Dots from 'components/Loader/Dots'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import ExpandablePanel from '../../components/ExpandablePanel'
@@ -241,12 +242,22 @@ const DataRow: React.FC<{
                 <Text>{listing.id}</Text>
             </Cell>
             <Cell>
-            <LinkExternal href={getBscScanLink(listing.seller, 'address')} fontSize="14px">
-                {truncateHash(listing.seller)}
-            </LinkExternal>
+                <LinkWrapper to={`/nft/profile/${listing.seller}`}>
+                    <Text color="primary" fontSize="14px">
+                        {truncateAddress(listing.seller, 6)}
+                    </Text>
+                </LinkWrapper>
             </Cell>
             <Cell>
-            <Text fontSize="14px" fontWeight={400}>-</Text>
+                { listing.purchaser && listing.purchaser !== AddressZero ? (
+                    <LinkWrapper to={`/nft/profile/${listing.purchaser}`}>
+                        <Text color="primary" fontSize="14px">
+                            {truncateAddress(listing.purchaser, 6)}
+                        </Text>
+                    </LinkWrapper>
+                ) : (
+                    <Text fontSize="14px" fontWeight={400}>-</Text>
+                )}
             </Cell>
             <Cell>
                 <Text>

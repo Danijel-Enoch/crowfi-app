@@ -7,8 +7,8 @@ import useRefresh from 'hooks/useRefresh'
 import { useTranslation } from 'contexts/Localization'
 import Container from 'components/Layout/Container'
 import ConnectWalletButton from 'components/ConnectWalletButton'
-import { findNft, getNftBids, getNftsWithQueryParams, useGetActiveSaleForNFT, useGetNFTBalance, useGetNFTMeta } from '../../hooks/useGetNFT'
-import { Auction, BalanceResponse, Listing, NFTCollection, NFTMeta, NFTResponse, BidResponse } from '../../hooks/types'
+import { findNft, getNftActivities, getNftBids, getNftsWithQueryParams, useGetActiveSaleForNFT, useGetNFTBalance, useGetNFTMeta } from '../../hooks/useGetNFT'
+import { Auction, BalanceResponse, Listing, NFTCollection, NFTMeta, NFTResponse, BidResponse, ActivitiesAPIResponse } from '../../hooks/types'
 import AssetMedia from './AssetMedia'
 import AssetInfoSection from './AssetInfoSection'
 import AssetHeader from './AssetHeader'
@@ -70,6 +70,7 @@ const Asset: React.FC = () => {
     const [balances, setBalances] = useState<BalanceResponse[]>([])
     const [bids, setBids] = useState<BidResponse[]>([])
     const [similars, setSimilars] = useState<NFTResponse[]>(null)
+    const [activities, setActivities] = useState<ActivitiesAPIResponse>({rows: [], count: 0})
 
     const activeAuctions = useMemo(() => {
         return auctions?.filter((item) => !item.isTaken)
@@ -86,6 +87,18 @@ const Asset: React.FC = () => {
     const { onGetNFTAuction, onGetNFTSell } = useGetActiveSaleForNFT()
 
     const {onGetNFTMeta} = useGetNFTMeta()
+
+    useEffect(() => {
+        setLoaded(false)
+        setNft(null)
+        setBalances([])
+        setCollection(null)
+        setMeta(null)
+        setListings([])
+        setAuctions([])
+        setBids([])
+        setActivities({rows: [], count: 0})
+    }, [contractAddress, tokenId])
 
     useEffect(() => {
         const fetchData = async() => {
@@ -123,8 +136,11 @@ const Asset: React.FC = () => {
                 getNftsWithQueryParams({collectionId: nft_.collection.id}).then((res) => {
                     setSimilars(res.rows.filter((item) => item.id !== nft_.id))
                 })
-            } catch (e) {
-                console.log(e)
+
+                getNftActivities(nft_.id).then((res) => {
+                    setActivities(res)
+                })
+            } catch {
                 setIsValid(false)
             }
             setLoaded(true)
@@ -149,6 +165,11 @@ const Asset: React.FC = () => {
         setListings(sells_)
         const bids_ = await getNftBids(nft.id)
         setBids(bids_)
+        const similars_ = await getNftsWithQueryParams({collectionId: nft.collection.id})
+        setSimilars(similars_.rows)
+
+        const activities_ = await getNftActivities(nft.id)
+        setActivities(activities_)
     }
 
     const triggerReload = () =>  {
@@ -185,7 +206,7 @@ const Asset: React.FC = () => {
                             <AssetHeader metadata={meta} collection={collection} nft={nft} account={account} balances={balances}/>
                             { activeAuctions && activeAuctions.map((auction) => {
                                 return (
-                                    <ActiveAuctionSection nft={nft} auction={auction} account={account} reloadSale={reloadSaleInfo}/>
+                                    <ActiveAuctionSection key={auction.id} nft={nft} auction={auction} account={account} reloadSale={reloadSaleInfo}/>
                                 )
                             })}
                             {/* <PriceHistorySection metadata={meta}/> */}
@@ -193,7 +214,7 @@ const Asset: React.FC = () => {
                             <OffersSection metadata={meta} bids={bids} account={account}/>
                         </Flex>
                     </Flex>
-                    <ActivitySection metadata={meta}/>
+                    <ActivitySection metadata={meta} activities={activities} account={account}/>
                     <SimiliarSection metadata={meta} items={similars}/>
                 </Flex>
             </Container>

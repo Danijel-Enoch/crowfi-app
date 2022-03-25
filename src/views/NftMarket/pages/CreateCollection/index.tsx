@@ -78,7 +78,7 @@ const CreateCollection: React.FC = () => {
     const { t } = useTranslation()
     const { toastError, toastSuccess } = useToast()
     const history = useHistory()
-    const loginStatus = useProfileLoggedIn()
+    const {loginStatus} = useProfileLoggedIn()
     const [pendingTx, setPendingTx] = useState(false)
     const [logoFile, setLogoFile] = useState(null)
     const [bannerFile, setBannerFile] = useState(null)

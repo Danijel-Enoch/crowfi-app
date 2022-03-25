@@ -66,7 +66,7 @@ export const useProfileLoggedIn = () => {
   const [tokenData] = useProfileTokenData()
   const [profileAddress] = useProfileAddress()
 
-  const status = useMemo(() => {
+  const loginStatus = useMemo(() => {
     if (!account) {
       return ProfileLoginStatus.NOT_CONNECTED
     }
@@ -89,5 +89,5 @@ export const useProfileLoggedIn = () => {
 
     return ProfileLoginStatus.LOGGEDIN
   }, [account, tokenData, profileAddress])
-  return status
+  return {loginStatus, profileAddress}
 }

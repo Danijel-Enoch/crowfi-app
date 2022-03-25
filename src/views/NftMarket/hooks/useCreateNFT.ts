@@ -72,8 +72,6 @@ export const useMintNFT = (account: string) => {
     
             if (ev.length > 0) {
               const resArgs = ev[0]["args"];
-
-              console.log('args', resArgs, resArgs['id'])
     
               return {nftId: new BigNumber(resArgs['id']._hex).toString(), tokenUri: metaUrl, thumbnail: imageUrl};
             }

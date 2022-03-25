@@ -1,7 +1,7 @@
 import { API_PROFILE } from 'config/constants/endpoints'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useProfileTokenData } from 'state/profile/hooks'
-import { NFTsAPIResponse } from './types'
+import { NFTsAPIResponse, UserResponse } from './types'
 
 export const useUpdateProfile = () => {
     const [tokenData] = useProfileTokenData()
@@ -50,15 +50,11 @@ export const useUpdateProfile = () => {
 }
 
 
-export const useFetchMyProfile = () => {
-  const [tokenData] = useProfileTokenData()
+export const useFetchUserNfts = (account?: string) => {
 
   const handleFetchNftsCollected = useCallback(async() => {
-    const response = await fetch(`${API_PROFILE}/me/nfts/collected`, {
+    const response = await fetch(`${API_PROFILE}/users/${account}/nfts/collected`, {
       method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${tokenData.accessToken}`
-      }
     })
 
     if (response.ok) {
@@ -67,14 +63,11 @@ export const useFetchMyProfile = () => {
     }
 
     return []
-  }, [tokenData])
+  }, [account])
 
   const handleFetchNftsCreated = useCallback(async() => {
-    const response = await fetch(`${API_PROFILE}/me/nfts/created`, {
+    const response = await fetch(`${API_PROFILE}/users/${account}/nfts/created`, {
       method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${tokenData.accessToken}`
-      }
     })
 
     if (response.ok) {
@@ -83,14 +76,11 @@ export const useFetchMyProfile = () => {
     }
 
     return []
-  }, [tokenData])
+  }, [account])
 
   const handleFetchNftsOnSale = useCallback(async() => {
-    const response = await fetch(`${API_PROFILE}/me/nfts/on-sale`, {
+    const response = await fetch(`${API_PROFILE}/users/${account}/nfts/on-sale`, {
       method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${tokenData.accessToken}`
-      }
     })
 
     if (response.ok) {
@@ -99,11 +89,26 @@ export const useFetchMyProfile = () => {
     }
 
     return []
-  }, [tokenData])
+  }, [account])
 
   return {
       onFetchNftsCollected: handleFetchNftsCollected,
       onFetchNftsCreated: handleFetchNftsCreated,
       onFetchNftsOnSale: handleFetchNftsOnSale
   }
+}
+
+export const fetchUserProfile = async (account: string) => {
+
+  const response = await fetch(`${API_PROFILE}/users/${account}`, {
+    method: 'GET'
+  })
+
+  if (response.ok) {
+      const {user} = await response.json()
+      return user as UserResponse
+  }
+
+  return undefined
+
 }

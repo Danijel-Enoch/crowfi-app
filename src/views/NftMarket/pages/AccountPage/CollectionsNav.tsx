@@ -15,10 +15,11 @@ const SortSelect = styled(Select)`
 
 interface CollectionsNavProps {
     itemSize: ItemSize
+    showCreate?: boolean
     onItemSizeChange: (itemSize) => void
 }
 
-const CollectionsNav: React.FC<CollectionsNavProps> = ({itemSize, onItemSizeChange}) => {
+const CollectionsNav: React.FC<CollectionsNavProps> = ({itemSize, onItemSizeChange, showCreate}) => {
 
     const { t } = useTranslation()
     const { theme } = useTheme()
@@ -33,11 +34,13 @@ const CollectionsNav: React.FC<CollectionsNavProps> = ({itemSize, onItemSizeChan
 
     return (
         <Flex flexWrap="wrap" alignItems="center">
+            { showCreate && (
             <Flex flex="1">
                 <Button scale="sm" ml="8px" mt="8px" as={Link} to="/nft/create-collection">
                     {t('Create New Collection')}
                 </Button>
             </Flex>
+            )}
             {/* <Flex padding="8px">
                 <ButtonMenu activeIndex={itemSize === ItemSize.LARGE ? 0 : 1} onItemClick={(index) => onItemSizeChange(index === 0 ? ItemSize.LARGE : ItemSize.SMALL)} scale="sm" variant='subtle'>
                     <ButtonMenuItem>{t('Large')}</ButtonMenuItem>

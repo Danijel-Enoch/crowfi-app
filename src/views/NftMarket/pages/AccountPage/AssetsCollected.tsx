@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Flex, } from '@pancakeswap/uikit'
+import { useParams } from 'react-router-dom'
 import useRefresh from 'hooks/useRefresh'
-import { useFetchMyProfile } from '../../hooks/useProfile'
+import { useFetchUserNfts } from '../../hooks/useProfile'
 import Assets from './Assets'
 
 const AssetsCollected: React.FC = () => {
     const [assets, setAssets] = useState([])
     const { slowRefresh } = useRefresh()
-    const {onFetchNftsCollected} = useFetchMyProfile()
+    const { address: userAddress } = useParams<{ address?: string }>()
+    const {onFetchNftsCollected} = useFetchUserNfts(userAddress)
+
 
     useEffect(() => {
         const fetchCollections = async() => {
@@ -21,7 +24,7 @@ const AssetsCollected: React.FC = () => {
             
         fetchCollections()
         
-    }, [slowRefresh, onFetchNftsCollected])
+    }, [slowRefresh, onFetchNftsCollected, userAddress])
     
 
     return (

@@ -33,7 +33,7 @@ const Wrapper = styled.div`
 `
 
 const AuthGuard: React.FC = () => {
-    const loginStatus = useProfileLoggedIn()
+    const {loginStatus, profileAddress} = useProfileLoggedIn()
     const {t} = useTranslation()
     const { toastError } = useToast()
     const {account} = useWeb3React()

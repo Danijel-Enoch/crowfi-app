@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import {useDropzone} from 'react-dropzone'
+import { Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import Loading from 'components/Loading'
 
@@ -44,11 +45,12 @@ const LoadingWrapper = styled.div`
 `
 
 interface BannerProps {
-  onSelect: (file: File) => void
+  onSelect?: (file: File) => void
   image?: string
+  enabled?: boolean
 }
 
-const Banner: React.FC<BannerProps> = ({onSelect, image}) => {
+const Banner: React.FC<BannerProps> = ({onSelect, image, enabled}) => {
 
     const { t } = useTranslation()
 
@@ -73,6 +75,7 @@ const Banner: React.FC<BannerProps> = ({onSelect, image}) => {
     return (
         <>
         <Wrapper >
+            { enabled ? (
             <Dropzone {...getRootProps()}>
                 <input {...getInputProps} style={{display:"none"}}/>
                 {!image && (
@@ -87,9 +90,20 @@ const Banner: React.FC<BannerProps> = ({onSelect, image}) => {
                     <Image src={image}/> 
                 )}
             </Dropzone>
+            ) : (
+                <Flex>
+                    {image ? (
+                        <Image src={image}/> 
+                    ) : (
+                        <Placeholder/>
+                    )}
+                </Flex>
+            )}
         </Wrapper>
         </>
     )
 }
-
+Banner.defaultProps = {
+    enabled: true
+}
 export default Banner 

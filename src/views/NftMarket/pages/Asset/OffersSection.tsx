@@ -2,12 +2,11 @@ import React, { useMemo } from 'react'
 import { Book, List, Tag } from 'react-feather'
 import { format } from 'date-fns'
 import styled from 'styled-components'
-import { ChartIcon, Flex, SellIcon, Text, useMatchBreakpoints, LinkExternal } from '@pancakeswap/uikit'
+import { Flex, Text } from '@pancakeswap/uikit'
 import { NFTAssetType } from 'state/types'
 import { useTranslation } from 'contexts/Localization'
-import { getBscScanLink } from 'utils'
-import truncateHash from 'utils/truncateHash'
-import useTheme from 'hooks/useTheme'
+import {truncateAddress} from 'utils/truncateHash'
+import { LinkWrapper } from 'components/Launchpad/StyledControls'
 import ExpandablePanel from '../../components/ExpandablePanel'
 import { BidResponse, NFTMeta } from '../../hooks/types'
 
@@ -109,9 +108,11 @@ const DataRow: React.FC<{
                 <Text>{bid.auction?.auctionId}</Text>
             </Cell>
             <Cell>
-                <LinkExternal href={getBscScanLink(bid.bidder?.address, 'address')} fontSize="14px">
-                    {isBidder ? 'You' : truncateHash(bid.bidder?.address)}
-                </LinkExternal>
+                <LinkWrapper to={`/nft/profile/${bid.bidder?.address}`}>
+                    <Text color="primary" fontSize="14px">
+                        {truncateAddress(bid.bidder?.address, 6)}
+                    </Text>
+                </LinkWrapper>
             </Cell>
             <Flex alignItems="center">
                 <Text>{format(bid.creationTime * 1000, 'MM/dd/yy h:mm a')}</Text>
