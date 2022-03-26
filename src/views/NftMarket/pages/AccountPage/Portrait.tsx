@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import {useDropzone} from 'react-dropzone'
-import { Button, CloseIcon, NoProfileAvatarIcon, Flex } from '@pancakeswap/uikit'
+import { Button, Flex, LogoIcon, PencilIcon } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import Loading from 'components/Loading'
 
@@ -18,6 +18,26 @@ const Dropzone = styled.div`
     display: flex;
     justify-content:center;
     align-items:center;
+    
+    .edit {
+        display: none;
+    }
+
+    &:hover > .edit {
+        display: flex;
+    }
+`
+
+const EditIcon = styled.div`
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    position: absolute;
+    background: rgba(0,0,0,0.1);
+    top:0;
+    right:0;
+    bottom: 0;
+    left: 0;
 `
 
 
@@ -101,7 +121,7 @@ const Portrait: React.FC<PortraitProps> = ({onSelect, image, enabled}) => {
                 <input {...getInputProps} style={{display:"none"}}/>
                 {!image && (
                     <Placeholder>
-                        <NoProfileAvatarIcon width="160px"/>
+                        <LogoIcon width="120px" opacity="0.3"/>
                     </Placeholder>
                 )}
                 {!image && file && (
@@ -114,6 +134,10 @@ const Portrait: React.FC<PortraitProps> = ({onSelect, image, enabled}) => {
                     <Image src={image}/> 
                     </>
                 )}
+
+                <EditIcon className="edit">
+                    <PencilIcon color="white"/>
+                </EditIcon>
             </Dropzone>
             ) : (
                 <Flex>
@@ -123,7 +147,7 @@ const Portrait: React.FC<PortraitProps> = ({onSelect, image, enabled}) => {
                     </>
                 ) : (
                     <Placeholder>
-                        <NoProfileAvatarIcon width="160px"/>
+                        <LogoIcon width="120px" opacity="0.3"/>
                     </Placeholder>
                 )}
                 </Flex>

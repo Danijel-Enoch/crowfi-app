@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import {useDropzone} from 'react-dropzone'
-import { Flex } from '@pancakeswap/uikit'
+import { Flex, PencilIcon } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import Loading from 'components/Loading'
 
@@ -14,8 +14,27 @@ const Dropzone = styled.div`
     display: flex;
     justify-content:center;
     align-items:center;
+    
+    .edit {
+        display: none;
+    }
+
+    &:hover > .edit {
+        display: flex;
+    }
 `
 
+const EditIcon = styled.div`
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    position: absolute;
+    background: rgba(0,0,0,0.1);
+    top:0;
+    right:0;
+    bottom: 0;
+    left: 0;
+`
 
 const Placeholder = styled.div`
     width: 100%;
@@ -89,6 +108,10 @@ const Banner: React.FC<BannerProps> = ({onSelect, image, enabled}) => {
                 {image && (
                     <Image src={image}/> 
                 )}
+
+                <EditIcon className="edit">
+                    <PencilIcon color="white"/>
+                </EditIcon>
             </Dropzone>
             ) : (
                 <Flex>

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import {useDropzone} from 'react-dropzone'
-import { Button, CloseIcon, NoProfileAvatarIcon } from '@pancakeswap/uikit'
+import { Button, CloseIcon, LogoIcon, PencilIcon } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 
 const Wrapper = styled.div<{borderRadius?: string}>`
@@ -14,8 +14,28 @@ const Dropzone = styled.div`
     display: flex;
     justify-content:center;
     align-items:center;
+    
+    .edit {
+        display: none;
+    }
+
+    &:hover > .edit {
+        display: flex;
+    }
 `
 
+const EditIcon = styled.div<{borderRadius?: string}>`
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    position: absolute;
+    background: rgba(0,0,0,0.1);
+    border-radius: ${({ borderRadius }) => (borderRadius ? `${borderRadius}` : '8px')};
+    top:0;
+    right:0;
+    bottom: 0;
+    left: 0;
+`
 
 const Placeholder = styled.div<{width?: string, height?: string}>`
     width: ${({ width }) => (width ? `${width}` : '300px')};
@@ -97,7 +117,7 @@ const Upload: React.FC<UploadProps> = ({onSelect, width, height, borderRadius, a
                 <input {...getInputProps} style={{display:"none"}}/>
                 {!file && (
                     <Placeholder width={width} height={height}>
-                        <NoProfileAvatarIcon width={placeholderSize}/>
+                        <LogoIcon width={placeholderSize} opacity="0.3"/>
                     </Placeholder>
                 )}
                 {file && file.type.includes('image') && (
@@ -110,6 +130,10 @@ const Upload: React.FC<UploadProps> = ({onSelect, width, height, borderRadius, a
                         {t('Change')}
                     </Changebutton>
                 )}
+
+                <EditIcon className="edit" borderRadius={borderRadius}>
+                    <PencilIcon color="white"/>
+                </EditIcon>
             </Dropzone>
             {file && file.type.includes('image') && showClose && (
                 <CloseButton
