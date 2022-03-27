@@ -8,7 +8,24 @@ export const useLogin = () => {
     const { library } = useWeb3Provider()
     const {account} = useWeb3React()
     const handleLogin = useCallback(async() => {
-        const signature = await signMessage(library, account, account)
+        const nonceResponse = await fetch(`${API_PROFILE}/nonce`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+            address: account,
+            }),
+        })
+
+        if (!nonceResponse.ok) {
+            throw new Error('Failed to login')
+        }
+
+        const {nonce} = await nonceResponse.json()
+        console.log('nonce', nonce)
+
+        const signature = await signMessage(library, account, `${account}\n\nNonce: ${nonce}`)
         const response = await fetch(`${API_PROFILE}/login`, {
             method: 'POST',
             headers: {
