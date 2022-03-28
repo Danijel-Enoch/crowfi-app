@@ -23,7 +23,6 @@ const LinkWrapper = styled(Link)`
 `
 
 const Card = styled(Flex).attrs({flexDirection:"column"})`
-    border-radius: 16px;
     border-radius: ${({ theme }) => theme.radii.default};
     border: 1px solid rgba(0,0,0,0.2);
     background-color: wite;
@@ -31,10 +30,10 @@ const Card = styled(Flex).attrs({flexDirection:"column"})`
 
 const Thumbnail = styled.img`
     aspect-ratio: 1;
-    object-fit: contain;
+    object-fit: cover;
     background: white;
-    border-top-right-radius: 16px;
-    border-top-left-radius:16px;
+    border-top-right-radius: ${({ theme }) => theme.radii.default};
+    border-top-left-radius: ${({ theme }) => theme.radii.default};
 `
 
 const TypeWrapper = styled.div`
