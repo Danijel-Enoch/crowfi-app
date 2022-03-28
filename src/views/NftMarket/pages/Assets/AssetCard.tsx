@@ -83,7 +83,7 @@ const AssetCard: React.FC<AssetCardProps> = ({asset}) => {
                                 {asset?.collection?.name}
                             </Text>
                             <Text fontSize="12px">
-                                {asset?.collection?.name} #{asset?.tokenId}
+                                {asset?.name} #{asset?.tokenId}
                             </Text>
                         </Flex>
                         <Flex flexDirection="column" flex="3" justifyContent="right" alignItems="right">
