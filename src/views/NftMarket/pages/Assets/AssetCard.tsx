@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { Image, Music, Video } from 'react-feather'
 import { Flex, Text } from '@pancakeswap/uikit'
 import { ETHER } from '@pancakeswap/sdk'
 import { Link } from 'react-router-dom'
@@ -23,10 +24,33 @@ const LinkWrapper = styled(Link)`
 
 const Card = styled(Flex).attrs({flexDirection:"column"})`
     border-radius: 16px;
-    padding: 1.25rem;
     border-radius: ${({ theme }) => theme.radii.default};
     border: 1px solid rgba(0,0,0,0.2);
     background-color: wite;
+`
+
+const Thumbnail = styled.img`
+    aspect-ratio: 1;
+    object-fit: contain;
+    background: white;
+    border-top-right-radius: 16px;
+    border-top-left-radius:16px;
+`
+
+const TypeWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    top: -40px;
+    right: 10px;
+
+    > svg {
+        -webkit-filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.6));
+        filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.6));
+    }
 `
 
 interface AssetCardProps {
@@ -41,8 +65,19 @@ const AssetCard: React.FC<AssetCardProps> = ({asset}) => {
         <LinkWrapper to={`/nft/asset/${asset?.collection?.contract}/${asset?.tokenId}`}>
             <Wrapper>
                 <Card>
-                    <img alt={asset?.name} src={asset?.thumbnail} />
-                    <Flex flexDirection="row" marginTop="8px">
+                    <Thumbnail alt={asset?.name} src={asset?.thumbnail} />
+                    <Flex flexDirection="row" marginTop="8px" padding="16px" position="relative">
+                        <TypeWrapper>
+                            {asset?.mediaType === 'image' && (
+                            <Image color="white"/>
+                            )}
+                            {asset?.mediaType === 'video' && (
+                            <Video color="white"/>
+                            )}
+                            {asset?.mediaType === 'audio' && (
+                            <Music color="white"/>
+                            )}
+                        </TypeWrapper>
                         <Flex flexDirection="column" flex="4">
                             <Text fontSize="12px">
                                 {asset?.collection?.name}

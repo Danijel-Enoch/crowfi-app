@@ -69,10 +69,6 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
     icon: 'Nft',
     items: [
       {
-        label: t('Explore'),
-        href: '/nft/explore-collections',
-      },
-      {
         label: t('Collections'),
         href: '/nft/collections',
       },

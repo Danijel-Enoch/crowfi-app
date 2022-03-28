@@ -11,33 +11,35 @@ const SortSelect = styled(Select)`
     width: 300px;
 `;
 
-enum AssetSortOption {
+export enum AssetSortOption {
     LISTED,
     CREATED,
     SOLD,
-    RECEIVED,
-    ENDING,
     PRICE_ASC,
     PRICE_DESC,
+    OLDEST,
 }
 
 interface TopNavProps {
     itemCount?: number
     itemSize: ItemSize
+    sortOption: AssetSortOption
+    setSortOption: (option: AssetSortOption) => void
     onItemSizeChange: (itemSize) => void
 }
 
-const TopNav: React.FC<TopNavProps> = ({itemCount, itemSize, onItemSizeChange}) => {
+const TopNav: React.FC<TopNavProps> = ({itemCount, itemSize, setSortOption, onItemSizeChange}) => {
 
     const { t } = useTranslation()
     const { theme } = useTheme()
-    const [sortOption, setSortOption] = useState(AssetSortOption.LISTED)
 
     const sortOptions = [
-        { label: t('Recently Listed'), value: AssetSortOption.LISTED },
         { label: t('Recently Created'), value: AssetSortOption.CREATED },
+        { label: t('Recently Listed'), value: AssetSortOption.LISTED },
         { label: t('Recently Sold'), value: AssetSortOption.SOLD },
-        { label: t('Recently Received'), value: AssetSortOption.RECEIVED },
+        { label: t('Price: Low to High'), value: AssetSortOption.PRICE_ASC },
+        { label: t('Price: High to Low'), value: AssetSortOption.PRICE_DESC },
+        { label: t('Oldest'), value: AssetSortOption.OLDEST },
     ]
 
     const [activeButtonIndex, setActiveButtonIndex] = useState(0)

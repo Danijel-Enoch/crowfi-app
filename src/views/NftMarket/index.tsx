@@ -5,7 +5,6 @@ import CreateCollection from './pages/CreateCollection'
 
 
 const Home = lazy(() => import('./pages/Home'))
-const Explore = lazy(() => import('./pages/Explore'))
 const Collections = lazy(() => import('./pages/Collections'))
 const Collection = lazy(() => import('./pages/Collection'))
 const Assets = lazy(() => import('./pages/Assets'))
@@ -21,9 +20,6 @@ const NFTMarket: React.FC = () => {
       <>
         <Route exact path={nftsBaseUrl}>
           <Home />
-        </Route>
-        <Route exact path={`${nftsBaseUrl}/explore-collections`}>
-          <Explore />
         </Route>
         <Route path={`${nftsBaseUrl}/collections`}>
           <Collections />

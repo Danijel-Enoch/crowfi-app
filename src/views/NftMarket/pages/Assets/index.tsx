@@ -11,7 +11,7 @@ import tokens from 'config/constants/tokens'
 import AssetsFilterPanel from '../../components/AssetsFilter'
 import AssetsFilterWrapper from '../../components/AssetsFilter/AssetsFilterWrapper'
 import SearchResult from './SearchResult'
-import TopNav from './TopNav'
+import TopNav, { AssetSortOption } from './TopNav'
 import {ItemSize} from './types'
 import { getNftsWithQueryParams } from '../../hooks/useGetNFT'
 import { AssetArtTypeFilter, AssetFilter, AssetStatusFilter, AssetPriceFilter } from '../../components/AssetsFilter/types'
@@ -42,6 +42,7 @@ const Assets: React.FC = () => {
     const [itemSize, setItemSize] = useState(ItemSize.LARGE)
     const [nfts, setNfts] = useState([])
     const [nftCount, setNftCount] = useState(0)
+    const [sortOption, setSortOption] = useState<AssetSortOption>(AssetSortOption.CREATED)
     const [assetFilter, setAssetFilter] = useState<AssetFilter>(null)
     const { slowRefresh } = useRefresh()
 
@@ -94,6 +95,35 @@ const Assets: React.FC = () => {
                     params[`query[price][eth]`] = priceFilter.eth
                     params[`query[price][eth_price]`] = ethPrice ? parseFloat(ethPrice.toFixed(6)) : 1
                 }
+
+                switch(sortOption) {
+                    case AssetSortOption.CREATED:
+                        params[`query[sortBy]`] = 'createdAt'
+                        params[`query[sortAscending]`] = 'DESC'
+                        break
+                    case AssetSortOption.LISTED:
+                        params[`query[sortBy]`] = 'listedAt'
+                        params[`query[sortAscending]`] = 'DESC'
+                        break
+                    case AssetSortOption.SOLD:
+                        params[`query[sortBy]`] = 'soldAt'
+                        params[`query[sortAscending]`] = 'DESC'
+                        break
+                    case AssetSortOption.PRICE_ASC:
+                        params[`query[sortBy]`] = 'currentPrice'
+                        params[`query[sortAscending]`] = 'ASC'
+                        break
+                    case AssetSortOption.PRICE_DESC:
+                        params[`query[sortBy]`] = 'currentPrice'
+                        params[`query[sortAscending]`] = 'DESC'
+                        break
+                    case AssetSortOption.OLDEST:
+                        params[`query[sortBy]`] = 'createdAt'
+                        params[`query[sortAscending]`] = 'ASC'
+                        break
+                    default:
+                        break
+                }
                 const {rows, count} = await getNftsWithQueryParams(params)
                 setNfts(rows)
                 setNftCount(count)
@@ -105,7 +135,7 @@ const Assets: React.FC = () => {
             
         fetchNfts()
         
-    }, [slowRefresh, selectedCollections, priceFilter, artType, status, ethPrice])
+    }, [slowRefresh, selectedCollections, priceFilter, artType, status, ethPrice, sortOption])
     
     return (
         <Wrapper>
@@ -123,7 +153,13 @@ const Assets: React.FC = () => {
                 setPriceFilter={setPriceFilter}
             />
             <Flex flexDirection="column">
-                <TopNav itemCount={nftCount} itemSize={itemSize} onItemSizeChange={(size) => setItemSize(size)}/>
+                <TopNav 
+                    itemCount={nftCount} 
+                    sortOption={sortOption}
+                    setSortOption={setSortOption}
+                    itemSize={itemSize} 
+                    onItemSizeChange={(size) => setItemSize(size)}
+                    />
                 <FilterStatusSection 
                     priceFilter={priceFilter} 
                     selectedCollections={selectedCollections}

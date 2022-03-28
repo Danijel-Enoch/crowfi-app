@@ -109,6 +109,7 @@ export interface NFTResponse {
   lastPrice?: number
   bestOffer?: number
   thumbnail?: string
+  mediaType?: string
   hash?: string
   owner?: string
   supply?: number
