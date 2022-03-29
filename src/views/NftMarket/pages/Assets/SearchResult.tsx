@@ -52,7 +52,7 @@ const SearchResult: React.FC<SearchResultProps> = ({isFilterOpen, itemSize, item
             <ItemsContainer flexWrap="wrap" itemSize={itemSize} isFilterOpen={isFilterOpen}>
                 {items && items.map((item) => {
                     return (
-                    <Flex padding="8px" flexDirection="column">
+                    <Flex padding="8px" flexDirection="column" key={item.id}>
                         <AssetCard asset={item}/>
                     </Flex>
                     )

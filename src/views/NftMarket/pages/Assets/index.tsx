@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Button, Flex, useMatchBreakpoints } from '@pancakeswap/uikit'
 import styled from 'styled-components'
@@ -6,8 +6,7 @@ import { NFTAssetType } from 'state/types'
 import { usePriceBnbBusd } from 'state/farms/hooks'
 import { useTranslation } from 'contexts/Localization'
 import useRefresh from 'hooks/useRefresh'
-import useBUSDPrice, { useBNBBusdPrice } from 'hooks/useBUSDPrice'
-import tokens from 'config/constants/tokens'
+import useIntersectionObserver from 'hooks/useIntersectionObserver'
 import AssetsFilterPanel from '../../components/AssetsFilter'
 import AssetsFilterWrapper from '../../components/AssetsFilter/AssetsFilterWrapper'
 import SearchResult from './SearchResult'
@@ -38,13 +37,19 @@ const Assets: React.FC = () => {
 
     const { isMobile } = useMatchBreakpoints()
     const { t } = useTranslation()
+    const { observerRef, isIntersecting } = useIntersectionObserver()
     const [isFilterOpen, setFilterOpen] = useState(true)
     const [itemSize, setItemSize] = useState(ItemSize.LARGE)
     const [nfts, setNfts] = useState([])
-    const [nftCount, setNftCount] = useState(0)
+    const [totalItemCount, setTotalItemCount] = useState(0)
+    const nftCount = useRef(0)
     const [sortOption, setSortOption] = useState<AssetSortOption>(AssetSortOption.CREATED)
     const [assetFilter, setAssetFilter] = useState<AssetFilter>(null)
     const { slowRefresh } = useRefresh()
+    const pageSize = 10
+    const [loading, setLoading] = useState(0)
+    const lastParams = useRef('')
+    const [numberOfItemsToLoad, setNumberOfItemsToLoad] = useState(pageSize)
 
     const [artType, setArtType] = useState<AssetArtTypeFilter>({
         image: false,
@@ -67,10 +72,22 @@ const Assets: React.FC = () => {
         return selectedCollections.size > 0 || !!priceFilter || artType.image || artType.video || artType.audio || status.buyNow || status.minted || status.hasOffer || status.onAuction
     }, [selectedCollections, priceFilter, artType, status])
 
+    useEffect(() => {
+        if (isIntersecting) {
+            setNumberOfItemsToLoad((currentNumber) => {
+                if (currentNumber < totalItemCount) {
+                    return Math.min(totalItemCount, currentNumber + pageSize)
+                }
+                return currentNumber
+            })
+        }
+    }, [isIntersecting, totalItemCount])
+
 
     useEffect(() => {
-        const fetchNfts = async() => {
+        const reloadNfts = async () => {
             try {
+                
                 const params = {}
                 let typeIndex = 0;
                 let statusIndex = 0;
@@ -124,18 +141,32 @@ const Assets: React.FC = () => {
                     default:
                         break
                 }
-                const {rows, count} = await getNftsWithQueryParams(params)
-                setNfts(rows)
-                setNftCount(count)
+                const lastParams_ = JSON.stringify(params)
+                if (lastParams.current !== lastParams_) {
+                    const {rows, count} = await getNftsWithQueryParams({...params, offset: 0, limit: pageSize})
+                    setNfts(rows)
+                    setTotalItemCount(count)
+                    setNumberOfItemsToLoad(pageSize)
+                    lastParams.current = lastParams_
+                    nftCount.current = rows.length
+                } else if (numberOfItemsToLoad > nftCount.current){
+                    // load More
+                    const {rows, count} = await getNftsWithQueryParams({...params, offset: nftCount.current, limit: numberOfItemsToLoad})
+                    setTotalItemCount(count)
+                    setNfts((current) => {
+                        nftCount.current = current.length + rows.length
+                        return [...current, ...rows]
+                    })
+                }
             } catch {
+                lastParams.current = ''
                 setNfts([])
-                setNftCount(0)
+                setTotalItemCount(0)
             }
         }
-            
-        fetchNfts()
-        
-    }, [slowRefresh, selectedCollections, priceFilter, artType, status, ethPrice, sortOption])
+
+        reloadNfts()
+    }, [slowRefresh, selectedCollections, priceFilter, artType, status, ethPrice, sortOption, numberOfItemsToLoad])
     
     return (
         <Wrapper>
@@ -154,7 +185,7 @@ const Assets: React.FC = () => {
             />
             <Flex flexDirection="column" flex="1">
                 <TopNav 
-                    itemCount={nftCount} 
+                    itemCount={totalItemCount} 
                     sortOption={sortOption}
                     setSortOption={setSortOption}
                     itemSize={itemSize} 
@@ -174,6 +205,7 @@ const Assets: React.FC = () => {
                     }}
                 />
                 <SearchResult isFilterOpen={isFilterOpen} itemSize={itemSize} items={nfts}/>
+                <div ref={observerRef}/>
             </Flex>
 
             {/* {createPortal(<AssetsFilter isOpen={isFilterOpen} onToggleOpen={() => setFilterOpen(!isFilterOpen)} />, document.body)} */}
