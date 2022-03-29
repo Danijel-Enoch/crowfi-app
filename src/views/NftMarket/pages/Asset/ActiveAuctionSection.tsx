@@ -268,45 +268,61 @@ const ActiveAuctionSection: React.FC<ActiveAuctionSectionProps> = ({account, nft
                 title={t('Active Auction #%id%', {id: auction.id})}
             >
                 <Flex flexDirection="column" padding="12px">
-                    <Flex mb="12px">
-                        <StatusText statusColor={statusColor}>
-                            {t('Status')}: {statusText}
-                        </StatusText>
+                    <Flex flexDirection="row">
+                        <Flex flexDirection="column" flex="1">
+                            <Flex>
+                                <Text fontSize="12px">{t('Token Amount')}</Text>
+                            </Flex>
+                            <Flex>
+                                <Text color="secondary" fontSize="24px">{auction.amount.toString()}</Text>
+                            </Flex>
+                            <Flex flexDirection="row">
+                                <Flex flexDirection="column" flex="1">
+                                    <Flex mt="8px">
+                                        <Text fontSize="12px">{t('Last Price')}</Text>
+                                    </Flex>
+                                    { auction.useEth ? (
+                        
+                                        <Flex>
+                                        <Text color="secondary" fontSize="24px">{getFullDisplayBalance(auction.lastPrice)} {ETHER.symbol}</Text>
+                                        </Flex>
+                                    ) : (
+                        
+                                        <Flex>
+                                            <Text color="secondary" fontSize="24px">{ payToken ? getFullDisplayBalance(auction.lastPrice, payToken.decimals) : '0.00'} {payToken?.symbol}</Text>
+                                        </Flex>
+                                    )}
+                                </Flex>
+
+                                { !isSeller && (
+                                    <Flex flexDirection="column" flex="1">
+                                    <Flex mt="8px">
+                                    <Text fontSize="12px">{t('Next Price')}</Text>
+                                    </Flex>
+                                    { auction.useEth ? (
+            
+                                    <Flex>
+                                    <Text color="secondary" fontSize="24px">{getFullDisplayBalance(bidAmount)} {ETHER.symbol}</Text>
+                                    </Flex>
+                                    ) : (
+            
+                                    <Flex>
+                                        <Text color="secondary" fontSize="24px">{ payToken ? getFullDisplayBalance(bidAmount, payToken.decimals) : '0.00'} {payToken?.symbol}</Text>
+                                    </Flex>
+                                    )}
+                                    </Flex>
+                                )}
+                            </Flex>
+                        </Flex>
+                        <Flex flexDirection="column" flex="1">
+                            <Flex mb="12px">
+                                <StatusText statusColor={statusColor}>
+                                    {t('Status')}: {statusText}
+                                </StatusText>
+                            </Flex>
+                            <AuctionTimer auction={auction}/>
+                        </Flex>
                     </Flex>
-                    <AuctionTimer auction={auction}/>
-                    <Flex mt="12px">
-                        <Text fontSize="12px">{t('Last Price')}</Text>
-                    </Flex>
-                    { auction.useEth ? (
-        
-                        <Flex>
-                        <Text color="secondary" fontSize="24px">{getFullDisplayBalance(auction.lastPrice)} {ETHER.symbol}</Text>
-                        </Flex>
-                    ) : (
-        
-                        <Flex>
-                            <Text color="secondary" fontSize="24px">{ payToken ? getFullDisplayBalance(auction.lastPrice, payToken.decimals) : '0.00'} {payToken?.symbol}</Text>
-                        </Flex>
-                    )}
-
-                    { !isSeller && (
-                        <>
-                        <Flex mt="12px">
-                        <Text fontSize="12px">{t('Next Price')}</Text>
-                        </Flex>
-                        { auction.useEth ? (
-
-                        <Flex>
-                        <Text color="secondary" fontSize="24px">{getFullDisplayBalance(bidAmount)} {ETHER.symbol}</Text>
-                        </Flex>
-                        ) : (
-
-                        <Flex>
-                            <Text color="secondary" fontSize="24px">{ payToken ? getFullDisplayBalance(bidAmount, payToken.decimals) : '0.00'} {payToken?.symbol}</Text>
-                        </Flex>
-                        )}
-                        </>
-                    )}
                     <Flex>
                         {isSeller ? (
                             <>

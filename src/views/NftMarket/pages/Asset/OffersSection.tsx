@@ -102,7 +102,7 @@ const DataRow: React.FC<{
     return (
         <ResponsiveGrid>
             <Cell>
-                <Text>{index}</Text>
+                <Text>{index + 1}</Text>
             </Cell>
             <Cell>
                 <Text>{bid.auction?.auctionId}</Text>
@@ -153,7 +153,7 @@ const OffersSection: React.FC<OffersSectionProps> = ({metadata, bids, account}) 
         <Flex flexDirection="column" padding="12px">
             <ExpandablePanel
                 icon={<List/>}
-                title={t('Offers')}
+                title={t('Bids')}
             >
                 <Flex flexDirection="column" margin="12px">
                     {bids && bids.length > 0 ? (

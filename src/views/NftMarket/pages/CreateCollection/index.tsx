@@ -164,7 +164,23 @@ const CreateCollection: React.FC = () => {
             try {
                 setPendingTx(true)
                 const address = contractAddress
-                const collection: any = await onRegisterCollection(address, NFTContractType.ERC1155, name, symbol, description, site, discord, instagram, medium, twitter, telegram, logoFile, featuredFile, bannerFile)
+                const collection: any = await onRegisterCollection(
+                    address, 
+                    NFTContractType.ERC1155, 
+                    name, 
+                    symbol,
+                    slug,
+                    description, 
+                    site, 
+                    discord, 
+                    instagram,
+                    medium, 
+                    twitter, 
+                    telegram, 
+                    logoFile, 
+                    featuredFile, 
+                    bannerFile
+                )
                 history.push(`/nft/collection/${collection.slug}`)
     
                 toastSuccess(t('Success'), t('You have been created the collection successfully!'))
@@ -179,7 +195,23 @@ const CreateCollection: React.FC = () => {
                 setPendingTx(true)
                 const address = await onCreateTokenContract(name, symbol, `${API_PROFILE}/collections/${slug}/uri/{id}`)
                 setContractAddress(address)
-                const collection: any = await onRegisterCollection(address, NFTContractType.ERC1155, name, symbol, description, site, discord, instagram, medium, twitter, telegram, logoFile, featuredFile, bannerFile)
+                const collection: any = await onRegisterCollection(
+                    address, 
+                    NFTContractType.ERC1155, 
+                    name, 
+                    symbol,
+                    slug,
+                    description, 
+                    site, 
+                    discord, 
+                    instagram,
+                    medium, 
+                    twitter, 
+                    telegram, 
+                    logoFile, 
+                    featuredFile, 
+                    bannerFile
+                )
                 history.push(`/nft/collection/${collection.slug}`)
     
                 toastSuccess(t('Success'), t('You have been created the collection successfully!'))
