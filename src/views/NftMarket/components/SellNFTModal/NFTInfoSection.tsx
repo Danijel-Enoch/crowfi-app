@@ -28,7 +28,7 @@ const NFTInfoSection: React.FC<NFTInfoSectionProps> = ({ nft, available}) => {
         <Text color="secondary" mr="8px">{t('Contract')}:</Text>
       </Flex>
       <Flex flex="1" justifyContent="start">
-        <Text color="primary">{truncateHash(nft.collection.contract)}</Text>
+        <Text color="primary">{truncateHash(nft.contractAddress)}</Text>
       </Flex>
     </Flex>
     <Flex justifyContent="center">
@@ -36,7 +36,7 @@ const NFTInfoSection: React.FC<NFTInfoSectionProps> = ({ nft, available}) => {
       <Text color="secondary" mr="8px">{t('Type')}:</Text>
       </Flex>
       <Flex flex="1" justifyContent="start">
-      <Text color="primary" textTransform='uppercase'>{nft.collection.contractType}</Text>
+      <Text color="primary" textTransform='uppercase'>{nft.contractType}</Text>
       </Flex>
     </Flex>
     <Flex justifyContent="center">

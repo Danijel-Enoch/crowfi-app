@@ -113,7 +113,7 @@ const Asset: React.FC = () => {
                 setBalances(balances_)
                 setCollection(nft_.collection)
 
-                const meta_ = await onGetNFTMeta(nft_.collection?.contract, nft_.tokenId)
+                const meta_ = await onGetNFTMeta(nft_.contractAddress, nft_.tokenId)
                 setMeta(meta_)
 
 
@@ -184,7 +184,7 @@ const Asset: React.FC = () => {
     const renderContent = () =>  {
         return (
             <>
-            { account && nft.owner?.toLowerCase() === account.toLowerCase() && myBalance > 0 && (
+            { account && myBalance > 0 && (
                 <OwnerBanner nft={nft} account={account} onSell={() => reloadSaleInfo} balance={myBalance}/>
             )}
             <Container>
@@ -197,7 +197,7 @@ const Asset: React.FC = () => {
                             flex={["1", null, null, "3"]}
                         >
                             <AssetMedia metadata={meta} />
-                            <AssetInfoSection metadata={meta} tokenAddress={nft.collection?.contract} tokenId={nft.tokenId} nft={nft}/>
+                            <AssetInfoSection metadata={meta} tokenAddress={nft.contractAddress} tokenId={nft.tokenId} nft={nft}/>
                         </Flex>
                         <Flex
                             flexDirection="column"

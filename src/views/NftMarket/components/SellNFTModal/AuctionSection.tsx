@@ -87,8 +87,8 @@ const AuctionSection: React.FC<AuctionSectionProps> = ({ nft, account, available
       const listId = await onListAuction(
         useToken, 
         nft.id.toString(), 
-        nft.collection.contract, 
-        nft.collection.contractType.toString(),
+        nft.contractAddress, 
+        nft.contractType.toString(),
         nft.tokenId,
         amount,
         priceNumber.toFixed(), 

@@ -61,7 +61,7 @@ const AssetCard: React.FC<AssetCardProps> = ({asset}) => {
     const { t } = useTranslation()
 
     return (
-        <LinkWrapper to={`/nft/asset/${asset?.collection?.contract}/${asset?.tokenId}`}>
+        <LinkWrapper to={`/nft/asset/${asset?.contractAddress}/${asset?.tokenId}`}>
             <Wrapper>
                 <Card>
                     <Thumbnail alt={asset?.name} src={asset?.thumbnail} />

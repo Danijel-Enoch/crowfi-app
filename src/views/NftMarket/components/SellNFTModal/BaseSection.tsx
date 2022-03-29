@@ -22,7 +22,7 @@ interface BaseSectionProps {
 
 const BaseSection: React.FC<BaseSectionProps> = ({ nft, account, available, handleSell, pendingTx, isInputValid, onDismiss, children }) => {
   const { t } = useTranslation()
-  const contractAddress = isAddress(nft.collection.contract)
+  const contractAddress = isAddress(nft.contractAddress)
   const [approval, approveCallback]  = useNFTApproveCallback(contractAddress === false ? undefined : contractAddress, getNftMarketAddress())
 
   const renderApprovalOrSellButton = () => {

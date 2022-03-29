@@ -64,8 +64,8 @@ const MarketSection: React.FC<MarketSectionProps> = ({ nft, account, available, 
       const marketId = await onListMarket(
         useToken, 
         nft.id.toString(),
-        nft.collection.contract,
-        nft.collection.contractType.toString(),
+        nft.contractAddress,
+        nft.contractType.toString(),
         nft.tokenId,
         amount,
         priceNumber.toString()
