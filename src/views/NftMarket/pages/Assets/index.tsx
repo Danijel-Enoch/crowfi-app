@@ -151,7 +151,7 @@ const Assets: React.FC = () => {
                     nftCount.current = rows.length
                 } else if (numberOfItemsToLoad > nftCount.current){
                     // load More
-                    const {rows, count} = await getNftsWithQueryParams({...params, offset: nftCount.current, limit: numberOfItemsToLoad})
+                    const {rows, count} = await getNftsWithQueryParams({...params, offset: nftCount.current, limit: numberOfItemsToLoad - nftCount.current})
                     setTotalItemCount(count)
                     setNfts((current) => {
                         nftCount.current = current.length + rows.length
