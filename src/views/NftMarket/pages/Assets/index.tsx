@@ -18,7 +18,7 @@ import { AssetArtTypeFilter, AssetFilter, AssetStatusFilter, AssetPriceFilter } 
 import FilterStatusSection from './FilterStatusSection'
 import { NFTCollection } from '../../hooks/types'
 
-const Wrapper = styled(Flex)`
+const Wrapper = styled(Flex).attrs({flex: 1})`
     background-color: white;
 `
 
@@ -152,7 +152,7 @@ const Assets: React.FC = () => {
                 setSelectedCollections={setSelectedCollections}
                 setPriceFilter={setPriceFilter}
             />
-            <Flex flexDirection="column">
+            <Flex flexDirection="column" flex="1">
                 <TopNav 
                     itemCount={nftCount} 
                     sortOption={sortOption}
