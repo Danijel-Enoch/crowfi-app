@@ -6,9 +6,10 @@ import AssetCard from './AssetCard'
 import {ItemSize} from './types'
 import { NFTResponse } from '../../hooks/types'
 
-const ItemsContainer = styled(Flex).attrs({flexWrap: "wrap"})<{itemSize: ItemSize, isFilterOpen: boolean}>`
-
+const Wrapper = styled(Flex).attrs({flexDirection:"column"})`
     min-height: calc(100vh - 200px);
+`
+const ItemsContainer = styled(Flex).attrs({flexWrap: "wrap"})<{itemSize: ItemSize, isFilterOpen: boolean}>`
     
     > div {
         width: ${({ itemSize }) => itemSize === ItemSize.LARGE ? '100%' : '50%'};
@@ -48,7 +49,7 @@ const SearchResult: React.FC<SearchResultProps> = ({isFilterOpen, itemSize, item
     const { t } = useTranslation()
 
     return (
-        <Flex flexDirection="column">
+        <Wrapper>
             <ItemsContainer flexWrap="wrap" itemSize={itemSize} isFilterOpen={isFilterOpen}>
                 {items && items.map((item) => {
                     return (
@@ -59,7 +60,7 @@ const SearchResult: React.FC<SearchResultProps> = ({isFilterOpen, itemSize, item
                 })}
             </ItemsContainer>
             
-        </Flex>
+        </Wrapper>
     )
 }
 
