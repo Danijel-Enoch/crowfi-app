@@ -12,6 +12,7 @@ import { DeserializedPrivateSale } from 'state/types'
 import useToast from 'hooks/useToast'
 import { useERC20 } from 'hooks/useContract'
 import { getAddress } from 'utils/addressHelpers'
+import Dots from 'components/Loader/Dots'
 import { AppHeader } from '../../../components/App'
 import { AutoColumn } from '../../../components/Layout/Column'
 import PSClaimInput from './PSClaimInput'
@@ -85,8 +86,12 @@ const PrivateSaleClaimCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, accoun
       await onClaim(val)
       dispatch(fetchPrivateSalesUserDataAsync({ account, types: [sale.type] }))
     } catch (e) {
-      toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
-      console.error(e)
+      const error = e as any
+      const msg = error?.data?.message ?? error?.message ?? t('Please try again. Confirm the transaction and make sure you are paying enough gas!')
+      toastError(
+        t('Error'),
+        msg,
+      )
     } finally {
       setPendingTx(false)
     }
@@ -101,11 +106,11 @@ const PrivateSaleClaimCard: React.FC<PPrivateSaleBuyCardProps> = ({ sale, accoun
         onClick={handleClaim}
         width="100%"
       >
-        {pendingTx ? t('Claiming...') : t('Claim')}
+        {pendingTx ? (<Dots>{t('Claiming')}</Dots>) : t('Claim')}
       </Button>
     ) : (
       <Button mt="8px" width="100%" disabled={requestedApproval || !enabled} onClick={handleApprove}>
-        {t('Enable Contract')}
+        {requestedApproval ? (<Dots>{t('Enabling')}</Dots>): t('Enable Contract')}
       </Button>
     )
   }
