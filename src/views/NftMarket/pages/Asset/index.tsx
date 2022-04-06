@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect, useState } from 'react'
-import { Button, Flex, Heading, LogoIcon, Spinner, Text } from '@pancakeswap/uikit'
+import { createPortal } from 'react-dom'
+import { Button, Flex, Heading, LogoIcon, Overlay, Spinner, Text } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import { Link, RouteComponentProps, Router, useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -22,6 +23,7 @@ import OwnerBanner from './OwnerBanner'
 import ActiveSaleSection from './ActiveSaleSection'
 import ActiveListingSection from './ActiveListingSection'
 import ActiveAuctionSection from './ActiveAuctionSection'
+import MediaViewer from './MediaViewer'
 
 
 const BlankPage = styled.div`
@@ -60,6 +62,7 @@ const Asset: React.FC = () => {
     const { account, chainId } = useWeb3React()
     const { slowRefresh } = useRefresh()
     const [needReload, setNeedReload] = useState(false)
+    const [mediaViewerVisible, setMediaViewerVisible] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const [isValid, setIsValid] = useState(true)
     const [meta, setMeta] = useState<NFTMeta>(null)
@@ -196,7 +199,7 @@ const Asset: React.FC = () => {
                             flexDirection="column"
                             flex={["1", null, null, "3"]}
                         >
-                            <AssetMedia metadata={meta} />
+                            <AssetMedia metadata={meta} onMediaClick={() => setMediaViewerVisible(true)}/>
                             <AssetInfoSection metadata={meta} tokenAddress={nft.contractAddress} tokenId={nft.tokenId} nft={nft}/>
                         </Flex>
                         <Flex
@@ -217,6 +220,11 @@ const Asset: React.FC = () => {
                     <ActivitySection metadata={meta} activities={activities} account={account}/>
                     <SimiliarSection metadata={meta} items={similars}/>
                 </Flex>
+
+                {mediaViewerVisible && createPortal(
+                    <MediaViewer metadata={meta} onDismiss={() => setMediaViewerVisible(false)}/>
+                , document.body)}
+                
             </Container>
             </>
         )

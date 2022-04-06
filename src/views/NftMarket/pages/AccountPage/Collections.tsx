@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Flex, Text } from '@pancakeswap/uikit'
+import { Flex, Skeleton, Text } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import styled, {css} from 'styled-components'
 import { useProfileLoggedIn } from 'state/profile/hooks'
@@ -41,6 +41,7 @@ interface CollectionsProps {
 const Collections: React.FC<CollectionsProps> = ({account}) => {
 
     const { t } = useTranslation()
+    const [loaded, setLoaded] = useState(false)
     const {loginStatus, profileAddress} = useProfileLoggedIn()
     const [itemSize, setItemSize] = useState(ItemSize.LARGE)
     const [collections, setCollections] = useState([])
@@ -59,6 +60,8 @@ const Collections: React.FC<CollectionsProps> = ({account}) => {
                 setCollections(collections_)
             } catch (e) {
                 setCollections([])
+            } finally {
+                setLoaded(true)
             }
         }
             
@@ -79,6 +82,14 @@ const Collections: React.FC<CollectionsProps> = ({account}) => {
                         )
                     })}
                 </ItemsContainer>
+                { loaded && collections.length === 0 && (
+                    <Flex height="200px" justifyContent="center" alignItems="center">
+                        <Text>{t('No assets found')}</Text>
+                    </Flex>
+                )}
+                { !loaded && (
+                    <Skeleton width="100%" height="200px" animation="waves"/>
+                )}
                 
             </Flex>
         </Flex>

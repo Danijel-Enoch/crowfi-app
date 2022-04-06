@@ -5,30 +5,44 @@ import styled from 'styled-components'
 import { NFTMeta } from 'views/NftMarket/hooks/types'
 import { Heart } from 'react-feather'
 
-const Wrapper = styled(Flex).attrs({flexDirection: "column"})`
-    border-radius: ${({ theme }) => theme.radii.default};
-    background: white;
-    margin: 12px;
+const Wrapper = styled(Flex).attrs({flexDirection: "column", alignItems:"center", justifyContent:"center"})`
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(200, 200, 200, 0.4);
+    -webkit-transition: opacity 0.4s;
+    transition: opacity 0.4s;
+    z-index: 1000;
+    pointer-events: initial;
 `
-const Header = styled(Flex).attrs({justifyContent: 'end'})`
-    background: rgba(255, 255, 255, 0.4);
+
+const BehindWrapper = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+`
+
+const PlayerWrapper = styled(Flex).attrs({flexDirection:"column"})`
+    width: 80vw;
+    max-width: 600px;
 `
 const ImgWrapper = styled.div`
     min-height: 200px;
-    cursor: pointer;
     > * {
         width: 100%;
-        border-bottom-right-radius: ${({ theme }) => theme.radii.default};
-        border-bottom-left-radius: ${({ theme }) => theme.radii.default};
     }
 `
 
-interface AssetMediaProps {
+interface MediaViewerProps {
     metadata?: NFTMeta
-    onMediaClick: () => void
+    onDismiss: () => void
 }
 
-const AssetMedia: React.FC<AssetMediaProps> = ({metadata, onMediaClick}) => {
+const MediaViewer: React.FC<MediaViewerProps> = ({metadata, onDismiss}) => {
 
     const assetUrl = useMemo(() => {
         if (!metadata) {
@@ -61,16 +75,14 @@ const AssetMedia: React.FC<AssetMediaProps> = ({metadata, onMediaClick}) => {
 
     return (
         <Wrapper>
-            <Header>
-                <IconButton variant="text">
-                    <Heart/>
-                </IconButton>
-            </Header>
-            <ImgWrapper onClick={onMediaClick}>
-                {renderMedia()}
-            </ImgWrapper>
+            <BehindWrapper onClick={onDismiss}/>
+            <PlayerWrapper>
+                <ImgWrapper>
+                    {renderMedia()}
+                </ImgWrapper>
+            </PlayerWrapper>
         </Wrapper>
     )
 }
 
-export default AssetMedia
+export default MediaViewer

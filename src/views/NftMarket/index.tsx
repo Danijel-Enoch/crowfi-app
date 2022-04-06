@@ -19,7 +19,7 @@ const NFTMarket: React.FC = () => {
     return (
       <>
         <Route exact path={nftsBaseUrl}>
-          <Home />
+          <Redirect to={`${nftsBaseUrl}/assets`} />
         </Route>
         <Route path={`${nftsBaseUrl}/collections`}>
           <Collections />

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Flex, } from '@pancakeswap/uikit'
+import { Flex, Skeleton, Text, } from '@pancakeswap/uikit'
+import { useTranslation } from 'contexts/Localization'
 import { useParams } from 'react-router-dom'
 import useRefresh from 'hooks/useRefresh'
 import { useFetchUserNfts } from '../../hooks/useProfile'
@@ -9,6 +10,8 @@ const AssetsCollected: React.FC = () => {
     const [assets, setAssets] = useState([])
     const { slowRefresh } = useRefresh()
     const { address: userAddress } = useParams<{ address?: string }>()
+    const { t } = useTranslation()
+    const [loaded, setLoaded] = useState(false)
     const {onFetchNftsCollected} = useFetchUserNfts(userAddress)
 
 
@@ -19,6 +22,8 @@ const AssetsCollected: React.FC = () => {
                 setAssets(asses_)
             } catch (e) {
                 setAssets([])
+            } finally {
+                setLoaded(true)
             }
         }
             
@@ -30,6 +35,14 @@ const AssetsCollected: React.FC = () => {
     return (
         <Flex flexDirection="column">
             <Assets items={assets}/>
+            { loaded && assets.length === 0 && (
+                <Flex height="200px" justifyContent="center" alignItems="center">
+                    <Text>{t('No assets found')}</Text>
+                </Flex>
+            )}
+            { !loaded && (
+               <Skeleton width="100%" height="200px" animation="waves"/>
+            )}
         </Flex>
     )
 }
