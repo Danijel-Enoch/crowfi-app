@@ -19,6 +19,7 @@ import Collections from './Collections'
 import AssetsCreated from './AssetsCreated'
 import AssetsCollected from './AssetsCollected'
 import AssetsOnSale from './AssetsOnSale'
+import NameWidget from './NameWidget'
 
 const Wrapper = styled(Flex).attrs({flexDirection: "column"})`
     background-color: white;
@@ -50,7 +51,7 @@ const AccountPage: React.FC = () => {
     const dispatch = useAppDispatch()
     const { toastError } = useToast()
     const [ profile, setProfile ] = useState<UserResponse>(null)
-    const { onUpdatePortfolio, onUpdateBanner } = useUpdateProfile()
+    const { onUpdatePortfolio, onUpdateBanner, onUpdateName } = useUpdateProfile()
     const [loaded, setLoaded] = useState(false)
     
     const tab = useMemo(() => {
@@ -104,8 +105,9 @@ const AccountPage: React.FC = () => {
     const handleUploadPortrait = useCallback(async (file: File) => {
         
         try {
-            const portfolioUrl = await onUpdatePortfolio(file)
-            dispatch(updateProfile({profile: {portfolio: portfolioUrl}}))
+            const profile_ = await onUpdatePortfolio(file)
+            setProfile(profile_)
+            dispatch(updateProfile({profile: profile_}))
         } catch(e) {
             const error = e as Error
             toastError(t('Error'), error?.message ?? "Failed to upload")
@@ -116,14 +118,32 @@ const AccountPage: React.FC = () => {
     const handleUploadBanner = useCallback(async (file: File) => {
         
         try {
-            const bannerUrl = await onUpdateBanner(file)
-            dispatch(updateProfile({profile: {banner: bannerUrl}}))
+            const profile_ = await onUpdateBanner(file)
+            setProfile(profile_)
+            dispatch(updateProfile({profile: profile_}))
         } catch(e) {
             const error = e as Error
             toastError(t('Error'), error?.message ?? "Failed to upload")
         }
 
     }, [t, dispatch, toastError, onUpdateBanner])
+
+    const handleUpdateName = useCallback(async (name: string) : Promise<boolean> => {
+        
+        let res = true
+        try {
+            const profile_ = await onUpdateName(name)
+            setProfile(profile_)
+            dispatch(updateProfile({profile: profile_}))
+        } catch(e) {
+            res = false
+            const error = e as Error
+            toastError(t('Error'), error?.message ?? "Failed to upload")
+        }
+
+        return res
+
+    }, [t, dispatch, toastError, onUpdateName])
 
     return (
         <Wrapper>
@@ -132,9 +152,7 @@ const AccountPage: React.FC = () => {
             </Flex>
             <Flex flexDirection="column" alignItems="center">
                 <Portrait image={profile?.portfolio} enabled={isMe} onSelect={handleUploadPortrait}/>
-                <Heading marginTop="8px">
-                    {profile?.name && profile?.name.length > 0 ? profile?.name : t('Unnamed')}
-                </Heading>
+                <NameWidget enabled={isMe} name={profile?.name} marginTop="8px" onUpdate={handleUpdateName}/>
                 <Text marginTop="8px">
                     {joinedAt ? t('Joined %date%', {date: joinedAt}) : '-'}
                 </Text>

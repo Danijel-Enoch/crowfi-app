@@ -18,7 +18,7 @@ export const useUpdateProfile = () => {
 
         if (response.ok) {
             const data = await response.json()
-            return data?.user?.portfolio
+            return data?.user as UserResponse
         }
 
         throw new Error('Failed to upload')
@@ -37,15 +37,36 @@ export const useUpdateProfile = () => {
 
         if (response.ok) {
             const data = await response.json()
-            return data?.user?.banner
+            return data?.user as UserResponse
         }
 
         throw new Error('Failed to upload')
     }, [tokenData])
 
+    const handleUpdateName = useCallback(async(name: string) => {
+        const response = await fetch(`${API_PROFILE}/me/change-name`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokenData.accessToken}`
+            },
+            body: JSON.stringify({
+              name
+            }),
+        })
+
+        if (response.ok) {
+            const data = await response.json()
+            return data?.user as UserResponse
+        }
+
+        throw new Error('Failed to update the name')
+    }, [tokenData])
+
     return {
         onUpdatePortfolio: handleUpdatePortfolio,
-        onUpdateBanner: handleUpdateBanner
+        onUpdateBanner: handleUpdateBanner,
+        onUpdateName: handleUpdateName
     }
 }
 
