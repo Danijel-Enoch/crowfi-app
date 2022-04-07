@@ -71,7 +71,7 @@ const ActiveAuctionSection: React.FC<ActiveAuctionSectionProps> = ({account, nft
     }, [auction])
     const [approval, approveCallback] = useApproveCallback(!auction.useEth && payToken ? new TokenAmount(payToken, JSBI.BigInt(bidAmount.toString())) : undefined, getNftMarketAddress())
     const { onPlaceBid } = usePlaceBid(auction.id)
-    const { onClaimAuction } = useClaimAuction(auction.id)
+    const { onClaimAuction, onClaimBackAuction } = useClaimAuction(auction.id)
 
     const isSeller = useMemo(() => {
         return account && account.toLowerCase() === auction.seller.toLowerCase()
@@ -186,6 +186,27 @@ const ActiveAuctionSection: React.FC<ActiveAuctionSectionProps> = ({account, nft
         }
     }, [toastError, toastSuccess, t, onCancelAuction,reloadSale, auction])
 
+    const handleGetNftBack = useCallback(async () => {
+        try {
+            setCanceling(true)
+            await onClaimBackAuction()
+            reloadSale()
+            toastSuccess(
+            `${t('Success')}!`,
+            t('You collected the nft back successfully')
+            )
+        } catch (e) {
+            const error = e as any
+            const msg = error?.data?.message ?? error?.message ?? t('Please try again. Confirm the transaction and make sure you are paying enough gas!')
+            toastError(
+                t('Error'),
+                msg,
+            )
+        } finally {
+            setCanceling(false)
+        }
+    }, [toastError, toastSuccess, t, onClaimBackAuction,reloadSale])
+
     const handleBid = useCallback(async () => {
         try {
             setPendingTx(true)
@@ -228,6 +249,40 @@ const ActiveAuctionSection: React.FC<ActiveAuctionSectionProps> = ({account, nft
         }
     }, [toastSuccess, toastError, reloadSale, t, onClaimAuction])
 
+    const renderSellerAction = () => {
+        if (status === NFTAuctionStatus.FAILED) {
+            return (
+            <Button disabled={canceling || auction.lastBidder !== AddressZero} onClick={handleGetNftBack}>
+                {canceling ? (<Dots>{t('Processing')}</Dots>) : t('Get NFT back')}
+            </Button>
+            )
+        }
+
+        if (status === NFTAuctionStatus.DEALED) {
+            return (
+            <Button
+                scale="md" variant="primary"
+                disabled={pendingTx}
+                onClick={handleClaim}
+            >
+                {pendingTx ? (
+                <Dots>{t('Processing')}</Dots>
+                ) : t('Claim Now')}
+            </Button>
+            )
+        }
+
+        if (status === NFTAuctionStatus.RUNNING) {
+            return (
+            <Button disabled={canceling || auction.lastBidder !== AddressZero} onClick={handleCancel}>
+                {canceling ? (<Dots>{t('Processing')}</Dots>) : t('Cancel')}
+            </Button>
+            )
+        }
+
+        return (<></>)
+    }
+
     const renderApprovalOrBidButton = () => {
         if (status === NFTAuctionStatus.DEALED && (isSeller || isWinner)) {
             return (
@@ -242,21 +297,21 @@ const ActiveAuctionSection: React.FC<ActiveAuctionSectionProps> = ({account, nft
                 </Button>
             )
         }
-      return auction.useEth || approval === ApprovalState.APPROVED ? (
-        <Button
-          scale="md" variant="primary" width="100%"
-          disabled={isSeller || pendingTx}
-          onClick={handleBid}
-        >
-          {pendingTx ? (
-            <Dots>{t('Processing')}</Dots>
-          ) : t('Bid Now')}
-        </Button>
-      ) : (
-        <Button scale="md" variant="primary" width="100%" disabled={isSeller || approval === ApprovalState.PENDING || approval === ApprovalState.UNKNOWN} onClick={approveCallback}>
-        {approval === ApprovalState.PENDING ? (<Dots>{t('Approving')}</Dots>) : t('Approve')}
-        </Button>
-      )
+        return auction.useEth || approval === ApprovalState.APPROVED ? (
+            <Button
+            scale="md" variant="primary" width="100%"
+            disabled={isSeller || pendingTx}
+            onClick={handleBid}
+            >
+            {pendingTx ? (
+                <Dots>{t('Processing')}</Dots>
+            ) : t('Bid Now')}
+            </Button>
+        ) : (
+            <Button scale="md" variant="primary" width="100%" disabled={isSeller || approval === ApprovalState.PENDING || approval === ApprovalState.UNKNOWN} onClick={approveCallback}>
+            {approval === ApprovalState.PENDING ? (<Dots>{t('Approving')}</Dots>) : t('Approve')}
+            </Button>
+        )
     }
 
     
@@ -326,10 +381,8 @@ const ActiveAuctionSection: React.FC<ActiveAuctionSectionProps> = ({account, nft
                     <Flex>
                         {isSeller ? (
                             <>
-                            {!auction.isTaken && (
-                                <Button disabled={canceling || auction.lastBidder !== AddressZero} onClick={handleCancel}>
-                                    {canceling ? (<Dots>{t('Processing')}</Dots>) : t('Cancel')}
-                                </Button>
+                            { account ? renderSellerAction() : (
+                                <ConnectWalletButton/>
                             )}
                             </>
                         ) : (

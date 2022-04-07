@@ -18,5 +18,16 @@ export const useClaimAuction = (auctionId: string) => {
         [marketplaceContract, auctionId]
     )
 
-    return { onClaimAuction: handleClaimAuction }
+    const handleClaimBackAuction = useCallback(
+        async() => {
+            const gasPrice = getGasPrice()
+            
+            const tx = await callWithEstimateGas(marketplaceContract, 'getBackNFT', [auctionId], { gasPrice})
+            const receipt = await tx.wait()
+            return receipt
+        },
+        [marketplaceContract, auctionId]
+    )
+
+    return { onClaimAuction: handleClaimAuction, onClaimBackAuction: handleClaimBackAuction }
 }

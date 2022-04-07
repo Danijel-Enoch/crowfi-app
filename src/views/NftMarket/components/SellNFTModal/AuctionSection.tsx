@@ -52,9 +52,31 @@ const AuctionSection: React.FC<AuctionSectionProps> = ({ nft, account, available
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { toastError, toastSuccess } = useToast()
+  const durationOptions = [
+    {
+        label: '10 mins',
+        value: 60 * 10,
+    },
+    {
+        label: '12 hours',
+        value: 3600 * 12,
+    },
+    {
+        label: '24 hours',
+        value: 86400,
+    },
+    {
+        label: '3 days',
+        value: 86400 * 3,
+    },
+    {
+        label: '7 days',
+        value: 86400 * 7,
+    }
+  ]
   const [pendingTx, setPendingTx] = useState(false)
   const [useToken, setUseToken] = useState(false)
-  const [duration, setDuration] = useState(86400)
+  const [duration, setDuration] = useState(durationOptions[0].value)
   const [price, setPrice] = useState('')
   const [amount, setAmount] = useState('1')
   
@@ -138,24 +160,7 @@ const AuctionSection: React.FC<AuctionSectionProps> = ({ nft, account, available
       </Flex>
       <Flex  margin="8px 0px" flexDirection="column">
       <Select
-          options={[
-              {
-                  label: '12 hours',
-                  value: 3600 * 12,
-              },
-              {
-                  label: '24 hours',
-                  value: 86400,
-              },
-              {
-                  label: '3 days',
-                  value: 86400 * 3,
-              },
-              {
-                  label: '7 days',
-                  value: 86400 * 7,
-              }
-          ]}
+          options={durationOptions}
           onOptionChange={handleDurationOptionChange}
       />
       </Flex>

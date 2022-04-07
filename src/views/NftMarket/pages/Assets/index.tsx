@@ -87,6 +87,9 @@ const Assets: React.FC = () => {
     useEffect(() => {
         const reloadNfts = async () => {
             try {
+                setLoading((currentLoading) => {
+                    return currentLoading + 1
+                })
                 
                 const params = {}
                 let typeIndex = 0;
@@ -162,6 +165,10 @@ const Assets: React.FC = () => {
                 lastParams.current = ''
                 setNfts([])
                 setTotalItemCount(0)
+            } finally {
+                setLoading((currentLoading) => {
+                    return currentLoading -1
+                })
             }
         }
 
@@ -190,6 +197,7 @@ const Assets: React.FC = () => {
                     setSortOption={setSortOption}
                     itemSize={itemSize} 
                     onItemSizeChange={(size) => setItemSize(size)}
+                    loading={loading > 0}
                     />
                 <FilterStatusSection 
                     priceFilter={priceFilter} 

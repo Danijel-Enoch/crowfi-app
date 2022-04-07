@@ -136,8 +136,8 @@ const DataRow: React.FC<{
                 {activity.from && (
                     <>
                     <LinkWrapper to={`/nft/profile/${activity.from?.address}`}>
-                        <Text color="primary" fontSize="14px">
-                        {isFrom ? 'You' : truncateAddress(activity.from?.address, 6)}
+                        <Text color="primary" fontSize="14px" style={{wordBreak: "break-all"}}>
+                        {isFrom ? 'You' : activity.from?.name ?? truncateAddress(activity.from?.address, 6)}
                         </Text>
                     </LinkWrapper>
                     </>
@@ -148,8 +148,8 @@ const DataRow: React.FC<{
                 {activity.to && (
                     <>
                     <LinkWrapper to={`/nft/profile/${activity.to?.address}`}>
-                        <Text color="primary" fontSize="14px">
-                        {isTo ? 'You' : truncateAddress(activity.to?.address, 6)}
+                        <Text color="primary" fontSize="14px" style={{wordBreak: "break-all"}}>
+                        {isTo ? 'You' : activity.to?.name ?? truncateAddress(activity.to?.address, 6)}
                         </Text>
                     </LinkWrapper>
                     </>

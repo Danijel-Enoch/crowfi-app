@@ -109,8 +109,8 @@ const DataRow: React.FC<{
             </Cell>
             <Cell>
                 <LinkWrapper to={`/nft/profile/${bid.bidder?.address}`}>
-                    <Text color="primary" fontSize="14px">
-                        {truncateAddress(bid.bidder?.address, 6)}
+                    <Text color="primary" fontSize="14px" style={{wordBreak: "break-all"}}>
+                        {bid.bidder?.name ?? truncateAddress(bid.bidder?.address, 6)}
                     </Text>
                 </LinkWrapper>
             </Cell>

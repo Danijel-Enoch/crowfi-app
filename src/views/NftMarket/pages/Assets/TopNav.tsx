@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import useTheme from 'hooks/useTheme'
 import BoxButtonMenu from 'components/BoxButtonMenu'
 import Select from 'components/Select/Select'
+import Loading from 'components/Loading'
 import { ItemSize } from './types'
 
 const SortSelect = styled(Select)`
@@ -24,11 +25,12 @@ interface TopNavProps {
     itemCount?: number
     itemSize: ItemSize
     sortOption: AssetSortOption
+    loading?: boolean
     setSortOption: (option: AssetSortOption) => void
     onItemSizeChange: (itemSize) => void
 }
 
-const TopNav: React.FC<TopNavProps> = ({itemCount, itemSize, setSortOption, onItemSizeChange}) => {
+const TopNav: React.FC<TopNavProps> = ({itemCount, itemSize, setSortOption, onItemSizeChange, loading}) => {
 
     const { t } = useTranslation()
     const { theme } = useTheme()
@@ -55,6 +57,9 @@ const TopNav: React.FC<TopNavProps> = ({itemCount, itemSize, setSortOption, onIt
             <Flex flex="1">
                 <Text padding="8px">{itemCount} {t('Items')}</Text>
             </Flex>
+            {loading && (
+                <Loading/>
+            )}
             <Flex padding="8px">
                 <SortSelect
                     textColor={theme.colors.primary}
@@ -72,6 +77,10 @@ const TopNav: React.FC<TopNavProps> = ({itemCount, itemSize, setSortOption, onIt
             </Flex>
         </Flex>
     )
+}
+
+TopNav.defaultProps = {
+    loading: false
 }
 
 export default TopNav

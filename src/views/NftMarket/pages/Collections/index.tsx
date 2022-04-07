@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Flex } from '@pancakeswap/uikit'
+import { Flex, Skeleton } from '@pancakeswap/uikit'
 import styled from 'styled-components'
 import useRefresh from 'hooks/useRefresh'
 import CollectionCard from './CollectionCard'
@@ -34,6 +34,7 @@ const ItemsContainer = styled(Flex).attrs({flexWrap: "wrap"})`
 
 const Collections: React.FC = () => {
     const [collections, setCollections] = useState([])
+    const [loaded, setLoaded] = useState(false)
     const { slowRefresh } = useRefresh()
 
     useEffect(() => {
@@ -43,6 +44,8 @@ const Collections: React.FC = () => {
                 setCollections(collections_)
             } catch {
                 setCollections([])
+            } finally {
+                setLoaded(true)
             }
         }
             
@@ -52,6 +55,9 @@ const Collections: React.FC = () => {
     return (
         <Wrapper>
             <Flex flexDirection="column">
+                { !loaded && (
+                    <Skeleton width="100%" height="300px" animation="waves"/>
+                )}
                 <ItemsContainer flexWrap="wrap">
                     {collections.map((item) => {
                         return (
