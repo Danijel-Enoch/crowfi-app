@@ -47,7 +47,7 @@ const Assets: React.FC<AssetsProps> = ({items}) => {
     return (
         <Flex flexDirection="column">
             <AssetsNav itemSize={itemSize} onItemSizeChange={(size) => setItemSize(size)}/>
-            <Flex flex="1">
+            <Flex flex="1" flexDirection="column">
                 <ItemsContainer flexWrap="wrap" itemSize={itemSize}>
                     {items && items.map((item) => {
                         return (
