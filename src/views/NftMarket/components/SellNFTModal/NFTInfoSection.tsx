@@ -3,6 +3,7 @@ import { Button, Flex, Text } from '@pancakeswap/uikit'
 import { NFTResponse } from 'views/NftMarket/hooks/types';
 import { useTranslation } from 'contexts/Localization';
 import truncateHash from 'utils/truncateHash';
+import { NFTContractTypes } from 'state/types';
 
 
 interface NFTInfoSectionProps {
@@ -36,7 +37,7 @@ const NFTInfoSection: React.FC<NFTInfoSectionProps> = ({ nft, available}) => {
       <Text color="secondary" mr="8px">{t('Type')}:</Text>
       </Flex>
       <Flex flex="1" justifyContent="start">
-      <Text color="primary" textTransform='uppercase'>{nft.contractType}</Text>
+      <Text color="primary" textTransform='uppercase'>{NFTContractTypes[nft.contractType]}</Text>
       </Flex>
     </Flex>
     <Flex justifyContent="center">

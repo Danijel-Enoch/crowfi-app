@@ -9,7 +9,7 @@ import { useTranslation } from 'contexts/Localization'
 import Container from 'components/Layout/Container'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import { findNft, getNftActivities, getNftBids, getNftsWithQueryParams, useGetActiveSaleForNFT, useGetNFTBalance, useGetNFTMeta } from '../../hooks/useGetNFT'
-import { Auction, BalanceResponse, Listing, NFTCollection, NFTMeta, NFTResponse, BidResponse, ActivitiesAPIResponse } from '../../hooks/types'
+import { Auction, BalanceResponse, Listing, NFTCollection, NFTMeta, NFTResponse, BidResponse, ActivitiesAPIResponse, NFTBalanceResponse } from '../../hooks/types'
 import AssetMedia from './AssetMedia'
 import AssetInfoSection from './AssetInfoSection'
 import AssetHeader from './AssetHeader'
@@ -70,7 +70,7 @@ const Asset: React.FC = () => {
     const [nft, setNft] = useState<NFTResponse>(null)
     const [listings, setListings] = useState<Listing[]>(null)
     const [auctions, setAuctions] = useState<Auction[]>(null)
-    const [balances, setBalances] = useState<BalanceResponse[]>([])
+    const [balance, setBalance] = useState<NFTBalanceResponse>(null)
     const [bids, setBids] = useState<BidResponse[]>([])
     const [similars, setSimilars] = useState<NFTResponse[]>(null)
     const [activities, setActivities] = useState<ActivitiesAPIResponse>({rows: [], count: 0})
@@ -80,12 +80,8 @@ const Asset: React.FC = () => {
     }, [auctions])
 
     const myBalance = useMemo(() =>  {
-        return balances
-        .filter((item) => item.user?.address === account?.toLowerCase())
-        .reduce((accum, item) => {
-            return accum + item.amount + item.change
-        }, 0)
-    }, [balances, account])
+        return balance ?  balance.balance : 0;
+    }, [balance])
 
     const { onGetNFTAuction, onGetNFTSell } = useGetActiveSaleForNFT()
 
@@ -94,7 +90,7 @@ const Asset: React.FC = () => {
     useEffect(() => {
         setLoaded(false)
         setNft(null)
-        setBalances([])
+        setBalance(null)
         setCollection(null)
         setMeta(null)
         setListings([])
@@ -106,14 +102,14 @@ const Asset: React.FC = () => {
     useEffect(() => {
         const fetchData = async() => {
             try {
-                const {nft : nft_, balances: balances_} = await findNft(contractAddress, tokenId)
+                const {nft : nft_, balance:balance_} = await findNft(contractAddress, tokenId, account)
                 if (!nft_) {
                     setIsValid(false)
                     setLoaded(true)
                     return
                 }
                 setNft(nft_)
-                setBalances(balances_)
+                setBalance(balance_)
                 setCollection(nft_.collection)
 
                 const meta_ = await onGetNFTMeta(nft_.contractAddress, nft_.tokenId)
@@ -200,13 +196,13 @@ const Asset: React.FC = () => {
                             flex={["1", null, null, "3"]}
                         >
                             <AssetMedia metadata={meta} onMediaClick={() => setMediaViewerVisible(true)}/>
-                            <AssetInfoSection metadata={meta} tokenAddress={nft.contractAddress} tokenId={nft.tokenId} nft={nft}/>
+                            <AssetInfoSection metadata={meta} tokenAddress={nft.contractAddress} tokenId={nft.tokenId} nft={nft} balance={balance}/>
                         </Flex>
                         <Flex
                             flexDirection="column"
                             flex={["1", null, null, "4"]}
                         >
-                            <AssetHeader metadata={meta} collection={collection} nft={nft} account={account} balances={balances}/>
+                            <AssetHeader metadata={meta} collection={collection} nft={nft} account={account} balance={balance}/>
                             { activeAuctions && activeAuctions.map((auction) => {
                                 return (
                                     <ActiveAuctionSection key={auction.id} nft={nft} auction={auction} account={account} reloadSale={reloadSaleInfo}/>

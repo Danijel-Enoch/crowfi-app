@@ -123,7 +123,14 @@ export interface NFTsAPIResponse {
 
 export interface NFTAPIResponse {
   nft: NFTResponse
-  balances?: BalanceResponse[]
+  balance?: NFTBalanceResponse
+}
+
+export interface NFTBalanceResponse {
+  balance?: number
+  owners: number
+  total: number
+  owner?: UserResponse
 }
 
 export interface BalanceResponse {

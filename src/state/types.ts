@@ -35,6 +35,11 @@ export enum NFTContractType {
   ERC1155 = 1
 }
 
+export const NFTContractTypes = {
+  0 : "ERC721",
+  1: "ERC1155"
+}
+
 export enum ProfileLoginStatus {
   NOT_CONNECTED,
   NOT_LOGGEDIN,

@@ -369,6 +369,7 @@ export const StyledIntegerInput = React.memo(function InnerInput({
   onUserInput,
   title,
   placeholder,
+  error,
   ...rest
 }: {
   value: string | number
@@ -399,6 +400,7 @@ export const StyledIntegerInput = React.memo(function InnerInput({
       title={title}
       autoComplete="off"
       autoCorrect="off"
+      hasError={error}
       // text-specific options
       type="text"
       pattern="^[0-9]*$"

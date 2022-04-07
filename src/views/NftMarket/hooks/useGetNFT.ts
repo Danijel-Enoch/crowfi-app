@@ -189,8 +189,9 @@ export const getNftsWithQueryParams = async (params:any): Promise<NFTsAPIRespons
 }
 
 
-export const findNft = async (contractAddress: string, tokenId: string) => {
-    const url = new URL(`${API_PROFILE}/nfts/${contractAddress}/${tokenId}`)
+export const findNft = async (contractAddress: string, tokenId: string, account?: string) => {
+    const queryParams = account ? `?user=${account}` : ''
+    const url = new URL(`${API_PROFILE}/nfts/${contractAddress}/${tokenId}${queryParams}`)
     const response = await fetch(url.toString())
     if (response.ok) {
       const res: NFTAPIResponse = await response.json()

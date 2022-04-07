@@ -2,19 +2,21 @@ import React, { useMemo } from 'react'
 import { AlignLeft, BarChart, List, Menu, Package, Tag } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Flex, LinkExternal, Text } from '@pancakeswap/uikit'
+import { Box, Flex, LinkExternal, Text } from '@pancakeswap/uikit'
+import { NFTContractTypes } from 'state/types'
 import ReactMarkdown from 'components/ReactMarkdown'
 import { useTranslation } from 'contexts/Localization'
 import truncateHash from 'utils/truncateHash'
 import { LinkWrapper } from 'components/Launchpad/StyledControls'
 import { getBscScanLink } from 'utils'
 import ExpandablePanel from '../../components/ExpandablePanel'
-import { NFTMeta, NFTResponse } from '../../hooks/types'
+import { NFTBalanceResponse, NFTMeta, NFTResponse } from '../../hooks/types'
 import TextTrait from '../../components/TextTrait'
 
 const CollectionLogoWrapper = styled.div`
     width: 80px;
     height: 80px;
+    margin-right: 12px;
     > img {
         width: 100%;
         height: 100%;
@@ -28,9 +30,10 @@ interface AssetInfoSectionProps {
     tokenAddress?: string
     tokenId?: string
     nft?: NFTResponse
+    balance?: NFTBalanceResponse
 }
 
-const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, tokenAddress, tokenId, nft}) => {
+const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, tokenAddress, tokenId, nft, balance}) => {
 
     const { t } = useTranslation()
 
@@ -75,9 +78,11 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, tokenAddre
                                     <img alt="collection" src={nft?.collection?.logo}/>
                                 </CollectionLogoWrapper>
                             </LinkWrapper>
-                            <Flex flex="1">
-                                <Text>{nft?.collection?.description}</Text>
-                            </Flex>
+                            <Box>
+                                <ReactMarkdown>
+                                {nft?.collection?.description}
+                                </ReactMarkdown>
+                            </Box>
                         </Flex>
                     </Flex>
                 </div>
@@ -157,6 +162,26 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, tokenAddre
                             {tokenId}
                         </Text>
                     </Flex>
+                    { balance && (
+                        <Flex justifyContent="space-between" margin="4px">
+                            <Text fontSize="14px">
+                                {t('Token Type')}
+                            </Text>
+                            <Text fontSize="14px">
+                                {NFTContractTypes[nft.contractType]}
+                            </Text>
+                        </Flex>
+                    )}
+                    { balance && (
+                        <Flex justifyContent="space-between" margin="4px">
+                            <Text fontSize="14px">
+                                {t('Total Supply')}
+                            </Text>
+                            <Text fontSize="14px">
+                                {balance.total}
+                            </Text>
+                        </Flex>
+                    )}
                     <Flex justifyContent="space-between" margin="4px">
                         <Text fontSize="14px">
                             {t('Metadata')}

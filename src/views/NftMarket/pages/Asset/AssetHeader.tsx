@@ -5,17 +5,17 @@ import { Flex, Text, Heading, CardViewIcon, ListViewIcon } from '@pancakeswap/ui
 import { useTranslation } from 'contexts/Localization'
 import { NFTAssetType } from 'state/types'
 import truncateHash from 'utils/truncateHash'
-import { BalanceResponse, NFTCollection, NFTMeta, NFTResponse } from '../../hooks/types'
+import { BalanceResponse, NFTBalanceResponse, NFTCollection, NFTMeta, NFTResponse } from '../../hooks/types'
 
 interface AssetHeaderProps {
     metadata: NFTMeta
     collection?: NFTCollection
     nft?: NFTResponse
-    balances?: BalanceResponse[]
+    balance?: NFTBalanceResponse
     account?: string
 }
 
-const AssetHeader: React.FC<AssetHeaderProps> = ({metadata, collection, nft, balances, account}) => {
+const AssetHeader: React.FC<AssetHeaderProps> = ({metadata, collection, nft, balance, account}) => {
 
     const { t } = useTranslation()
 
@@ -28,23 +28,13 @@ const AssetHeader: React.FC<AssetHeaderProps> = ({metadata, collection, nft, bal
 
     }, [metadata])
 
-    const filteredBalances = useMemo(() => {
-        return balances.filter((item) => item.amount + item.change > 0)
-    }, [balances])
-
     const totalBalance = useMemo(() => {
-        return balances.reduce((accum, item) => {
-            return accum + item.amount + item.change
-        }, 0)
-    }, [balances])
+        return balance ? balance.total : 0
+    }, [balance])
 
     const myBalance = useMemo(() =>  {
-        return balances
-        .filter((item) => item.user?.address === account?.toLowerCase())
-        .reduce((accum, item) => {
-            return accum + item.amount + item.change
-        }, 0)
-    }, [balances, account])
+        return balance ? balance.balance : 0
+    }, [balance])
 
     
     return (
@@ -57,19 +47,19 @@ const AssetHeader: React.FC<AssetHeaderProps> = ({metadata, collection, nft, bal
             <Heading margin="8px 0px">
                 {metadata?.name}
             </Heading>
-            { filteredBalances && filteredBalances.length > 0 && (
+            { balance && balance.owners > 0 && (
             <Flex alignItems="center">
-                {filteredBalances.length === 1 ? (
+                {balance.owners === 1 ? (
                     <>
                     <Text fontSize='14px'mr="8px">Owned by </Text>
-                    <Link to={`/nft/creator/${filteredBalances[0].user?.address}`}>
-                        <Text fontSize='14px' color="secondary" >{filteredBalances[0].user?.address === account?.toLowerCase() ? t('You') : truncateHash(filteredBalances[0].user?.address)}</Text>
+                    <Link to={`/nft/profile/${balance.owner?.address}`}>
+                        <Text fontSize='14px' color="secondary" >{balance.owner?.address === account?.toLowerCase() ? t('You') : balance.owner?.name ?? truncateHash(balance.owner?.address)}</Text>
                     </Link>
                     </>
                 ) : (
                     <>
                     <Users width="16px"/>
-                    <Text fontSize='14px'ml="8px" mr="12px">{filteredBalances.length} Owners</Text>
+                    <Text fontSize='14px'ml="8px" mr="12px">{balance.owners} Owners</Text>
                     <ListViewIcon width="16px"/>
                     <Text fontSize='14px' ml="8px" mr="12px">{totalBalance} Total</Text>
                     {myBalance > 0 && (
