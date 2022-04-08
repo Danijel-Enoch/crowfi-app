@@ -17,5 +17,15 @@ export const useTransferNFT = () => {
         [marketplaceContract]
     )
 
-    return { onTransferNFT: handleTransferNFT }
+    const handleAirdropNFT = useCallback(
+        async(receipients: string[], tokenAddress: string, tokenType: string, tokenId: string, amount: string) => {
+            const gasPrice = getGasPrice()
+            const tx = await callWithEstimateGas(marketplaceContract, 'transferNFT', [receipients, tokenType, tokenAddress, tokenId, amount], { gasPrice})
+            const receipt = await tx.wait()
+            return receipt
+        },
+        [marketplaceContract]
+    )
+
+    return { onTransferNFT: handleTransferNFT, onAirdropNFT: handleAirdropNFT }
 }
