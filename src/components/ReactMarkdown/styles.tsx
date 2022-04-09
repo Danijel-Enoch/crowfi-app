@@ -19,6 +19,18 @@ const ThemedComponent = styled.div`
   color: ${({ theme }) => theme.colors.text};
   margin-bottom: 16px;
   margin-top: 16px;
+  list-style-position: unset;
+
+  li {
+    margin-bottom: 8px;
+  }
+`
+const ThemedOLComponent = styled.div`
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 16px;
+  margin-top: 16px;
+  list-style-position: unset;
+  listing-style: unset;
 
   li {
     margin-bottom: 8px;
@@ -45,11 +57,11 @@ const markdownComponents: Partial<NormalComponents & SpecialComponents> = {
   h5: Title,
   h6: Title,
   p: (props) => {
-    return <Text as="p" my="16px" {...props} />
+    return <Text as="p" my="4px" {...props} />
   },
   table: Table,
   ol: (props) => {
-    return <ThemedComponent as="ol" {...props} />
+    return <ThemedOLComponent as="ol" {...props} />
   },
   ul: (props) => {
     return <ThemedComponent as="ul" {...props} />

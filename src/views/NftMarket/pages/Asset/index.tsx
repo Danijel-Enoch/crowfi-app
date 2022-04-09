@@ -8,8 +8,8 @@ import useRefresh from 'hooks/useRefresh'
 import { useTranslation } from 'contexts/Localization'
 import Container from 'components/Layout/Container'
 import ConnectWalletButton from 'components/ConnectWalletButton'
-import { findNft, getNftActivities, getNftBids, getNftsWithQueryParams, useGetActiveSaleForNFT, useGetNFTBalance, useGetNFTMeta } from '../../hooks/useGetNFT'
-import { Auction, BalanceResponse, Listing, NFTCollection, NFTMeta, NFTResponse, BidResponse, ActivitiesAPIResponse, NFTBalanceResponse } from '../../hooks/types'
+import { findNft, getNftActivities, getNftBids, getNftsWithQueryParams, useGetActiveSaleForNFT, useGetNFT, useGetNFTBalance } from '../../hooks/useGetNFT'
+import { Auction, BalanceResponse, Listing, NFTCollection, NFTMeta, NFTResponse, BidResponse, ActivitiesAPIResponse, NFTBalanceResponse, NFTAsset, NFTAssetRegistrationStatus } from '../../hooks/types'
 import AssetMedia from './AssetMedia'
 import AssetInfoSection from './AssetInfoSection'
 import AssetHeader from './AssetHeader'
@@ -24,6 +24,7 @@ import ActiveSaleSection from './ActiveSaleSection'
 import ActiveListingSection from './ActiveListingSection'
 import ActiveAuctionSection from './ActiveAuctionSection'
 import MediaViewer from './MediaViewer'
+import ImportBanner from './ImportBanner'
 
 
 const BlankPage = styled.div`
@@ -65,6 +66,8 @@ const Asset: React.FC = () => {
     const [mediaViewerVisible, setMediaViewerVisible] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const [isValid, setIsValid] = useState(true)
+    const [registrationStatus, setRegistrationStatus] = useState<NFTAssetRegistrationStatus>(NFTAssetRegistrationStatus.UNKNOWN)
+    const [asset, setAsset] = useState<NFTAsset>(null)
     const [meta, setMeta] = useState<NFTMeta>(null)
     const [collection, setCollection] = useState<NFTCollection>(null)
     const [nft, setNft] = useState<NFTResponse>(null)
@@ -85,7 +88,7 @@ const Asset: React.FC = () => {
 
     const { onGetNFTAuction, onGetNFTSell } = useGetActiveSaleForNFT()
 
-    const {onGetNFTMeta} = useGetNFTMeta()
+    const {onGetNFT} = useGetNFT()
 
     useEffect(() => {
         setLoaded(false)
@@ -102,43 +105,52 @@ const Asset: React.FC = () => {
     useEffect(() => {
         const fetchData = async() => {
             try {
-                const {nft : nft_, balance:balance_} = await findNft(contractAddress, tokenId, account)
-                if (!nft_) {
+                const {asset:asset_, meta: meta_} = await onGetNFT(contractAddress, tokenId)
+                if (!asset_ || !meta_) {
                     setIsValid(false)
                     setLoaded(true)
                     return
                 }
-                setNft(nft_)
-                setBalance(balance_)
-                setCollection(nft_.collection)
 
-                const meta_ = await onGetNFTMeta(nft_.contractAddress, nft_.tokenId)
+                setRegistrationStatus(NFTAssetRegistrationStatus.UNKNOWN)
+
+                setAsset(asset_)
                 setMeta(meta_)
+                setIsValid(true)
 
+                findNft(contractAddress, tokenId, account).then((val) => {
+                    if (val && val.nft) {
+                        const nft_ = val.nft
+                        const balance_ = val.balance
+                        setNft(nft_)
+                        setBalance(balance_)
+                        setCollection(nft_.collection)
+                        setRegistrationStatus(NFTAssetRegistrationStatus.REGISTERED)
 
-                const isValid_ = !!meta_;
-                setIsValid(isValid_)
+                        getNftBids(nft_.id).then((bids_) => {
+                            setBids(bids_)
+                        })
+        
+                        getNftsWithQueryParams({collectionId: nft_.collection.id}).then((res) => {
+                            setSimilars(res.rows.filter((item) => item.id !== nft_.id))
+                        })
+        
+                        getNftActivities(nft_.id).then((res) => {
+                            setActivities(res)
+                        })
+                    } else {
+                        setRegistrationStatus(NFTAssetRegistrationStatus.NOT_REGISTERED)
+                    }
+                })
 
-                onGetNFTAuction(nft_.contractAddress, nft_.tokenId).then((auctions_) => {
+                onGetNFTAuction(asset_.contractAddress, asset_.tokenId).then((auctions_) => {
                     setAuctions(auctions_)
                 })
                 // setAuctions(auctions_)
-                onGetNFTSell(nft_.contractAddress, nft_.tokenId).then((sells_) => {
+                onGetNFTSell(asset_.contractAddress, asset_.tokenId).then((sells_) => {
                     setListings(sells_)
                 })
                 // setListings(sells_)
-
-                getNftBids(nft_.id).then((bids_) => {
-                    setBids(bids_)
-                })
-
-                getNftsWithQueryParams({collectionId: nft_.collection.id}).then((res) => {
-                    setSimilars(res.rows.filter((item) => item.id !== nft_.id))
-                })
-
-                getNftActivities(nft_.id).then((res) => {
-                    setActivities(res)
-                })
             } catch {
                 setIsValid(false)
             }
@@ -151,7 +163,7 @@ const Asset: React.FC = () => {
         }
         
         
-    }, [onGetNFTMeta, onGetNFTAuction, onGetNFTSell, account, needReload, slowRefresh, contractAddress, tokenId, chainId])
+    }, [onGetNFT, onGetNFTAuction, onGetNFTSell, account, needReload, slowRefresh, contractAddress, tokenId, chainId])
 
     const reloadSaleInfo = async () => {
         if (!nft) {
@@ -183,7 +195,10 @@ const Asset: React.FC = () => {
     const renderContent = () =>  {
         return (
             <>
-            { account && myBalance > 0 && (
+            { account && registrationStatus === NFTAssetRegistrationStatus.NOT_REGISTERED && (
+                <ImportBanner asset={asset} account={account}/>
+            )}
+            { nft && account && myBalance > 0 && (
                 <OwnerBanner nft={nft} account={account} onSell={() => reloadSaleInfo} balance={myBalance}/>
             )}
             <Container>
@@ -196,13 +211,13 @@ const Asset: React.FC = () => {
                             flex={["1", null, null, "3"]}
                         >
                             <AssetMedia metadata={meta} onMediaClick={() => setMediaViewerVisible(true)}/>
-                            <AssetInfoSection metadata={meta} tokenAddress={nft.contractAddress} tokenId={nft.tokenId} nft={nft} balance={balance}/>
+                            <AssetInfoSection metadata={meta} collection={collection} asset={asset} balance={balance}/>
                         </Flex>
                         <Flex
                             flexDirection="column"
                             flex={["1", null, null, "4"]}
                         >
-                            <AssetHeader metadata={meta} collection={collection} nft={nft} account={account} balance={balance}/>
+                            <AssetHeader metadata={meta} collection={collection} account={account} balance={balance}/>
                             { activeAuctions && activeAuctions.map((auction) => {
                                 return (
                                     <ActiveAuctionSection key={auction.id} nft={nft} auction={auction} account={account} reloadSale={reloadSaleInfo}/>

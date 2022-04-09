@@ -10,23 +10,13 @@ import { BalanceResponse, NFTBalanceResponse, NFTCollection, NFTMeta, NFTRespons
 interface AssetHeaderProps {
     metadata: NFTMeta
     collection?: NFTCollection
-    nft?: NFTResponse
     balance?: NFTBalanceResponse
     account?: string
 }
 
-const AssetHeader: React.FC<AssetHeaderProps> = ({metadata, collection, nft, balance, account}) => {
+const AssetHeader: React.FC<AssetHeaderProps> = ({metadata, collection, balance, account}) => {
 
     const { t } = useTranslation()
-
-    const assetUrl = useMemo(() => {
-        if (metadata.properties?.type === NFTAssetType.Image) {
-            return metadata.image
-        }
-
-        return metadata.animation_url
-
-    }, [metadata])
 
     const totalBalance = useMemo(() => {
         return balance ? balance.total : 0

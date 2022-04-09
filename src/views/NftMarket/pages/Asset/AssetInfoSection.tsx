@@ -10,7 +10,7 @@ import truncateHash from 'utils/truncateHash'
 import { LinkWrapper } from 'components/Launchpad/StyledControls'
 import { getBscScanLink } from 'utils'
 import ExpandablePanel from '../../components/ExpandablePanel'
-import { NFTBalanceResponse, NFTMeta, NFTResponse } from '../../hooks/types'
+import { NFTAsset, NFTBalanceResponse, NFTCollection, NFTMeta, NFTResponse } from '../../hooks/types'
 import TextTrait from '../../components/TextTrait'
 
 const CollectionLogoWrapper = styled.div`
@@ -27,13 +27,12 @@ const CollectionLogoWrapper = styled.div`
 
 interface AssetInfoSectionProps {
     metadata?: NFTMeta
-    tokenAddress?: string
-    tokenId?: string
-    nft?: NFTResponse
+    asset?: NFTAsset
+    collection?: NFTCollection
     balance?: NFTBalanceResponse
 }
 
-const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, tokenAddress, tokenId, nft, balance}) => {
+const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, asset, collection, balance}) => {
 
     const { t } = useTranslation()
 
@@ -62,10 +61,11 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, tokenAddre
                     </ReactMarkdown>
                 </div>
             </ExpandablePanel>
+            { collection && (
             <ExpandablePanel
                 collapsed
                 icon={<Package/>}
-                title={t('About %name%', {name: nft?.collection?.name ?? ''})}
+                title={t('About %name%', {name: collection?.name ?? ''})}
                 topRadius={0}
                 hasBottomBorder={false}
                 bottomRadius={0}
@@ -73,20 +73,21 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, tokenAddre
                 <div style={{margin: "12px"}}>
                     <Flex flexDirection="column">
                         <Flex>
-                            <LinkWrapper to={`/nft/collection/${nft?.collection?.slug}`}>
+                            <LinkWrapper to={`/nft/collection/${collection?.slug}`}>
                                 <CollectionLogoWrapper>
-                                    <img alt="collection" src={nft?.collection?.logo}/>
+                                    <img alt="collection" src={collection?.logo}/>
                                 </CollectionLogoWrapper>
                             </LinkWrapper>
                             <Box>
                                 <ReactMarkdown>
-                                {nft?.collection?.description}
+                                {collection?.description}
                                 </ReactMarkdown>
                             </Box>
                         </Flex>
                     </Flex>
                 </div>
             </ExpandablePanel>
+            )}
             { textAttributes && textAttributes.length > 0 && (
                 <ExpandablePanel
                     collapsed
@@ -149,8 +150,8 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, tokenAddre
                         <Text fontSize="14px">
                             {t('Contract Address')}
                         </Text>
-                        <LinkExternal href={getBscScanLink(tokenAddress, 'address')}>
-                            {tokenAddress ? truncateHash(tokenAddress) : ''}
+                        <LinkExternal href={getBscScanLink(asset.contractAddress, 'address')}>
+                            {asset.contractAddress ? truncateHash(asset.contractAddress) : ''}
                         </LinkExternal>
                         
                     </Flex>
@@ -159,19 +160,17 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, tokenAddre
                             {t('Token ID')}
                         </Text>
                         <Text fontSize="14px">
-                            {tokenId}
+                            {asset.tokenId}
                         </Text>
                     </Flex>
-                    { balance && (
-                        <Flex justifyContent="space-between" margin="4px">
-                            <Text fontSize="14px">
-                                {t('Token Type')}
-                            </Text>
-                            <Text fontSize="14px">
-                                {NFTContractTypes[nft.contractType]}
-                            </Text>
-                        </Flex>
-                    )}
+                    <Flex justifyContent="space-between" margin="4px">
+                        <Text fontSize="14px">
+                            {t('Token Type')}
+                        </Text>
+                        <Text fontSize="14px">
+                            {NFTContractTypes[asset.contractType]}
+                        </Text>
+                    </Flex>
                     { balance && (
                         <Flex justifyContent="space-between" margin="4px">
                             <Text fontSize="14px">

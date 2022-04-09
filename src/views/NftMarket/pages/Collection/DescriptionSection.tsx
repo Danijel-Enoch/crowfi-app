@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
-import ReactMarkdown from 'react-markdown'
 import { ChevronDownIcon, ChevronUpIcon } from '@pancakeswap/uikit'
+import ReactMarkdown from 'components/ReactMarkdown'
 
 
 const ContentWrapper = styled.div<{expanded?: boolean}>`

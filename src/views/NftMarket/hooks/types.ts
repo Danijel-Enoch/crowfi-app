@@ -21,6 +21,12 @@ export enum NFTActivityType {
   TRANSFER = 9
 }
 
+export enum NFTAssetRegistrationStatus {
+  UNKNOWN = 0,
+  REGISTERED = 1,
+  NOT_REGISTERED = 2
+}
+
 /* eslint-disable camelcase */
 export interface NFTAttribute {
   id?: any
@@ -57,9 +63,9 @@ export interface NFTCollection {
     symbol: string
     slug?: string
     description?: string
-    chainId: number
-    contract: string
-    contractType: NFTContractType
+    chainId?: number
+    contract?: string
+    contractType?: NFTContractType
     logo?: string
     featuredImage?: string
     bannerImage?: string
@@ -97,19 +103,22 @@ export interface NFTMeta {
     properties?: NFTProperty
 }
 
-export interface NFTResponse {
-  id?: number
-  name?: string
+export interface NFTAsset {
   chainId: number
   contractAddress?: string
   contractType?: NFTContractType
   tokenId?: string
   tokenUri?: string
+  mediaType?: string
+}
+
+export interface NFTResponse extends NFTAsset {
+  id?: number
+  name?: string
   currentPrice?: number
   lastPrice?: number
   bestOffer?: number
   thumbnail?: string
-  mediaType?: string
   hash?: string
   owner?: string
   supply?: number

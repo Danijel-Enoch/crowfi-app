@@ -83,6 +83,10 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         label: t('Create NFT'),
         href: '/nft/create',
       },
+      {
+        label: t('Import NFT'),
+        href: '/nft/import',
+      },
     ]
   },
   {

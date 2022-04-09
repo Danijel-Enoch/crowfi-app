@@ -12,6 +12,7 @@ const Asset = lazy(() => import('./pages/Asset'))
 const Profile = lazy(() => import('./pages/Profile'))
 const NotFound = lazy(() => import('./components/NotFound'))
 const CreateNFT = lazy(() => import('./pages/CreateNFT'))
+const ImportNFT = lazy(() => import('./pages/ImportNFT'))
 
 const NFTMarket: React.FC = () => {
     const nftsBaseUrl = '/nft'
@@ -33,6 +34,12 @@ const NFTMarket: React.FC = () => {
         </Route>
         <Route path={`${nftsBaseUrl}/create`}>
           <CreateNFT />
+        </Route>
+        <Route exact path={`${nftsBaseUrl}/import`}>
+          <ImportNFT />
+        </Route>
+        <Route exact path={`${nftsBaseUrl}/import/:address/:assetId`}>
+          <ImportNFT />
         </Route>
         <Route path={`${nftsBaseUrl}/create-collection`}>
           <CreateCollection />

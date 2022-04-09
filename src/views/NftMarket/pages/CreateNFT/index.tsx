@@ -100,7 +100,6 @@ const CreateNFT: React.FC = () => {
     const [name, setName] = useState('')
     const [externalLink, setExternalLink] = useState('')
     const [description, setDescription] = useState('')
-    const [collections, setCollections] = useState(null)
     const [collection, setCollection] = useState<NFTCollection>(null)
     const [collectionOptions, setCollectionOptions] = useState([])
     const [textTraits, setTextTraits] = useState<NFTAttribute[]>([])
@@ -114,13 +113,12 @@ const CreateNFT: React.FC = () => {
         const fetchCollections = async() => {
             try {
                 const collections_ = await getCollectionsWithQueryParams({creator: account.toLowerCase()})
-                const collectionOptions_ = collections_.map((item, index) => {
+                const collectionOptions_ = collections_.filter((item) => !!item.contract).map((item, index) => {
                     return {
                         label: item.name,
                         value: item
                     }
                 })
-                setCollections(collections_)
                 setCollectionOptions(collectionOptions_)
                 setCollection(collectionOptions_.length > 0 ? collectionOptions_[0].value : null)
             } catch {

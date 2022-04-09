@@ -1,33 +1,55 @@
 import { useCallback } from "react"
 import BigNumber from "bignumber.js"
 import { AddressZero } from '@ethersproject/constants'
-import { getERC721TokenContract, getERC1155TokenContract } from "utils/contractHelpers"
+import { getERC721TokenContract, getERC1155TokenContract, getERC165Contract } from "utils/contractHelpers"
 import { NFTContractType } from "state/types"
 import useActiveWeb3React from "hooks/useActiveWeb3React"
 import nftMarketAbi from 'config/abi/nftMarket.json'
 import { API_PROFILE } from "config/constants/endpoints"
+import { ERC1155_INTERFACE_ID, ERC721_INTERFACE_ID } from "config/constants/nft"
 import { getNftMarketAddress } from "utils/addressHelpers"
 import multicall from "utils/multicall"
 import { useNftMarketContract } from "hooks/useContract"
-import { ActivitiesAPIResponse, Auction, BalancesAPIResponse, BidsAPIResponse, Listing, NFTAPIResponse, NFTCollection, NFTMeta, NFTsAPIResponse } from "./types"
+import { ActivitiesAPIResponse, Auction, BalancesAPIResponse, BidsAPIResponse, Listing, NFTAPIResponse, NFTAsset, NFTCollection, NFTMeta, NFTsAPIResponse } from "./types"
 
-export const useGetNFTMeta = () => {
-    const { library } = useActiveWeb3React()
+export const useGetNFT = () => {
+    const { library, chainId } = useActiveWeb3React()
 
-    const getNFTMeta = useCallback(async(collectionAddress: string, assetId: string) => {
+    const getNFT = useCallback(async(contractAddress: string, assetId: string) : Promise<{asset: NFTAsset, meta: NFTMeta}> => {
+        const ERC165Contract = getERC165Contract(contractAddress, library.getSigner()) as any
+        const isERC1155 = await ERC165Contract.supportsInterface(ERC1155_INTERFACE_ID)
+        const isERC721 = await ERC165Contract.supportsInterface(ERC721_INTERFACE_ID)
 
-        const nftContract = getERC1155TokenContract(collectionAddress, library.getSigner()) as any
-        let uri: string = await nftContract.uri(assetId)
-        if (uri.includes('{id}')) {
-            uri = uri.replace('{id}', assetId)
+        let uri
+        if (isERC1155) {
+            const nftContract = getERC1155TokenContract(contractAddress, library.getSigner()) as any
+            uri = await nftContract.uri(assetId)
+            if (uri.includes('{id}')) {
+                uri = uri.replace('{id}', assetId)
+            }
+        } else if (isERC721) {
+            const nftContract = getERC721TokenContract(contractAddress, library.getSigner()) as any
+            uri = await nftContract.tokenURI(assetId)
+        } else {
+            return {asset: undefined, meta: undefined}
         }
-
         const response = await fetch(uri)
         const meta: NFTMeta = await response.json()
-        return meta
-    }, [library])
+        
+        return {
+            asset: {
+                chainId,
+                contractAddress,
+                tokenId: assetId,
+                contractType: isERC1155 ? NFTContractType.ERC1155 : NFTContractType.ERC721,
+                tokenUri: uri,
+                mediaType: meta.properties?.type,
+            },
+            meta
+        }
+    }, [library, chainId])
 
-    return { onGetNFTMeta: getNFTMeta }
+    return { onGetNFT: getNFT }
 }
 
 export const useGetNFTBalance = () => {

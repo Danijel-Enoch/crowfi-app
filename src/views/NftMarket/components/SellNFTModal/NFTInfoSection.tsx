@@ -1,13 +1,13 @@
 import React from 'react'
 import { Button, Flex, Text } from '@pancakeswap/uikit'
-import { NFTResponse } from 'views/NftMarket/hooks/types';
+import { NFTAsset, NFTResponse } from 'views/NftMarket/hooks/types';
 import { useTranslation } from 'contexts/Localization';
 import truncateHash from 'utils/truncateHash';
 import { NFTContractTypes } from 'state/types';
 
 
 interface NFTInfoSectionProps {
-  nft: NFTResponse
+  nft: NFTAsset | NFTResponse
   available: number
 }
 
@@ -16,14 +16,16 @@ const NFTInfoSection: React.FC<NFTInfoSectionProps> = ({ nft, available}) => {
 
   return (
     <>
+    { 'name' in nft && (
     <Flex justifyContent="center">
       <Flex flex="1" justifyContent="end">
         <Text color="secondary" mr="8px">{t('Name')}:</Text>
       </Flex>
       <Flex flex="1" justifyContent="start">
-        <Text color="primary">{nft.name}</Text>
+        <Text color="primary">{nft.name ?? ''}</Text>
       </Flex>
     </Flex>
+    )}
     <Flex justifyContent="center">
       <Flex flex="1" justifyContent="end">
         <Text color="secondary" mr="8px">{t('Contract')}:</Text>

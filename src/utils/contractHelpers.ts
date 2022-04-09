@@ -85,6 +85,7 @@ import crowpadSaleABI from 'config/abi/crowpadSale.json'
 import { ERC20_ABI } from 'config/abi/erc20'
 import nftFactoryAbi from 'config/abi/nftFactory.json'
 import nft1155FactoryAbi from 'config/abi/nft1155Factory.json'
+import erc165Abi from 'config/abi/erc165.json'
 import erc721TokenAbi from 'config/abi/erc721Token.json'
 import erc1155TokenAbi from 'config/abi/erc1155Token.json'
 import baseNftAbi from 'config/abi/baseNft.json'
@@ -110,6 +111,10 @@ export const getERC721TokenContract = (address:string, signer?: ethers.Signer | 
 
 export const getERC1155TokenContract = (address:string, signer?: ethers.Signer | ethers.providers.Provider) => {
   return getContract(erc1155TokenAbi, address, signer)
+}
+
+export const getERC165Contract = (address:string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(erc165Abi, address, signer)
 }
 
 export const getCrowpadSaleContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
