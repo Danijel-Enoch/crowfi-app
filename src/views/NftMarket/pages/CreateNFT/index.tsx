@@ -22,6 +22,7 @@ import TextTraitModal from '../../components/TraitModal/TextTraitModal'
 import TextTrait from '../../components/TextTrait'
 import NumberTraitModal from '../../components/TraitModal/NumberTraitModal'
 import NumberTrait from '../../components/NumberTrait'
+import NoCollectionModal from '../../components/NoCollectionModal'
 
 const StyledPageBody = styled(Flex)`
     filter: ${({ theme }) => theme.card.dropShadow};
@@ -92,8 +93,6 @@ const CreateNFT: React.FC = () => {
     const [pendingTx, setPendingTx] = useState(false)
     const [formError, setFormError] = useState<FormErrors>({})
     const [assetType, setAssetType] = useState(NFTAssetType.Image)
-    const [imageUrl, setImageUrl] = useState(null)
-    const [animationUrl, setAnimationUrl] = useState(null)
     const [supply, setSupply] = useState('1')
     const [assetFile, setAssetFile] = useState(null)
     const [previewFile, setPreviewFile] = useState(null)
@@ -102,12 +101,31 @@ const CreateNFT: React.FC = () => {
     const [description, setDescription] = useState('')
     const [collection, setCollection] = useState<NFTCollection>(null)
     const [collectionOptions, setCollectionOptions] = useState([])
+    const [collectionsLoaded, setCollectionsLoaded] = useState(false)
+    const [noCollectionModalPresented, setNoCollectionModalPresented] = useState(false)
     const [textTraits, setTextTraits] = useState<NFTAttribute[]>([])
     const [numberTraits, setNumberTraits] = useState<NFTAttribute[]>([])
     const { slowRefresh } = useRefresh()
 
     const {onMintNFT} = useMintNFT(account)
     const {onRegisterNFT} = useRegisterNFT()
+
+    const [onPresentNoCollectionModal] = useModal(
+        <NoCollectionModal onAgree={() => {
+            history.push('/nft/create-collection')
+        }}/>
+    )
+
+    useEffect(() => {
+        if (noCollectionModalPresented || !collectionsLoaded || collectionOptions.length > 0) {
+            return
+        }
+
+        setNoCollectionModalPresented(true)
+
+        onPresentNoCollectionModal()
+
+    }, [onPresentNoCollectionModal, collectionsLoaded, noCollectionModalPresented, collectionOptions])
 
     useEffect(() => {
         const fetchCollections = async() => {
@@ -123,6 +141,8 @@ const CreateNFT: React.FC = () => {
                 setCollection(collectionOptions_.length > 0 ? collectionOptions_[0].value : null)
             } catch {
                 setCollectionOptions([])
+            } finally {
+                setCollectionsLoaded(true)
             }
         }
 

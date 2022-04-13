@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import PageHeader from 'components/PageHeader'
 import Upload from 'components/Upload'
 import InputGroupWithPrefix from 'components/Input/InputGroupWithPrefix'
+import CheckboxWithText from 'components/Launchpad/CheckboxWithText'
 import Loading from 'components/Loading'
 import Dots from 'components/Loader/Dots'
 import { useProfileLoggedIn } from 'state/profile/hooks'
@@ -84,6 +85,7 @@ const CreateCollection: React.FC = () => {
     const [bannerFile, setBannerFile] = useState(null)
     const [featuredFile, setFeaturedFile] = useState(null)
     const [name, setName] = useState('')
+    const [mintable, setMintable] = useState(true)
     const [symbol, setSymbol] = useState('')
     const [description, setDescription] = useState('')
     const [slug, setSlug] = useState('')
@@ -138,13 +140,18 @@ const CreateCollection: React.FC = () => {
             error.name = t('Name is required')
             valid = false
         }
+
+        if (mintable) {
         
-        if (!symbol || symbol.length === 0) {
-            error.symbol = t('Symbol is required')
-            valid = false
-        } else if (symbol.length > 20) {
-            error.symbol = t('Symbol max length is 20')
-            valid = false
+            if (!symbol || symbol.length === 0) {
+                error.symbol = t('Symbol is required')
+                valid = false
+            } else if (symbol.length > 20) {
+                error.symbol = t('Symbol max length is 20')
+                valid = false
+            }
+        } else {
+            error.symbol = undefined
         }
         
         if (site && site.length > 0 && urlReg.test(escapeRegExp(site))) {
@@ -153,19 +160,18 @@ const CreateCollection: React.FC = () => {
         }
         setFormError(error)
         return valid;
-    }, [t, logoFile, name, symbol, site, urlReg])
+    }, [t, logoFile, name, symbol, site, mintable, urlReg])
 
     const handleCreate = useCallback(async () => {
         if (!validateInputs()) {
             return
         }
 
-        if (contractAddress && contractAddress.length > 0) {
+        if (!mintable || (contractAddress && contractAddress.length > 0)) {
             try {
                 setPendingTx(true)
-                const address = contractAddress
                 const collection: any = await onRegisterCollection(
-                    address, 
+                    !mintable ? null : contractAddress, 
                     NFTContractType.ERC1155, 
                     name, 
                     symbol,
@@ -223,7 +229,7 @@ const CreateCollection: React.FC = () => {
         }
         
 
-    }, [toastError, toastSuccess, t, onCreateTokenContract, onRegisterCollection, validateInputs, contractAddress, slug, history, name, symbol,description, site, discord, instagram, medium, twitter, telegram, logoFile, featuredFile, bannerFile])
+    }, [toastError, toastSuccess, t, onCreateTokenContract, onRegisterCollection, validateInputs, mintable, contractAddress, slug, history, name, symbol,description, site, discord, instagram, medium, twitter, telegram, logoFile, featuredFile, bannerFile])
     
     if (loginStatus !== ProfileLoginStatus.LOGGEDIN) {
         return <AuthGuard/>
@@ -298,6 +304,23 @@ const CreateCollection: React.FC = () => {
                         {formError.name && (<StyledErrorLabel>{formError.name}</StyledErrorLabel>)}
                     </FieldGroup>
                     <FieldGroup>
+                        <Label required>{t('Mintable')}</Label>
+                        <LabelDesc>
+                            {t("Do you want to mint NFT tokens from this collection? If select Yes, we'll create a ERC1155 NFT contract for you.")}
+                        </LabelDesc>
+                        <CheckboxWithText
+                            text={t('Yes')}
+                            checked={mintable}
+                            onClick={() => setMintable(true)}
+                            />
+                        <CheckboxWithText
+                            text={t('No')}
+                            checked={!mintable}
+                            onClick={() => setMintable(false)}
+                            />
+                    </FieldGroup>
+                    {mintable && (
+                    <FieldGroup>
                         <Label required>{t('Symbol')}</Label>
                         <StyledTextInput 
                             placeholder={t('e.g. TOK')} 
@@ -309,6 +332,7 @@ const CreateCollection: React.FC = () => {
                         />
                         {formError.symbol && (<StyledErrorLabel>{formError.symbol}</StyledErrorLabel>)}
                     </FieldGroup>
+                    )}
 
                     <FieldGroup>
                         <Label>{t('Description')}</Label>

@@ -23,6 +23,7 @@ import { useRegisterNFT } from '../../hooks/useCreateNFT'
 import { useGetNFT, useGetNFTBalance } from '../../hooks/useGetNFT'
 import NFTMetaPreview from './NFTMetaPreview'
 import NFTAssetInfo from './NFTAssetInfo'
+import NoCollectionModal from '../../components/NoCollectionModal'
 
 const StyledPageBody = styled(Flex)`
     filter: ${({ theme }) => theme.card.dropShadow};
@@ -99,12 +100,33 @@ const ImportNFT: React.FC = () => {
     const [tokenId, setTokenId] = useState(paramTokenId)
     const validAddress = isAddress(contractAddress)
     const [collection, setCollection] = useState<NFTCollection>(null)
+    const [collectionsLoaded, setCollectionsLoaded] = useState(false)
+    const [noCollectionModalPresented, setNoCollectionModalPresented] = useState(false)
     const [collectionOptions, setCollectionOptions] = useState([])
     const { slowRefresh } = useRefresh()
 
     const {onGetNFTBalance} = useGetNFTBalance()
     const {onGetNFT} = useGetNFT()
     const {onRegisterNFT} = useRegisterNFT()
+
+    const [onPresentNoCollectionModal] = useModal(
+        <NoCollectionModal 
+        title={t('Import NFT')}
+        onAgree={() => {
+            history.push('/nft/create-collection')
+        }}/>
+    )
+
+    useEffect(() => {
+        if (noCollectionModalPresented || !collectionsLoaded || collectionOptions.length > 0) {
+            return
+        }
+
+        setNoCollectionModalPresented(true)
+
+        onPresentNoCollectionModal()
+
+    }, [onPresentNoCollectionModal, collectionsLoaded, noCollectionModalPresented, collectionOptions])
 
     useEffect(() => {
         const fetchNFTMeta = async() => {
@@ -165,6 +187,8 @@ const ImportNFT: React.FC = () => {
                 setCollection(collectionOptions_.length > 0 ? collectionOptions_[0].value : null)
             } catch {
                 setCollectionOptions([])
+            } finally {
+                setCollectionsLoaded(true)
             }
         }
 

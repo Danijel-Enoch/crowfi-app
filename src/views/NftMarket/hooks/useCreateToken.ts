@@ -64,7 +64,7 @@ export const useRegisterCollection = () => {
       formData.append('slug', slug)
       if (description && description.length > 0) formData.append('description', description)
       formData.append('creator', account.toLowerCase())
-      formData.append('contract', contractAddress.toLowerCase())
+      if (contractAddress) formData.append('contract', contractAddress.toLowerCase())
       formData.append('contractType', contractType.toString())
       formData.append('chainId', `${chainId}`)
       if (site && site.length > 0) formData.append('site', site)
