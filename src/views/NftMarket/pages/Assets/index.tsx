@@ -39,6 +39,7 @@ const Assets: React.FC = () => {
     const { t } = useTranslation()
     const { observerRef, isIntersecting } = useIntersectionObserver()
     const [isFilterOpen, setFilterOpen] = useState(true)
+    const [isMobileFilterOpen, setMobileFilterOpen] = useState(false)
     const [itemSize, setItemSize] = useState(ItemSize.LARGE)
     const [nfts, setNfts] = useState([])
     const [totalItemCount, setTotalItemCount] = useState(0)
@@ -177,10 +178,10 @@ const Assets: React.FC = () => {
     
     return (
         <Wrapper>
-            <AssetsFilterWrapper isOpen={isFilterOpen} />
+            <AssetsFilterWrapper isOpen={isMobile ? isMobileFilterOpen : isFilterOpen} />
             <AssetsFilterPanel 
-                isOpen={isFilterOpen} 
-                onToggleOpen={() => setFilterOpen(!isFilterOpen)} 
+                isOpen={isMobile ? isMobileFilterOpen : isFilterOpen} 
+                onToggleOpen={() => isMobile ? setMobileFilterOpen(!isMobileFilterOpen) : setFilterOpen(!isFilterOpen)} 
                 onFilterChanged={(filter) => setAssetFilter(filter)}
                 status={status}
                 artType={artType}
@@ -219,8 +220,8 @@ const Assets: React.FC = () => {
             {/* {createPortal(<AssetsFilter isOpen={isFilterOpen} onToggleOpen={() => setFilterOpen(!isFilterOpen)} />, document.body)} */}
             
 
-            {isMobile && !isFilterOpen && createPortal(<FilterButtonWrapper>
-                    <Button onClick={() => setFilterOpen(true)}>
+            {isMobile && !isMobileFilterOpen && createPortal(<FilterButtonWrapper>
+                    <Button onClick={() => setMobileFilterOpen(true)}>
                         {t('Filter')}
                     </Button>
                 </FilterButtonWrapper>, document.body)}
