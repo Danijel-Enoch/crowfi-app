@@ -186,7 +186,7 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, asset, col
                             {t('Metadata')}
                         </Text>
                         <Text fontSize="14px">
-                            {t('Centeralized')}
+                            {t('Decentralized')}
                         </Text>
                     </Flex>
                 </Flex>

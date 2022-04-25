@@ -32,12 +32,14 @@ export enum NFTAssetType {
 
 export enum NFTContractType {
   ERC721 = 0,
-  ERC1155 = 1
+  ERC1155 = 1,
+  BUNDLE = 2
 }
 
 export const NFTContractTypes = {
   0 : "ERC721",
-  1: "ERC1155"
+  1: "ERC1155",
+  2: "BUNDLE"
 }
 
 export enum ProfileLoginStatus {

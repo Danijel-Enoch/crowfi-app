@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { AddressZero } from '@ethersproject/constants'
 import styled from 'styled-components'
-import { Button, Flex, Text, TradeIcon } from '@pancakeswap/uikit'
+import { Button, Flex, Text, TradeIcon, useModal } from '@pancakeswap/uikit'
 import { ETHER, JSBI, TokenAmount } from '@pancakeswap/sdk'
 import { useTranslation } from 'contexts/Localization'
 import { getFullDisplayBalance } from 'utils/formatBalance'
@@ -13,12 +13,14 @@ import useToast from 'hooks/useToast'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import Dots from 'components/Loader/Dots'
 import ConnectWalletButton from 'components/ConnectWalletButton'
-import { Auction, NFTResponse } from '../../hooks/types'
+import { Auction, NFTAuctionStatus, NFTResponse } from '../../hooks/types'
 import { useCancelAuction } from '../../hooks/useListNFT'
 import ExpandablePanel from '../../components/ExpandablePanel'
 import AuctionTimer from './AuctionTimer'
 import { usePlaceBid } from '../../hooks/usePlaceBid'
 import { useClaimAuction } from '../../hooks/useClaimAuction'
+import OfferNFTModal from '../../components/OfferNFTModal'
+import { getAuctionStatus, getAuctionStatusColor, getAuctionStatusText } from '../../utils/auctionHelpers'
 
 const StatusText = styled(Text)<{statusColor}>`
     padding: 4px 12px;
@@ -31,15 +33,6 @@ const StatusText = styled(Text)<{statusColor}>`
         `
     }
 `
-
-export enum NFTAuctionStatus {
-    NOT_RUNNING,
-    RUNNING,
-    FAILED,
-    DEALED,
-    FINISHED,
-    CANCELED
-}
 
 interface ActiveAuctionSectionProps {
     nft?: NFTResponse
@@ -81,88 +74,20 @@ const ActiveAuctionSection: React.FC<ActiveAuctionSectionProps> = ({account, nft
         return account && auction.lastBidder && account.toLowerCase() === auction.lastBidder.toLowerCase()
     }, [auction, account])
 
+    const [onPresentOfferNFTModal] = useModal(
+        <OfferNFTModal nft={nft} account={account} onComplete={reloadSale} available={auction.amount.toNumber()}/>
+    )
+
     const status = useMemo(() => {
-        if (auction.startedAt === 0) {
-            return NFTAuctionStatus.NOT_RUNNING
-        }
-        if (auction.isTaken) {
-
-            if (auction.lastBidder === AddressZero) {
-                return NFTAuctionStatus.CANCELED
-            }
-            return NFTAuctionStatus.FINISHED
-        }
-
-        if (auction.startedAt + auction.duration > Math.floor(new Date().getTime() / 1000)) {
-            return NFTAuctionStatus.RUNNING
-        }
-
-        if (auction.lastBidder === AddressZero) {
-            return NFTAuctionStatus.FAILED
-        }
-
-        return NFTAuctionStatus.DEALED
+        return getAuctionStatus(auction)
     }, [auction])
 
     const statusText = useMemo(() => {
-        let res = 'Not Running'
-        switch (status) {
-        case NFTAuctionStatus.NOT_RUNNING:
-            res = t('Not Running')
-            break
-          case NFTAuctionStatus.FINISHED:
-            res = t('Finished')
-            break
-        case NFTAuctionStatus.CANCELED:
-            res = t('Canceled')
-            break
-        case NFTAuctionStatus.RUNNING:
-            res = t('Ongoing')
-            break
-        case NFTAuctionStatus.DEALED:
-            res = t('Dealed')
-            break
-        case NFTAuctionStatus.FAILED:
-            res = t('Failed')
-            break
-        default: 
-            res = t('Not Running')
-            break
-        }
-
-        return res
+        return getAuctionStatusText(status, t)
     }, [status, t])
 
     const statusColor = useMemo(() => {
-        const res: {background: string, text: string} = {
-            background: theme.colors.backgroundAlt,
-            text: theme.colors.text
-        }
-        switch (status) {
-        case NFTAuctionStatus.NOT_RUNNING:
-            res.background = theme.colors.backgroundAlt
-            break
-        case NFTAuctionStatus.FINISHED:
-            res.background = theme.colors.success
-            res.text = 'white'
-            break
-        case NFTAuctionStatus.RUNNING:
-            res.background = '#92c8f0'
-            break
-        case NFTAuctionStatus.DEALED:
-            res.background = theme.colors.success
-            res.text = 'white'
-            break
-        case NFTAuctionStatus.FAILED:
-            res.background = theme.colors.failure
-            res.text = 'white'
-            break
-        default: 
-            res.background = theme.colors.backgroundAlt
-            break
-        }
-
-        return res
+        return getAuctionStatusColor(status, theme)
     }, [status, theme])
 
     const handleCancel = useCallback(async () => {
@@ -388,12 +313,20 @@ const ActiveAuctionSection: React.FC<ActiveAuctionSectionProps> = ({account, nft
                         ) : (
                             <>
                             { (status === NFTAuctionStatus.RUNNING || status === NFTAuctionStatus.DEALED) && (
-                                <Flex flexDirection="column" mt="12px">
+                                <Flex flexDirection="column" mt="12px" mr="12px">
                                     { account ? renderApprovalOrBidButton() : (
                                         <ConnectWalletButton disabled={isSeller}/>
                                     )}
                                 </Flex>
                             )}
+                            <Flex flexDirection="column" mt="12px">
+                                <Button
+                                    scale="md" variant="primary"
+                                    onClick={onPresentOfferNFTModal}
+                                >
+                                    {t('Send Offer')}
+                                </Button>
+                            </Flex>
                             </>
                         )}
                         

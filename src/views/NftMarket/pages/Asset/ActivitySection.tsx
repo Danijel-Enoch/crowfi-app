@@ -8,7 +8,7 @@ import { useTranslation } from 'contexts/Localization'
 import { getBscScanLink } from 'utils'
 import truncateHash, { truncateAddress } from 'utils/truncateHash'
 import { LinkWrapper } from 'components/Launchpad/StyledControls'
-import { ActivitiesAPIResponse, ActivityResponse, NFTActivityType, NFTMeta } from '../../hooks/types'
+import { ActivitiesAPIResponse, ActivityResponse, NFTActivityType, NFTAsset, NFTMeta, NFTResponse } from '../../hooks/types'
 import ExpandablePanel from '../../components/ExpandablePanel'
 
 const Cell = styled(Flex)`
@@ -35,18 +35,27 @@ const ResponsiveGrid = styled.div`
 
 const DataRow: React.FC<{ 
     activity: ActivityResponse; 
+    nft?: NFTResponse
     index: number, 
     account?: string, 
-}> = ({ activity, index, account }) => {
+}> = ({ activity, nft, index, account }) => {
     const { t } = useTranslation()
 
     const isFrom = useMemo(() => {
         return activity.from?.address?.toLowerCase() === account?.toLowerCase()
     }, [account, activity])
 
+    const isFromNft = useMemo(() => {
+        return activity.fromNft?.id === nft?.id
+    }, [nft, activity])
+
     const isTo = useMemo(() => {
         return activity.to?.address?.toLowerCase() === account?.toLowerCase()
     }, [account, activity])
+
+    const isToNft = useMemo(() => {
+        return activity.toNft?.id === nft?.id
+    }, [nft, activity])
 
     const typeIcon = () => {
         switch(activity.type) {
@@ -59,6 +68,18 @@ const DataRow: React.FC<{
                     <XCircle  width="16px"/>
                 )
             case NFTActivityType.LISTING_DONE:
+                return (
+                    <CheckCircle  width="16px"/>
+                )
+            case NFTActivityType.OFFER:
+                return (
+                    <ShoppingCart  width="16px"/>
+                )
+            case NFTActivityType.OFFER_CANCELED:
+                return (
+                    <XCircle  width="16px"/>
+                )
+            case NFTActivityType.OFFER_DONE:
                 return (
                     <CheckCircle  width="16px"/>
                 )
@@ -102,6 +123,12 @@ const DataRow: React.FC<{
                 return t('Sell Canceled')
             case NFTActivityType.LISTING_DONE:
                 return t('Sold')
+            case NFTActivityType.OFFER:
+                return t('Offer')
+            case NFTActivityType.OFFER_CANCELED:
+                return t('Offer Canceled')
+            case NFTActivityType.OFFER_DONE:
+                return t('Offer Accepted')
             case NFTActivityType.AUCTION:
                 return t('Auction')
             case NFTActivityType.AUCTION_CANCELED:
@@ -114,6 +141,14 @@ const DataRow: React.FC<{
                 return t('Auction Mint')
             case NFTActivityType.BID:
                 return t('Bid')
+            case NFTActivityType.PACK:
+                return t('Pack')
+            case NFTActivityType.UNPACK:
+                return t('Unpack')
+            case NFTActivityType.ADDPACK:
+                return t('Add to Bundle')
+            case NFTActivityType.REMOVEPACK:
+                return t('Remove from Bundle')
             default: 
                 return t('Transfer')
         }
@@ -124,6 +159,13 @@ const DataRow: React.FC<{
                 <Flex alignItems="center">
                 {typeIcon()}
                 <Text fontSize="14px" ml="8px">{typeText()}</Text>
+                {(isFromNft || isToNft) && nft && (
+                <LinkWrapper to={`/nft/asset/${activity.nft?.contractAddress}/${activity.nft?.tokenId}`}>
+                    <Text color="primary" fontSize="14px" ml="12px" style={{wordBreak: "break-all"}}>
+                    {activity.nft?.name}
+                    </Text>
+                </LinkWrapper>
+                )}
                 </Flex>
             </Cell>
             <Cell>
@@ -142,6 +184,15 @@ const DataRow: React.FC<{
                     </LinkWrapper>
                     </>
                 )}
+                {activity.fromNft && (
+                    <>
+                    <LinkWrapper to={`/nft/asset/${activity.fromNft?.contractAddress}/${activity.fromNft?.tokenId}`}>
+                        <Text color="primary" fontSize="14px" style={{wordBreak: "break-all"}}>
+                        {isFromNft ? 'This' : activity.fromNft.name}
+                        </Text>
+                    </LinkWrapper>
+                    </>
+                )}
                 
             </Cell>
             <Cell>
@@ -150,6 +201,15 @@ const DataRow: React.FC<{
                     <LinkWrapper to={`/nft/profile/${activity.to?.address}`}>
                         <Text color="primary" fontSize="14px" style={{wordBreak: "break-all"}}>
                         {isTo ? 'You' : activity.to?.name ?? truncateAddress(activity.to?.address, 6)}
+                        </Text>
+                    </LinkWrapper>
+                    </>
+                )}
+                {activity.toNft && (
+                    <>
+                    <LinkWrapper to={`/nft/asset/${activity.toNft?.contractAddress}/${activity.toNft?.tokenId}`}>
+                        <Text color="primary" fontSize="14px" style={{wordBreak: "break-all"}}>
+                        {isToNft ? 'This' : activity.toNft.name}
                         </Text>
                     </LinkWrapper>
                     </>
@@ -164,12 +224,13 @@ const DataRow: React.FC<{
     )
 }
 interface ActivitySectionProps {
+    nft?: NFTResponse
     metadata: NFTMeta
     activities: ActivitiesAPIResponse
     account?: string
 }
 
-const ActivitySection: React.FC<ActivitySectionProps> = ({metadata, activities, account}) => {
+const ActivitySection: React.FC<ActivitySectionProps> = ({nft, metadata, activities, account}) => {
 
     const { t } = useTranslation()
 
@@ -242,7 +303,7 @@ const ActivitySection: React.FC<ActivitySectionProps> = ({metadata, activities, 
                             {activities && activities.rows.map((item, index) => {
                                 return (
                                     <React.Fragment key={item.id}>
-                                        <DataRow index={index} activity={item} account={account}/>
+                                        <DataRow index={index} activity={item} account={account} nft={nft}/>
                                         <Break />
                                     </React.Fragment>
                                 )

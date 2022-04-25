@@ -1,12 +1,11 @@
 import React, { useMemo, useState } from 'react'
 import { Heart, Image, Music, Video } from 'react-feather'
 import { Flex, Text } from '@pancakeswap/uikit'
-import { ETHER } from '@pancakeswap/sdk'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
-import { NFTContractType } from 'state/types'
-import { NFTResponse } from '../../hooks/types'
+import { NFTAssetType } from 'state/types'
+import { BundleItem } from '../../hooks/types'
 
 
 const Wrapper = styled.div`
@@ -59,59 +58,52 @@ const Footer = styled(Flex).attrs({justifyContent:'end', alignItems:'center'})`
 `
 
 interface AssetCardProps {
-    asset?: NFTResponse
+    item?: BundleItem
 }
 
-const AssetCard: React.FC<AssetCardProps> = ({asset}) => {
+const BundleItemCard: React.FC<AssetCardProps> = ({item}) => {
 
     const { t } = useTranslation()
 
+    const mediaType = useMemo(() => {
+        return item?.meta?.properties?.type ?? NFTAssetType.Image
+    }, [item.meta])
+
     return (
-        <LinkWrapper to={`/nft/asset/${asset?.contractAddress}/${asset?.tokenId}`}>
+        <LinkWrapper to={`/nft/asset/${item?.asset?.contractAddress}/${item?.asset?.tokenId}`}>
             <Wrapper>
                 <Card>
-                    <Thumbnail alt={asset?.name} src={asset?.thumbnail} />
+                    <Thumbnail alt={item?.meta?.name} src={item?.meta?.image} />
                     <Flex flexDirection="row" margin="16px" position="relative">
                         <TypeWrapper>
-                            {asset?.mediaType === 'image' && (
+                            {mediaType === 'image' && (
                             <Image color="white"/>
                             )}
-                            {asset?.mediaType === 'video' && (
+                            {mediaType === 'video' && (
                             <Video color="white"/>
                             )}
-                            {asset?.mediaType === 'audio' && (
+                            {mediaType === 'audio' && (
                             <Music color="white"/>
                             )}
                         </TypeWrapper>
-                        <Flex flexDirection="column" flex="3" maxWidth="60%" paddingRight="4px">
+                        <Flex flexDirection="column" flex="3" paddingRight="4px">
                             <Text fontSize="12px" ellipsis>
-                                {asset?.collection?.name}
-                            </Text>
-                            <Text fontSize="12px" ellipsis>
-                                {asset?.name} #{asset?.tokenId}
+                                {item?.meta?.name} #{item?.asset?.tokenId}
                             </Text>
                         </Flex>
-                        <Flex flexDirection="column" flex="2" maxWidth="40%" justifyContent="right" alignItems="right">
+                        {/* <Flex flexDirection="column" flex="2" maxWidth="40%" justifyContent="right" alignItems="right">
                             <Text textAlign="right" fontSize="12px">
                                 {t('Price')}
                             </Text>
                             <Text textAlign="right" fontSize="12px" style={{whiteSpace:'nowrap'}}>
                                 {asset?.currentPrice ? asset?.currentPrice : '0'} {ETHER.symbol}
                             </Text>
-                            {/* <Text textAlign="right" fontSize="12px">
-                                3 hours left
-                            </Text> */}
-                        </Flex>
+                        </Flex> */}
                     </Flex>
                     <Footer>
-                        {asset.contractType === NFTContractType.BUNDLE && (
-                        <Flex flex="1" ml="12px">
-                            <Text fontSize="14px">{t('Bundle')}</Text>
-                        </Flex>
-                        )}
                         <Heart color="gray" width="20px"/>
                         <Text color="gray" fontSize='12px' mx="8px">
-                            {asset?.likes}
+                            {t('Amount: ')} {item.amount}
                         </Text>
                     </Footer>
                 </Card>
@@ -121,4 +113,4 @@ const AssetCard: React.FC<AssetCardProps> = ({asset}) => {
     )
 }
 
-export default AssetCard
+export default BundleItemCard

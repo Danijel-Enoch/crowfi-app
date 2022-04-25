@@ -17,8 +17,25 @@ export enum NFTActivityType {
   LISTING = 5,
   LISTING_CANCELED = 6,
   LISTING_DONE = 7,
-  BID = 8,
-  TRANSFER = 9
+  OFFER = 8,
+  OFFER_CANCELED = 9,
+  OFFER_DONE = 10,
+  BID = 11,
+  TRANSFER = 12,
+  AIRDROP = 13,
+  PACK = 14,
+  ADDPACK = 15,
+  REMOVEPACK = 16,
+  UNPACK = 17
+}
+
+export enum NFTAuctionStatus {
+    NOT_RUNNING,
+    RUNNING,
+    FAILED,
+    DEALED,
+    FINISHED,
+    CANCELED
 }
 
 export enum NFTAssetRegistrationStatus {
@@ -112,6 +129,17 @@ export interface NFTAsset {
   mediaType?: string
 }
 
+export interface Bundle {
+  asset: NFTAsset
+  meta: NFTMeta
+}
+
+export interface BundleItem {
+  asset: NFTAsset
+  meta: NFTMeta
+  amount: number
+}
+
 export interface NFTResponse extends NFTAsset {
   id?: number
   name?: string
@@ -122,6 +150,9 @@ export interface NFTResponse extends NFTAsset {
   hash?: string
   owner?: string
   supply?: number
+  likes?: number
+  balance?: number
+  creator?: UserResponse
   collection?: NFTCollection
 }
 
@@ -133,6 +164,8 @@ export interface NFTsAPIResponse {
 export interface NFTAPIResponse {
   nft: NFTResponse
   balance?: NFTBalanceResponse
+  likes?: number
+  liked?: boolean
 }
 
 export interface NFTBalanceResponse {
@@ -228,6 +261,9 @@ export interface ActivityResponse {
   txId: string
   from?: UserResponse
   to?: UserResponse
+  toNft?: NFTResponse
+  fromNft?: NFTResponse
+  nft?: NFTResponse
 }
 
 export interface ActivitiesAPIResponse {

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { AddressZero } from '@ethersproject/constants'
 import styled from 'styled-components'
-import { Button, Flex, Text, TradeIcon } from '@pancakeswap/uikit'
+import { Button, Flex, Text, TradeIcon, useModal } from '@pancakeswap/uikit'
 import { ETHER, JSBI, TokenAmount } from '@pancakeswap/sdk'
 import { useTranslation } from 'contexts/Localization'
 import { getFullDisplayBalance } from 'utils/formatBalance'
@@ -16,6 +16,7 @@ import { Listing, NFTResponse } from '../../hooks/types'
 import { useCancelListing } from '../../hooks/useListNFT'
 import ExpandablePanel from '../../components/ExpandablePanel'
 import { usePurchaseNFT } from '../../hooks/usePurchaseNFT'
+import OfferNFTModal from '../../components/OfferNFTModal'
 
 const StatusText = styled(Text)<{statusColor}>`
     padding: 4px 12px;
@@ -49,6 +50,10 @@ const ActiveListingSection: React.FC<ActiveListingSectionProps> = ({account, nft
     const payToken = useToken(sell.useEth ? null : sell.payToken)
     const [approval, approveCallback] = useApproveCallback(!sell.useEth && payToken ? new TokenAmount(payToken, JSBI.BigInt(sell.price.toString())) : undefined, getNftMarketAddress())
     const { onPurchaseNFT } = usePurchaseNFT(sell.id)
+
+    const [onPresentOfferNFTModal] = useModal(
+        <OfferNFTModal nft={nft} account={account} onComplete={reloadSell} available={sell.amount.toNumber()}/>
+    )
 
     const isSeller = useMemo(() => {
         return sell.seller?.toLowerCase() === account.toLowerCase()
@@ -158,6 +163,12 @@ const ActiveListingSection: React.FC<ActiveListingSectionProps> = ({account, nft
                         </StatusText>
                     </Flex>
                     <Flex>
+                        <Text fontSize="12px">{t('Token Amount')}</Text>
+                    </Flex>
+                    <Flex>
+                        <Text color="secondary" fontSize="24px">{sell.amount.toString()}</Text>
+                    </Flex>
+                    <Flex>
                         <Text fontSize="12px">{t('Sale Price')}</Text>
                     </Flex>
                     { sell.useEth ? (
@@ -182,9 +193,19 @@ const ActiveListingSection: React.FC<ActiveListingSectionProps> = ({account, nft
                             </>
                         ) : (
                             <>
-                            { account ? renderApprovalOrBidButton() : (
-                                <ConnectWalletButton disabled={sell.isSold}/>
-                            )}
+                            <Flex flexDirection="column" mt="12px" mr="12px">
+                                { account ? renderApprovalOrBidButton() : (
+                                    <ConnectWalletButton disabled={isSeller}/>
+                                )}
+                            </Flex>
+                            <Flex flexDirection="column" mt="12px">
+                                <Button
+                                    scale="md" variant="primary"
+                                    onClick={onPresentOfferNFTModal}
+                                >
+                                    {t('Send Offer')}
+                                </Button>
+                            </Flex>
                             </>
                         )}
                         

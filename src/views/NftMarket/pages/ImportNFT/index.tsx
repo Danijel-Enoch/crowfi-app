@@ -160,7 +160,6 @@ const ImportNFT: React.FC = () => {
         const fetchNftBalnace = async () => {
             try {
                 const balance_ = await onGetNFTBalance(asset.contractAddress, asset.tokenId, asset.contractType, account)
-                console.log('balance', balance_)
                 setBalance(balance_)
             } catch {
                 setBalance(0)

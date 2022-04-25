@@ -51,7 +51,7 @@ const TransferNFTModal: React.FC<InjectedModalProps & TransferNFTModalProps> = (
   const {onTransferNFT} = useTransferNFT()
 
   const isInputValid = useMemo(() => {
-    return parseInt(amount) > 0 && parseInt(amount) < available && isAddress(receipient)
+    return parseInt(amount) > 0 && parseInt(amount) <= available && isAddress(receipient)
   }, [amount, available, receipient])
 
   const handleTransfer = useCallback(async () => {

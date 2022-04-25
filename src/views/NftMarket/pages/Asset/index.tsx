@@ -1,30 +1,33 @@
-import React, { useMemo, useEffect, useState } from 'react'
+import React, { useMemo, useEffect, useState, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { Button, Flex, Heading, LogoIcon, Overlay, Spinner, Text } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import { Link, RouteComponentProps, Router, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { NFTContractType } from 'state/types'
 import useRefresh from 'hooks/useRefresh'
 import { useTranslation } from 'contexts/Localization'
 import Container from 'components/Layout/Container'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import { findNft, getNftActivities, getNftBids, getNftsWithQueryParams, useGetActiveSaleForNFT, useGetNFT, useGetNFTBalance } from '../../hooks/useGetNFT'
-import { Auction, BalanceResponse, Listing, NFTCollection, NFTMeta, NFTResponse, BidResponse, ActivitiesAPIResponse, NFTBalanceResponse, NFTAsset, NFTAssetRegistrationStatus } from '../../hooks/types'
+import { Auction, BalanceResponse, Listing, NFTCollection, NFTMeta, NFTResponse, BidResponse, ActivitiesAPIResponse, NFTBalanceResponse, NFTAsset, NFTAssetRegistrationStatus, BundleItem } from '../../hooks/types'
 import AssetMedia from './AssetMedia'
 import AssetInfoSection from './AssetInfoSection'
 import AssetHeader from './AssetHeader'
-import PriceHistorySection from './PriceHistorySection'
 import ListingsSection from './ListingsSection'
-import OffersSection from './OffersSection'
 import ActivitySection from './ActivitySection'
 import SimiliarSection from './SimiliarSection'
-import { getCollectionsWithQueryParams } from '../../hooks/useCollections'
 import OwnerBanner from './OwnerBanner'
-import ActiveSaleSection from './ActiveSaleSection'
-import ActiveListingSection from './ActiveListingSection'
 import ActiveAuctionSection from './ActiveAuctionSection'
 import MediaViewer from './MediaViewer'
 import ImportBanner from './ImportBanner'
+import { useFavoriteNFT } from '../../hooks/useFavoriteNFT'
+import { useGetBundleItems } from '../../hooks/useBundle'
+import BundleItemsSection from './BunldeItemsSection'
+import BidsSection from './BidsSection'
+import OffersSection from './OffersSection'
+import ActiveListingSection from './ActiveListingSection'
+import AuctionsSection from './AuctionsSection'
 
 
 const BlankPage = styled.div`
@@ -71,24 +74,40 @@ const Asset: React.FC = () => {
     const [meta, setMeta] = useState<NFTMeta>(null)
     const [collection, setCollection] = useState<NFTCollection>(null)
     const [nft, setNft] = useState<NFTResponse>(null)
+    const [likes, setLikes] = useState(0)
+    const [liked, setLiked] = useState(false)
+    const [activeListing, setActiveListing] = useState<Listing>(null)
     const [listings, setListings] = useState<Listing[]>(null)
+    const [activeAuction, setActiveAuction] = useState<Auction>(null)
     const [auctions, setAuctions] = useState<Auction[]>(null)
+    const [offers, setOffers] = useState<Listing[]>(null)
     const [balance, setBalance] = useState<NFTBalanceResponse>(null)
     const [bids, setBids] = useState<BidResponse[]>([])
     const [similars, setSimilars] = useState<NFTResponse[]>(null)
     const [activities, setActivities] = useState<ActivitiesAPIResponse>({rows: [], count: 0})
+    const [bundleItems, setBundleItems] = useState<BundleItem[]>()
+    const {onFavoriteNFT, onUnfavoriteNFT} = useFavoriteNFT(contractAddress, tokenId)
 
-    const activeAuctions = useMemo(() => {
-        return auctions?.filter((item) => !item.isTaken)
-    }, [auctions])
+    // const activeAuctions = useMemo(() => {
+    //     return auctions?.filter((item) => !item.isTaken)
+    // }, [auctions])
+
+    const activeListings = useMemo(() => {
+        return listings?.filter((item) => !item.isSold)
+    }, [listings])
 
     const myBalance = useMemo(() =>  {
         return balance ?  balance.balance : 0;
     }, [balance])
 
-    const { onGetNFTAuction, onGetNFTSell } = useGetActiveSaleForNFT()
+    const isCreator = useMemo(() => {
+        return nft?.creator?.address?.toLowerCase() === account?.toLowerCase()
+    }, [nft, account])
+
+    const { onGetNFTAuction, onGetNFTSell, onGetNFTOffer } = useGetActiveSaleForNFT()
 
     const {onGetNFT} = useGetNFT()
+    const {onGetBundleItems} = useGetBundleItems()
 
     useEffect(() => {
         setLoaded(false)
@@ -97,7 +116,9 @@ const Asset: React.FC = () => {
         setCollection(null)
         setMeta(null)
         setListings([])
+        setActiveListing(null)
         setAuctions([])
+        setActiveAuction(null)
         setBids([])
         setActivities({rows: [], count: 0})
     }, [contractAddress, tokenId])
@@ -118,6 +139,12 @@ const Asset: React.FC = () => {
                 setMeta(meta_)
                 setIsValid(true)
 
+                if (asset_.contractType === NFTContractType.BUNDLE) {
+                    onGetBundleItems(contractAddress, tokenId).then((val) => {
+                        setBundleItems(val)
+                    })
+                }
+
                 findNft(contractAddress, tokenId, account).then((val) => {
                     if (val && val.nft) {
                         const nft_ = val.nft
@@ -125,15 +152,19 @@ const Asset: React.FC = () => {
                         setNft(nft_)
                         setBalance(balance_)
                         setCollection(nft_.collection)
+                        setLikes(val.likes)
+                        setLiked(val.liked)
                         setRegistrationStatus(NFTAssetRegistrationStatus.REGISTERED)
 
                         getNftBids(nft_.id).then((bids_) => {
                             setBids(bids_)
                         })
-        
-                        getNftsWithQueryParams({collectionId: nft_.collection.id}).then((res) => {
-                            setSimilars(res.rows.filter((item) => item.id !== nft_.id))
-                        })
+
+                        if (nft_.collection) {
+                            getNftsWithQueryParams({collectionId: nft_.collection.id}).then((res) => {
+                                setSimilars(res.rows.filter((item) => item.id !== nft_.id))
+                            })
+                        }
         
                         getNftActivities(nft_.id).then((res) => {
                             setActivities(res)
@@ -144,11 +175,34 @@ const Asset: React.FC = () => {
                 })
 
                 onGetNFTAuction(asset_.contractAddress, asset_.tokenId).then((auctions_) => {
-                    setAuctions(auctions_)
+                    const remainingAuctions: Auction[] = []
+                    let foundActiveAuction = false
+                    auctions_.forEach(function(auction) {
+                        if (foundActiveAuction || auction.isTaken) {
+                            remainingAuctions.push(auction)
+                        } else {
+                            setActiveAuction(auction)
+                            foundActiveAuction = true
+                        }
+                    })
+                    setAuctions(remainingAuctions)
                 })
                 // setAuctions(auctions_)
                 onGetNFTSell(asset_.contractAddress, asset_.tokenId).then((sells_) => {
-                    setListings(sells_)
+                    const remainingSells: Listing[] = []
+                    let foundActiveSell = false
+                    sells_.forEach(function(sell) {
+                        if (foundActiveSell || sell.isSold) {
+                            remainingSells.push(sell)
+                        } else {
+                            setActiveListing(sell)
+                            foundActiveSell = true
+                        }
+                    })
+                    setListings(remainingSells)
+                })
+                onGetNFTOffer(asset_.contractAddress, asset_.tokenId).then((offers_) => {
+                    setOffers(offers_)
                 })
                 // setListings(sells_)
             } catch {
@@ -163,7 +217,7 @@ const Asset: React.FC = () => {
         }
         
         
-    }, [onGetNFT, onGetNFTAuction, onGetNFTSell, account, needReload, slowRefresh, contractAddress, tokenId, chainId])
+    }, [onGetNFT, onGetNFTAuction, onGetNFTSell, onGetNFTOffer, onGetBundleItems, account, needReload, slowRefresh, contractAddress, tokenId, chainId])
 
     const reloadSaleInfo = async () => {
         if (!nft) {
@@ -171,17 +225,58 @@ const Asset: React.FC = () => {
         }
 
         const auctions_ = await onGetNFTAuction(nft.contractAddress, nft.tokenId)
-        setAuctions(auctions_)
+        const remainingAuctions: Auction[] = []
+        let foundActiveAuction = false
+        auctions_.forEach(function(auction) {
+            if (foundActiveAuction || auction.isTaken) {
+                remainingAuctions.push(auction)
+            } else {
+                setActiveAuction(auction)
+                foundActiveAuction = true
+            }
+        })
+        setAuctions(remainingAuctions)
+        
         const sells_ = await onGetNFTSell(nft.contractAddress, nft.tokenId)
-        setListings(sells_)
+        const remaingSells: Listing[] = []
+        let foundActiveSell = false
+        sells_.forEach(function(sell) {
+            if (foundActiveSell || sell.isSold) {
+                remaingSells.push(sell)
+            } else {
+                setActiveListing(sell)
+                foundActiveSell = true
+            }
+        })
+        setListings(remaingSells)
+        const offers_ = await onGetNFTOffer(nft.contractAddress, nft.tokenId)
+        setOffers(offers_)
         const bids_ = await getNftBids(nft.id)
         setBids(bids_)
-        const similars_ = await getNftsWithQueryParams({collectionId: nft.collection.id})
-        setSimilars(similars_.rows)
+        if (nft.collection) {
+            const similars_ = await getNftsWithQueryParams({collectionId: nft.collection.id})
+            setSimilars(similars_.rows)
+        }
 
         const activities_ = await getNftActivities(nft.id)
         setActivities(activities_)
     }
+
+
+
+    const handleToggleFavorite = useCallback(async () => {
+        
+        if (!liked) {
+            const {likes: likes_, liked: liked_}  = await onFavoriteNFT()
+            setLikes(likes_)
+            setLiked(liked_)
+        } else {
+
+            const {likes: likes_, liked: liked_}  = await onUnfavoriteNFT()
+            setLikes(likes_)
+            setLiked(liked_)
+        }
+    }, [liked, onFavoriteNFT, onUnfavoriteNFT])
 
     const triggerReload = () =>  {
         if (needReload) {
@@ -210,7 +305,7 @@ const Asset: React.FC = () => {
                             flexDirection="column"
                             flex={["1", null, null, "3"]}
                         >
-                            <AssetMedia metadata={meta} onMediaClick={() => setMediaViewerVisible(true)}/>
+                            <AssetMedia metadata={meta} onMediaClick={() => setMediaViewerVisible(true)} likes={likes} liked={liked} onToggleFavorite={handleToggleFavorite}/>
                             <AssetInfoSection metadata={meta} collection={collection} asset={asset} balance={balance}/>
                         </Flex>
                         <Flex
@@ -218,18 +313,26 @@ const Asset: React.FC = () => {
                             flex={["1", null, null, "4"]}
                         >
                             <AssetHeader metadata={meta} collection={collection} account={account} balance={balance}/>
-                            { activeAuctions && activeAuctions.map((auction) => {
-                                return (
-                                    <ActiveAuctionSection key={auction.id} nft={nft} auction={auction} account={account} reloadSale={reloadSaleInfo}/>
-                                )
-                            })}
+                            { activeAuction && (
+                                <ActiveAuctionSection key={activeAuction.id} nft={nft} auction={activeAuction} account={account} reloadSale={reloadSaleInfo}/>
+                            )}
+                            { activeListing && (
+                                <ActiveListingSection key={activeListing.id} nft={nft} sell={activeListing} account={account} reloadSell={reloadSaleInfo}/>
+                            )}
                             {/* <PriceHistorySection metadata={meta}/> */}
+                            <AuctionsSection metadata={meta} auctions={auctions} account={account} reloadSell={reloadSaleInfo}/>
                             <ListingsSection metadata={meta} listings={listings} account={account} reloadSell={reloadSaleInfo}/>
-                            <OffersSection metadata={meta} bids={bids} account={account}/>
+                            <OffersSection metadata={meta} offers={offers} account={account} reloadSell={reloadSaleInfo} myBalance={myBalance}/>
+                            <BidsSection metadata={meta} bids={bids} account={account}/>
                         </Flex>
                     </Flex>
-                    <ActivitySection metadata={meta} activities={activities} account={account}/>
+                    {asset.contractType === NFTContractType.BUNDLE && (
+                        <BundleItemsSection items={bundleItems}/>
+                    )}
+                    <ActivitySection metadata={meta} activities={activities} account={account} nft={nft}/>
+                    {asset.contractType !== NFTContractType.BUNDLE && (
                     <SimiliarSection metadata={meta} items={similars}/>
+                    )}
                 </Flex>
 
                 {mediaViewerVisible && createPortal(

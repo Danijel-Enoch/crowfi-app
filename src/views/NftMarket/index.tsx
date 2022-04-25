@@ -1,6 +1,7 @@
 import React, { lazy } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import AccountPage from './pages/AccountPage'
+import CreateBundle from './pages/CreateBundle'
 import CreateCollection from './pages/CreateCollection'
 
 
@@ -43,6 +44,9 @@ const NFTMarket: React.FC = () => {
         </Route>
         <Route path={`${nftsBaseUrl}/create-collection`}>
           <CreateCollection />
+        </Route>
+        <Route path={`${nftsBaseUrl}/create-bundle`}>
+          <CreateBundle />
         </Route>
         <Route exact path={`${nftsBaseUrl}/asset`}>
           <NotFound />

@@ -9,17 +9,19 @@ import { useTranslation } from 'contexts/Localization'
 import { useToken } from 'hooks/Tokens'
 import useTheme from 'hooks/useTheme'
 import useToast from 'hooks/useToast'
-import { ApprovalState, useNFTApproveCallback } from 'hooks/useNFTApproveCallback'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import {truncateAddress} from 'utils/truncateHash'
 import { getNftMarketAddress } from 'utils/addressHelpers'
+import { BIG_ONE } from 'utils/bigNumber'
 import { LinkWrapper } from 'components/Launchpad/StyledControls'
 import Dots from 'components/Loader/Dots'
-import ConnectWalletButton from 'components/ConnectWalletButton'
 import ExpandablePanel from '../../components/ExpandablePanel'
-import { Listing, NFTMeta } from '../../hooks/types'
-import { useAcceptOffer } from '../../hooks/useAcceptOffer'
-import { useCancelOffer } from '../../hooks/useListNFT'
+import { Auction, Listing, NFTAuctionStatus, NFTMeta } from '../../hooks/types'
+import { useCancelAuction } from '../../hooks/useListNFT'
+import { getAuctionStatus, getAuctionStatusColor, getAuctionStatusText } from '../../utils/auctionHelpers'
+import { usePlaceBid } from '../../hooks/usePlaceBid'
+import { useClaimAuction } from '../../hooks/useClaimAuction'
 
 const StatusText = styled(Text)<{statusColor}>`
     padding: 4px 12px;
@@ -120,72 +122,69 @@ const TableLoader: React.FC = () => {
 }
 
 const DataRow: React.FC<{ 
-    listing: Listing; 
+    auction: Auction; 
     index: number, 
     account?: string, 
-    myBalance?: number
     reloadSell: () => void }
-> = ({ listing, index, account, myBalance, reloadSell }) => {
+> = ({ auction, index, account, reloadSell }) => {
     const { t } = useTranslation()
     const { isXs, isSm } = useMatchBreakpoints()
     const { theme } = useTheme()
     const { toastSuccess, toastError } = useToast()
     const [canceling, setCanceling] = useState(false)
     const [pendingTx, setPendingTx] = useState(false)
-    const {onCancelOffer} = useCancelOffer()
+    const {onCancelAuction} = useCancelAuction()
 
-    const payToken = useToken(listing.useEth ? null : listing.payToken)
+    const payToken = useToken(auction.useEth ? null : auction.payToken)
     const tokenDecimals = useMemo(() => {
-        return listing.useEth ? ETHER.decimals : payToken?.decimals
-    }, [payToken, listing.useEth])
+        return auction.useEth ? ETHER.decimals : payToken?.decimals
+    }, [payToken, auction.useEth])
     const tokenSymbol = useMemo(() => {
-        return listing.useEth ? ETHER.symbol : payToken?.symbol
-    }, [payToken, listing.useEth])
+        return auction.useEth ? ETHER.symbol : payToken?.symbol
+    }, [payToken, auction.useEth])
+    const bidAmount = useMemo(() => {
+        if (auction.lastBidder === AddressZero) {
+            return auction.lastPrice
+        }
 
-    const [approval, approveCallback]  = useNFTApproveCallback(listing.nft, getNftMarketAddress())
-    const { onAcceptOffer } = useAcceptOffer(listing.id)
+        let increaseAmount = auction.lastPrice.dividedBy(10).decimalPlaces(0, 1)
+        if (increaseAmount.eq(0)) {
+            increaseAmount = BIG_ONE
+        }
+        return auction.lastPrice.plus(increaseAmount)
+    }, [auction])
+    const [approval, approveCallback] = useApproveCallback(!auction.useEth && payToken ? new TokenAmount(payToken, JSBI.BigInt(bidAmount.toString())) : undefined, getNftMarketAddress())
+    const { onPlaceBid } = usePlaceBid(auction.id)
+    const { onClaimAuction, onClaimBackAuction } = useClaimAuction(auction.id)
 
-    const isPurchaser = useMemo(() => {
-        return listing.purchaser?.toLowerCase() === account.toLowerCase()
-    }, [account, listing])
+    const isSeller = useMemo(() => {
+        return auction.seller?.toLowerCase() === account.toLowerCase()
+    }, [account, auction])
+
+    const isWinner = useMemo(() => {
+        return account && auction.lastBidder && account.toLowerCase() === auction.lastBidder.toLowerCase()
+    }, [auction, account])
+
+    const status = useMemo(() => {
+        return getAuctionStatus(auction)
+    }, [auction])
 
     const statusText = useMemo(() => {
-        if (listing.isSold) {
-            if (listing.seller === AddressZero) {
-                return t('Canceled')
-            }
-            return t('Sold')
-        }
-
-        return t('Running')
-    }, [listing, t])
+        return getAuctionStatusText(status, t)
+    }, [status, t])
 
     const statusColor = useMemo(() => {
-        const res: {background: string, text: string} = {
-            background: theme.colors.backgroundAlt,
-            text: theme.colors.text
-        }
-
-        if (listing.isSold) {
-            if (listing.seller !== AddressZero) {
-                res.background = theme.colors.success
-                res.text = 'white'
-            }
-        } else {
-            res.background = '#92c8f0'
-        }
-
-        return res
-    }, [listing, theme])
+        return getAuctionStatusColor(status, theme)
+    }, [status, theme])
 
     const handleCancel = useCallback(async () => {
         try {
             setCanceling(true)
-            await onCancelOffer(listing.id)
+            await onCancelAuction(auction.id)
             reloadSell()
             toastSuccess(
             `${t('Success')}!`,
-            t('The offer has been canceled successfully')
+            t('The sale has been canceled successfully')
             )
         } catch (e) {
             const error = e as any
@@ -197,16 +196,37 @@ const DataRow: React.FC<{
         } finally {
             setCanceling(false)
         }
-    }, [toastError, toastSuccess, t, onCancelOffer,reloadSell, listing])
+    }, [toastError, toastSuccess, t, onCancelAuction,reloadSell, auction])
 
-    const handleAccept = useCallback(async () => {
+    const handleGetNftBack = useCallback(async () => {
         try {
-            setPendingTx(true)
-            await onAcceptOffer()
+            setCanceling(true)
+            await onClaimBackAuction()
             reloadSell()
             toastSuccess(
             `${t('Success')}!`,
-            t('You have accepted this offer successfully')
+            t('You collected the nft back successfully')
+            )
+        } catch (e) {
+            const error = e as any
+            const msg = error?.data?.message ?? error?.message ?? t('Please try again. Confirm the transaction and make sure you are paying enough gas!')
+            toastError(
+                t('Error'),
+                msg,
+            )
+        } finally {
+            setCanceling(false)
+        }
+    }, [toastError, toastSuccess, t, onClaimBackAuction,reloadSell])
+
+    const handleBid = useCallback(async () => {
+        try {
+            setPendingTx(true)
+            await onPlaceBid(auction.useEth, bidAmount)
+            reloadSell()
+            toastSuccess(
+            `${t('Success')}!`,
+            t('You have placed a bid successfully')
             )
         } catch (e) {
             const error = e as any
@@ -218,42 +238,112 @@ const DataRow: React.FC<{
         } finally {
             setPendingTx(false)
         }
-    }, [toastSuccess, toastError, reloadSell, t, onAcceptOffer])
+    }, [toastSuccess, toastError, reloadSell, t, onPlaceBid, auction, bidAmount])
 
-    const renderApprovalOrAcceptButton = () => {
-      return listing.useEth || approval === ApprovalState.APPROVED ? (
-        <Button
-          scale="sm" variant="primary"
-          disabled={isPurchaser || listing.isSold || pendingTx || listing.amount.toNumber() > myBalance}
-          onClick={handleAccept}
-        >
-          {pendingTx ? (
-            <Dots>{t('Processing')}</Dots>
-          ) : t('Accept')}
-        </Button>
-      ) : (
-        <Button scale="sm" variant="primary" disabled={isPurchaser || listing.isSold || approval === ApprovalState.PENDING || approval === ApprovalState.UNKNOWN} onClick={approveCallback}>
-        {approval === ApprovalState.PENDING ? (<Dots>{t('Approving')}</Dots>) : t('Approve')}
-        </Button>
-      )
+    const handleClaim = useCallback(async () => {
+        try {
+            setPendingTx(true)
+            await onClaimAuction()
+            reloadSell()
+            toastSuccess(
+            `${t('Success')}!`,
+            t('You have claimed successfully')
+            )
+        } catch (e) {
+            const error = e as any
+            const msg = error?.data?.message ?? error?.message ?? t('Please try again. Confirm the transaction and make sure you are paying enough gas!')
+            toastError(
+                t('Error'),
+                msg,
+            )
+        } finally {
+            setPendingTx(false)
+        }
+    }, [toastSuccess, toastError, reloadSell, t, onClaimAuction])
+
+
+
+    const renderSellerAction = () => {
+        if (status === NFTAuctionStatus.FAILED) {
+            return (
+            <Button scale="sm" variant="primary" disabled={canceling || auction.lastBidder !== AddressZero} onClick={handleGetNftBack}>
+                {canceling ? (<Dots>{t('Processing')}</Dots>) : t('Get NFT back')}
+            </Button>
+            )
+        }
+
+        if (status === NFTAuctionStatus.DEALED) {
+            return (
+            <Button
+                scale="sm" variant="primary"
+                disabled={pendingTx}
+                onClick={handleClaim}
+            >
+                {pendingTx ? (
+                <Dots>{t('Processing')}</Dots>
+                ) : t('Claim Now')}
+            </Button>
+            )
+        }
+
+        if (status === NFTAuctionStatus.RUNNING) {
+            return (
+            <Button scale="sm" variant="primary" disabled={canceling || auction.lastBidder !== AddressZero} onClick={handleCancel}>
+                {canceling ? (<Dots>{t('Processing')}</Dots>) : t('Cancel')}
+            </Button>
+            )
+        }
+
+        return (<></>)
+    }
+
+    const renderApprovalOrBidButton = () => {
+        if (status === NFTAuctionStatus.DEALED && (isSeller || isWinner)) {
+            return (
+                <Button
+                    scale="md" variant="primary"
+                    disabled={pendingTx}
+                    onClick={handleClaim}
+                >
+                    {pendingTx ? (
+                    <Dots>{t('Processing')}</Dots>
+                    ) : t('Claim Now')}
+                </Button>
+            )
+        }
+        return auction.useEth || approval === ApprovalState.APPROVED ? (
+            <Button
+            scale="sm" variant="primary"
+            disabled={isSeller || pendingTx}
+            onClick={handleBid}
+            >
+            {pendingTx ? (
+                <Dots>{t('Processing')}</Dots>
+            ) : t('Bid')}
+            </Button>
+        ) : (
+            <Button scale="sm" variant="primary" disabled={isSeller || approval === ApprovalState.PENDING || approval === ApprovalState.UNKNOWN} onClick={approveCallback}>
+            {approval === ApprovalState.PENDING ? (<Dots>{t('Approving')}</Dots>) : t('Approve')}
+            </Button>
+        )
     }
     return (
         <ResponsiveGrid>
             <Cell>
-                <Text>{listing.id}</Text>
+                <Text>{auction.id}</Text>
             </Cell>
             <Cell>
-                <LinkWrapper to={`/nft/profile/${listing.seller}`}>
+                <LinkWrapper to={`/nft/profile/${auction.seller}`}>
                     <Text color="primary" fontSize="14px">
-                        {truncateAddress(listing.seller, 6)}
+                        {truncateAddress(auction.seller, 6)}
                     </Text>
                 </LinkWrapper>
             </Cell>
             <Cell>
-                { listing.purchaser && listing.purchaser !== AddressZero ? (
-                    <LinkWrapper to={`/nft/profile/${listing.purchaser}`}>
+                { auction.lastBidder && auction.lastBidder !== AddressZero ? (
+                    <LinkWrapper to={`/nft/profile/${auction.lastBidder}`}>
                         <Text color="primary" fontSize="14px">
-                            {truncateAddress(listing.purchaser, 6)}
+                            {truncateAddress(auction.lastBidder, 6)}
                         </Text>
                     </LinkWrapper>
                 ) : (
@@ -262,7 +352,7 @@ const DataRow: React.FC<{
             </Cell>
             <Cell>
                 <Text>
-                {listing.amount.toString()} / {listing.useEth || payToken ? getFullDisplayBalance(listing.price, tokenDecimals) : ''} {tokenSymbol}
+                {auction.amount.toString()} / {auction.useEth || payToken ? getFullDisplayBalance(auction.lastPrice, tokenDecimals) : ''} {tokenSymbol}
                 </Text>
             </Cell>
             <Cell>
@@ -271,19 +361,13 @@ const DataRow: React.FC<{
                 </StatusText>
             </Cell>
             <Cell>
-            {isPurchaser ? (
+            {isSeller ? (
                 <>
-                {!listing.isSold && (
-                    <Button scale="sm" disabled={canceling} onClick={handleCancel}>
-                        {canceling ? (<Dots>{t('Processing')}</Dots>) : t('Cancel')}
-                    </Button>
-                )}
+                { account && renderSellerAction()}
                 </>
             ) : (
                 <>
-                { account ? renderApprovalOrAcceptButton() : (
-                    <ConnectWalletButton disabled={listing.isSold}/>
-                )}
+                { (status === NFTAuctionStatus.RUNNING || status === NFTAuctionStatus.DEALED) && account && renderApprovalOrBidButton()}
                 </>
             )}
             </Cell>
@@ -291,15 +375,14 @@ const DataRow: React.FC<{
     )
 }
 
-interface OffersSectionProps {
+interface AuctionsSectionProps {
     metadata: NFTMeta
     account?: string
-    myBalance?: number
-    offers?: Listing[]
+    auctions?: Auction[]
     reloadSell: () => void
 }
 
-const OffersSection: React.FC<OffersSectionProps> = ({metadata, offers, account, myBalance, reloadSell}) => {
+const AuctionsSection: React.FC<AuctionsSectionProps> = ({metadata, auctions, account, reloadSell}) => {
 
     const { t } = useTranslation()
 
@@ -317,10 +400,10 @@ const OffersSection: React.FC<OffersSectionProps> = ({metadata, offers, account,
         <Flex flexDirection="column" padding="12px">
             <ExpandablePanel
                 icon={<Tag/>}
-                title={t('Offers')}
+                title={t('Auctions')}
             >
                 <Flex flexDirection="column" margin="12px">
-                    {offers && offers.length > 0 ? (
+                    {auctions && auctions.length > 0 ? (
                         <Flex flexDirection="column">
                             <ResponsiveGrid>
                                 <Text color="secondary" fontSize="12px" bold>
@@ -369,10 +452,10 @@ const OffersSection: React.FC<OffersSectionProps> = ({metadata, offers, account,
                             </ResponsiveGrid>
 
                             <Break />
-                            {offers.map((item, index) => {
+                            {auctions.map((item, index) => {
                                 return (
                                     <React.Fragment key={item.id}>
-                                        <DataRow index={index} listing={item} account={account} myBalance={myBalance} reloadSell={reloadSell}/>
+                                        <DataRow index={index} auction={item} account={account} reloadSell={reloadSell}/>
                                         <Break />
                                     </React.Fragment>
                                 )
@@ -395,4 +478,4 @@ const OffersSection: React.FC<OffersSectionProps> = ({metadata, offers, account,
     )
 }
 
-export default OffersSection
+export default AuctionsSection

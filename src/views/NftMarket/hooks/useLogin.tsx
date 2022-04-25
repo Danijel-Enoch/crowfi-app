@@ -3,10 +3,13 @@ import React, { useCallback, useEffect, useState } from 'react'
 import useWeb3Provider from 'hooks/useActiveWeb3React'
 import { useWeb3React } from '@web3-react/core'
 import { signMessage } from 'utils/web3React'
+import { useAppDispatch } from 'state'
+import { updateProfileAccessTokenData, updateProfileComplete } from 'state/profile/actions'
 
 export const useLogin = () => {
     const { library } = useWeb3Provider()
     const {account} = useWeb3React()
+    const dispatch = useAppDispatch()
     const handleLogin = useCallback(async() => {
         const nonceResponse = await fetch(`${API_PROFILE}/nonce`, {
             method: 'POST',
@@ -23,7 +26,6 @@ export const useLogin = () => {
         }
 
         const {nonce} = await nonceResponse.json()
-        console.log('nonce', nonce)
 
         const signature = await signMessage(library, account, `${account}\n\nNonce: ${nonce}`)
         const response = await fetch(`${API_PROFILE}/login`, {
@@ -42,6 +44,8 @@ export const useLogin = () => {
             const expiresIn = data?.data?.expiresIn ?? 0
             const expiresAt = new Date().getTime() / 1000 + expiresIn
             const accessToken = data?.data?.token ?? ''
+            dispatch(updateProfileAccessTokenData({tokenData: {expiresAt, accessToken}}))
+            dispatch(updateProfileComplete({profile: data?.user ?? {}}))
 
             return {
                 tokenData: {expiresAt, accessToken},
@@ -50,7 +54,7 @@ export const useLogin = () => {
         }
 
         throw new Error('Failed to login')
-    }, [library, account])
+    }, [library, dispatch, account])
 
     return {onLogin: handleLogin}
 }

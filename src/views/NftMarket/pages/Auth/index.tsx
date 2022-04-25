@@ -8,7 +8,6 @@ import { useTranslation } from 'contexts/Localization'
 import { useAppDispatch } from 'state'
 import { ProfileLoginStatus } from 'state/types'
 import {  useProfileLoggedIn} from 'state/profile/hooks'
-import { updateProfileAccessTokenData, updateProfileComplete } from 'state/profile/actions'
 import useToast from 'hooks/useToast'
 import LoadingPage from '../../components/LoadingPage'
 import { useLogin } from '../../hooks/useLogin'
@@ -37,7 +36,6 @@ const AuthGuard: React.FC = () => {
     const {t} = useTranslation()
     const { toastError } = useToast()
     const {account} = useWeb3React()
-    const dispatch = useAppDispatch()
     const {onLogin} = useLogin()
 
     const [pending, setPending] = useState(false)
@@ -47,8 +45,6 @@ const AuthGuard: React.FC = () => {
         try {
             setPending(true)
             const res = await onLogin()
-            dispatch(updateProfileAccessTokenData({tokenData: res.tokenData}))
-            dispatch(updateProfileComplete({profile: res.user ?? {}}))
         } catch(err) {
             const error = err as any
             toastError(error?.message ? error.message : JSON.stringify(err))
@@ -56,7 +52,7 @@ const AuthGuard: React.FC = () => {
             setPending(false)
         }
 
-    }, [dispatch, toastError, onLogin])
+    }, [toastError, onLogin])
 
     if (loginStatus === ProfileLoginStatus.NOT_CONNECTED) {
         return (

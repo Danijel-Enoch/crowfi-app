@@ -5,7 +5,6 @@ import { ETHER } from '@pancakeswap/sdk'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
-import { NFTContractType } from 'state/types'
 import { NFTResponse } from '../../hooks/types'
 
 
@@ -58,16 +57,17 @@ const Footer = styled(Flex).attrs({justifyContent:'end', alignItems:'center'})`
     padding: 8px 0px;
 `
 
-interface AssetCardProps {
+interface NFTItemProps {
     asset?: NFTResponse
+    amount?: number
 }
 
-const AssetCard: React.FC<AssetCardProps> = ({asset}) => {
+const NFTItem: React.FC<NFTItemProps> = ({asset, amount}) => {
 
     const { t } = useTranslation()
 
     return (
-        <LinkWrapper to={`/nft/asset/${asset?.contractAddress}/${asset?.tokenId}`}>
+        <LinkWrapper target="_blank" to={`/nft/asset/${asset?.contractAddress}/${asset?.tokenId}`}>
             <Wrapper>
                 <Card>
                     <Thumbnail alt={asset?.name} src={asset?.thumbnail} />
@@ -104,14 +104,8 @@ const AssetCard: React.FC<AssetCardProps> = ({asset}) => {
                         </Flex>
                     </Flex>
                     <Footer>
-                        {asset.contractType === NFTContractType.BUNDLE && (
-                        <Flex flex="1" ml="12px">
-                            <Text fontSize="14px">{t('Bundle')}</Text>
-                        </Flex>
-                        )}
-                        <Heart color="gray" width="20px"/>
                         <Text color="gray" fontSize='12px' mx="8px">
-                            {asset?.likes}
+                            {t('Amount: ')}{amount}
                         </Text>
                     </Footer>
                 </Card>
@@ -121,4 +115,4 @@ const AssetCard: React.FC<AssetCardProps> = ({asset}) => {
     )
 }
 
-export default AssetCard
+export default NFTItem

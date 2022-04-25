@@ -89,6 +89,9 @@ const MarketSection: React.FC<MarketSectionProps> = ({ nft, account, available, 
   return (
     <BaseSection nft={nft} pendingTx={pendingTx} available={available} account={account} onDismiss={onDismiss} handleSell={handleSell} isInputValid={isInputValid}>
       <Flex  margin="8px 0px" flexDirection="column">
+        <Text fontSize='14px'>
+          {t('Token Amount:')}
+        </Text>
         <StyledIntegerInput
           value={amount}
           onUserInput={(value) => setAmount(value)}
@@ -106,6 +109,9 @@ const MarketSection: React.FC<MarketSectionProps> = ({ nft, account, available, 
         </RadioGroup>
       </Flex>
       <Flex  margin="8px 0px" flexDirection="column">
+        <Text fontSize='14px'>
+          {t('Total Price:')}
+        </Text>
         <SPYInput
           enabled
           value={price}

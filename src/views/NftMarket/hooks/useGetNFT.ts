@@ -6,7 +6,7 @@ import { NFTContractType } from "state/types"
 import useActiveWeb3React from "hooks/useActiveWeb3React"
 import nftMarketAbi from 'config/abi/nftMarket.json'
 import { API_PROFILE } from "config/constants/endpoints"
-import { ERC1155_INTERFACE_ID, ERC721_INTERFACE_ID } from "config/constants/nft"
+import { BUNDLE_INTERFACE_ID, ERC1155_INTERFACE_ID, ERC721_INTERFACE_ID } from "config/constants/nft"
 import { getNftMarketAddress } from "utils/addressHelpers"
 import multicall from "utils/multicall"
 import { useNftMarketContract } from "hooks/useContract"
@@ -19,6 +19,7 @@ export const useGetNFT = () => {
         const ERC165Contract = getERC165Contract(contractAddress, library.getSigner()) as any
         const isERC1155 = await ERC165Contract.supportsInterface(ERC1155_INTERFACE_ID)
         const isERC721 = await ERC165Contract.supportsInterface(ERC721_INTERFACE_ID)
+        const isBundle = await ERC165Contract.supportsInterface(BUNDLE_INTERFACE_ID)
 
         let uri
         if (isERC1155) {
@@ -27,7 +28,7 @@ export const useGetNFT = () => {
             if (uri.includes('{id}')) {
                 uri = uri.replace('{id}', assetId)
             }
-        } else if (isERC721) {
+        } else if (isERC721 || isBundle) {
             const nftContract = getERC721TokenContract(contractAddress, library.getSigner()) as any
             uri = await nftContract.tokenURI(assetId)
         } else {
@@ -41,7 +42,7 @@ export const useGetNFT = () => {
                 chainId,
                 contractAddress,
                 tokenId: assetId,
-                contractType: isERC1155 ? NFTContractType.ERC1155 : NFTContractType.ERC721,
+                contractType: isBundle ? NFTContractType.BUNDLE : isERC1155 ? NFTContractType.ERC1155 :  NFTContractType.ERC721,
                 tokenUri: uri,
                 mediaType: meta.properties?.type,
             },
@@ -61,7 +62,7 @@ export const useGetNFTBalance = () => {
             return 0
         }
 
-        if (tokenType === NFTContractType.ERC721) {
+        if (tokenType === NFTContractType.ERC721 || tokenType === NFTContractType.BUNDLE) {
             const nftContract = getERC721TokenContract(collectionAddress, library.getSigner()) as any
             const owner: string = await nftContract.ownerOf(assetId)
             if (owner.toLowerCase() === account?.toLowerCase()) {
@@ -192,7 +193,52 @@ export const useGetActiveSaleForNFT = () => {
         }
     }, [marketContract, marketContractAddress])
 
-    return { onGetNFTAuction: getNFTAuction, onGetNFTSell: getNFTSell }
+    const getNFTOffer = useCallback(async(address: string, nftId: string) : Promise<Listing[]> => {
+        try {
+            const count_ = await marketContract.getTokenOfferCount(address, nftId)
+            const count = new BigNumber(count_._hex).toNumber()
+            const calls: any[] = []
+            for (let i = 0; i < count; i ++) {
+                calls.push(
+                    {
+                        address: marketContractAddress,
+                        name: 'nftOffers',
+                        params: [address, nftId, i.toString()],
+                    },
+                )
+            }
+            const offerIds_ = await multicall(nftMarketAbi, calls)
+            const offerIds = offerIds_.map((item) => new BigNumber(item).toString())
+            const calls2 = offerIds.map((item) => {
+                return {
+                    address: marketContractAddress,
+                    name: 'offers',
+                    params: [item],
+                }
+            })
+            
+            const markets = await multicall(nftMarketAbi, calls2)
+            return markets.map((item, index) => {
+                return {
+                    id: offerIds[index],
+                    nft: item.nft,
+                    contractType: item.nftType,
+                    tokenId: new BigNumber(item.tokenId._hex).toString(),
+                    price: new BigNumber(item.price._hex),
+                    amount: new BigNumber(item.amount._hex),
+                    payToken: item.payToken,
+                    useEth: item.payToken === AddressZero,
+                    purchaser: item.purchaser,
+                    seller: item.seller,
+                    isSold: item.isSold
+                }
+            })
+        } catch {
+            return []
+        }
+    }, [marketContract, marketContractAddress])
+
+    return { onGetNFTAuction: getNFTAuction, onGetNFTSell: getNFTSell, onGetNFTOffer: getNFTOffer }
 }
 
 
