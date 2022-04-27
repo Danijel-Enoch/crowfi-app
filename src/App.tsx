@@ -123,6 +123,7 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/ape">
               <Ape />
+            </Route>
             <Route path="/nft">
               <NftMarket />
             </Route>
