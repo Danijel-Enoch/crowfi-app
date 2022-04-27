@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import {
   Flex,
@@ -33,6 +34,11 @@ const UserMenu = () => {
   return (
     <UIKitUserMenu text={getFullDisplayBalance(crowBalance, 18, 3)}>
       <WalletUserMenuItem hasLowBnbBalance={hasLowBnbBalance} onPresentWalletModal={onPresentWalletModal} />
+      <UserMenuItem as={Link} to="/profile">
+        <Flex alignItems="center" justifyContent="space-between" width="100%">
+          {t('NFT Profile')}
+        </Flex>
+      </UserMenuItem>
       <UserMenuItem as="button" onClick={logout}>
         <Flex alignItems="center" justifyContent="space-between" width="100%">
           {t('Disconnect')}

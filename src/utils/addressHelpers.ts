@@ -15,6 +15,19 @@ export const getLockerAddress = () => {
   return getAddress(addresses.locker)
 }
 
+export const getNFTFactoryAddress = () => {
+  return getAddress(addresses.nftFactory)
+}
+
+export const getNFT1155FactoryAddress = () => {
+  return getAddress(addresses.nft1155Factory)
+}
+
+export const getNFTBundleAddress = () => {
+  return getAddress(addresses.nftBundle)
+}
+
+
 export const getTokenFactoryManagerAddress = () => {
   return getAddress(addresses.tokenFactoryManager)
 }

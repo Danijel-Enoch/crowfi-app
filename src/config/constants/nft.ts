@@ -1,0 +1,5 @@
+export const ERC1155_INTERFACE_ID = "0xd9b67a26"
+export const ERC721_INTERFACE_ID = "0x80ac58cd"
+export const BUNDLE_INTERFACE_ID = "0xe67f592b"
+export const CROW_ERC1155_CONTRACT = "0xa735C22eAA13CA3EDac6A6E6C5fD2cf7404001cc"
+
