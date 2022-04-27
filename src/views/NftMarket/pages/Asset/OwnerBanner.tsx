@@ -82,15 +82,6 @@ const OwnerBanner: React.FC<OwnerBannerProps> = ({nft, account, balance, onSell}
                         {t('Sell as Bundle')}
                     </Button>
                 )}
-                { nft.contractType === NFTContractType.BUNDLE ? (
-                    <Button mx="6px" onClick={onPresentUnpackModal}>
-                        {t('Unpack')}
-                    </Button>
-                ) : (
-                    <Button mx="6px" onClick={onPresentAddToBundleModal}>
-                        {t('Sell as Bundle')}
-                    </Button>
-                )}
             </Flex>
         </Container>
         </Wrapper>
