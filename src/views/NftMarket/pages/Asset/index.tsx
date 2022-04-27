@@ -306,7 +306,12 @@ const Asset: React.FC = () => {
                             flex={["1", null, null, "3"]}
                         >
                             <AssetMedia metadata={meta} onMediaClick={() => setMediaViewerVisible(true)} likes={likes} liked={liked} onToggleFavorite={handleToggleFavorite}/>
-                            <AssetInfoSection metadata={meta} collection={collection} asset={asset} balance={balance}/>
+                            <AssetInfoSection nft={nft} account={account} metadata={meta} collection={collection} asset={asset} balance={balance} onFreezeMeta={() => {
+                                setAsset({
+                                    ...asset,
+                                    decentralized: true
+                                })
+                            }}/>
                         </Flex>
                         <Flex
                             flexDirection="column"

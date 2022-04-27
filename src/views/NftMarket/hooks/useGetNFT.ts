@@ -22,11 +22,13 @@ export const useGetNFT = () => {
         const isBundle = await ERC165Contract.supportsInterface(BUNDLE_INTERFACE_ID)
 
         let uri
+        let decentralized = true
         if (isERC1155) {
             const nftContract = getERC1155TokenContract(contractAddress, library.getSigner()) as any
             uri = await nftContract.uri(assetId)
             if (uri.includes('{id}')) {
                 uri = uri.replace('{id}', assetId)
+                decentralized = false
             }
         } else if (isERC721 || isBundle) {
             const nftContract = getERC721TokenContract(contractAddress, library.getSigner()) as any
@@ -39,6 +41,7 @@ export const useGetNFT = () => {
         
         return {
             asset: {
+                decentralized,
                 chainId,
                 contractAddress,
                 tokenId: assetId,

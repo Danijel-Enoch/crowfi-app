@@ -32,10 +32,6 @@ const OwnerBanner: React.FC<OwnerBannerProps> = ({nft, account, balance, onSell}
     const { t } = useTranslation()
     const history = useHistory()
 
-    const isCreator = useMemo(() => {
-        return nft.creator?.address?.toLowerCase() === account?.toLowerCase()
-    }, [nft, account])
-
     const onGoPath = (path) => {
         history.push(path)
     }
@@ -77,6 +73,15 @@ const OwnerBanner: React.FC<OwnerBannerProps> = ({nft, account, balance, onSell}
                 <Button mx="6px" onClick={onPresentSellNFTModal}>
                     {t('Sell')}
                 </Button>
+                { nft.contractType === NFTContractType.BUNDLE ? (
+                    <Button mx="6px" onClick={onPresentUnpackModal}>
+                        {t('Unpack')}
+                    </Button>
+                ) : (
+                    <Button mx="6px" onClick={onPresentAddToBundleModal}>
+                        {t('Sell as Bundle')}
+                    </Button>
+                )}
                 { nft.contractType === NFTContractType.BUNDLE ? (
                     <Button mx="6px" onClick={onPresentUnpackModal}>
                         {t('Unpack')}

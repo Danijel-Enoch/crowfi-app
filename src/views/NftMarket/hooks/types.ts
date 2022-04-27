@@ -127,6 +127,7 @@ export interface NFTAsset {
   tokenId?: string
   tokenUri?: string
   mediaType?: string
+  decentralized?: boolean
 }
 
 export interface Bundle {

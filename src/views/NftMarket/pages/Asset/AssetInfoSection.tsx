@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { AlignLeft, BarChart, List, Menu, Package, Tag } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Box, Flex, LinkExternal, Text } from '@pancakeswap/uikit'
+import { Box, Button, Flex, LinkExternal, Text, useModal } from '@pancakeswap/uikit'
 import { NFTContractTypes } from 'state/types'
 import ReactMarkdown from 'components/ReactMarkdown'
 import { useTranslation } from 'contexts/Localization'
@@ -12,6 +12,7 @@ import { getBscScanLink } from 'utils'
 import ExpandablePanel from '../../components/ExpandablePanel'
 import { NFTAsset, NFTBalanceResponse, NFTCollection, NFTMeta, NFTResponse } from '../../hooks/types'
 import TextTrait from '../../components/TextTrait'
+import FreezeMetadataModalModal from '../../components/FreezeMetadataModal'
 
 const CollectionLogoWrapper = styled.div`
     width: 80px;
@@ -28,11 +29,14 @@ const CollectionLogoWrapper = styled.div`
 interface AssetInfoSectionProps {
     metadata?: NFTMeta
     asset?: NFTAsset
+    nft?: NFTResponse
+    account?: string
     collection?: NFTCollection
     balance?: NFTBalanceResponse
+    onFreezeMeta?: () => void
 }
 
-const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, asset, collection, balance}) => {
+const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, asset, nft, account, collection, balance, onFreezeMeta}) => {
 
     const { t } = useTranslation()
 
@@ -43,7 +47,16 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, asset, col
     const numberAttributes = metadata?.attributes?.filter((item) => {
         return typeof item.value === 'number'
     })
+
+    const isCreator = useMemo(() => {
+        return nft?.creator?.address?.toLowerCase() === account?.toLowerCase()
+    }, [nft, account])
     
+
+    const [onPresentFreezeMetadata] = useModal(
+        <FreezeMetadataModalModal asset={asset} meta={metadata} onComplete={onFreezeMeta}/>
+    )
+
     return (
         <>
         <Flex flexDirection="column" padding="12px">
@@ -140,7 +153,6 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, asset, col
                 </ExpandablePanel>
             )}
             <ExpandablePanel
-                collapsed
                 icon={<List/>}
                 title={t('Details')}
                 topRadius={0}
@@ -186,9 +198,24 @@ const AssetInfoSection: React.FC<AssetInfoSectionProps> = ({metadata, asset, col
                             {t('Metadata')}
                         </Text>
                         <Text fontSize="14px">
-                            {t('Decentralized')}
+                            {asset.decentralized ? t('Decentralized') : t('Centralized')}
                         </Text>
                     </Flex>
+                    {!asset.decentralized && isCreator && (
+                        <Flex margin="4px" flexDirection="column">
+                            <Text fontSize="14px" color="secondary">
+                                {t("Freeze metadata")}
+                            </Text>
+                            <Text fontSize="12px">
+                                {t("Freezing your metadata will allow you to permanently lock and store all of this item's content in decentralized file storage.")}
+                            </Text>
+                            <Flex>
+                                <Button onClick={onPresentFreezeMetadata}>
+                                    {t('Freeze Metadata')}
+                                </Button>
+                            </Flex>
+                        </Flex>
+                    )}
                 </Flex>
             </ExpandablePanel>
         </Flex>
