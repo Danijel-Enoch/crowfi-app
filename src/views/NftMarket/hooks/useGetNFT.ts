@@ -36,6 +36,7 @@ export const useGetNFT = () => {
         } else {
             return {asset: undefined, meta: undefined}
         }
+        uri = uri.replace('ipfs://', 'https://ipfs.io/ipfs/')
         const response = await fetch(uri)
         const meta: NFTMeta = await response.json()
         
