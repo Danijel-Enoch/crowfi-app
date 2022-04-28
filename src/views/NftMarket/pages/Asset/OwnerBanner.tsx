@@ -32,10 +32,6 @@ const OwnerBanner: React.FC<OwnerBannerProps> = ({nft, account, balance, onSell}
     const { t } = useTranslation()
     const history = useHistory()
 
-    const isCreator = useMemo(() => {
-        return nft.creator?.address?.toLowerCase() === account?.toLowerCase()
-    }, [nft, account])
-
     const onGoPath = (path) => {
         history.push(path)
     }
