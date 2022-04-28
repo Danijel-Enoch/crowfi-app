@@ -21,7 +21,7 @@ const getBundleItemDetail  = async (library, chainId: number, contractAddress: s
         const nftContract = getERC721TokenContract(contractAddress, library) as any
         uri = await nftContract.tokenURI(tokenId)
     }
-
+    uri = uri.replace('ipfs://', 'https://ipfs.io/ipfs/')
     const response = await fetch(uri)
     const meta: NFTMeta = await response.json()
 
