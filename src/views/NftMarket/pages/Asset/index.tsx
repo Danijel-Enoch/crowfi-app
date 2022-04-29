@@ -81,6 +81,7 @@ const Asset: React.FC = () => {
     const [activeAuction, setActiveAuction] = useState<Auction>(null)
     const [auctions, setAuctions] = useState<Auction[]>(null)
     const [offers, setOffers] = useState<Listing[]>(null)
+    const [myBalance, setMyBalance] = useState(0)
     const [balance, setBalance] = useState<NFTBalanceResponse>(null)
     const [bids, setBids] = useState<BidResponse[]>([])
     const [similars, setSimilars] = useState<NFTResponse[]>(null)
@@ -96,10 +97,6 @@ const Asset: React.FC = () => {
         return listings?.filter((item) => !item.isSold)
     }, [listings])
 
-    const myBalance = useMemo(() =>  {
-        return balance ?  balance.balance : 0;
-    }, [balance])
-
     const isCreator = useMemo(() => {
         return nft?.creator?.address?.toLowerCase() === account?.toLowerCase()
     }, [nft, account])
@@ -108,6 +105,7 @@ const Asset: React.FC = () => {
 
     const {onGetNFT} = useGetNFT()
     const {onGetBundleItems} = useGetBundleItems()
+    const {onGetNFTBalance} = useGetNFTBalance()
 
     useEffect(() => {
         setLoaded(false)
@@ -132,6 +130,9 @@ const Asset: React.FC = () => {
                     setLoaded(true)
                     return
                 }
+
+                const myBalance_ = await onGetNFTBalance(asset_.contractAddress, asset_.tokenId, asset_.contractType, account)
+                setMyBalance(myBalance_)
 
                 setRegistrationStatus(NFTAssetRegistrationStatus.UNKNOWN)
 
@@ -175,6 +176,9 @@ const Asset: React.FC = () => {
                 })
 
                 onGetNFTAuction(asset_.contractAddress, asset_.tokenId).then((auctions_) => {
+                    if (!auctions_) {
+                        return
+                    }
                     const remainingAuctions: Auction[] = []
                     let foundActiveAuction = false
                     auctions_.forEach(function(auction) {
@@ -189,6 +193,9 @@ const Asset: React.FC = () => {
                 })
                 // setAuctions(auctions_)
                 onGetNFTSell(asset_.contractAddress, asset_.tokenId).then((sells_) => {
+                    if (!sells_) {
+                        return
+                    }
                     const remainingSells: Listing[] = []
                     let foundActiveSell = false
                     sells_.forEach(function(sell) {
@@ -202,6 +209,9 @@ const Asset: React.FC = () => {
                     setListings(remainingSells)
                 })
                 onGetNFTOffer(asset_.contractAddress, asset_.tokenId).then((offers_) => {
+                    if (!offers_) {
+                        return
+                    }
                     setOffers(offers_)
                 })
                 // setListings(sells_)
@@ -217,7 +227,7 @@ const Asset: React.FC = () => {
         }
         
         
-    }, [onGetNFT, onGetNFTAuction, onGetNFTSell, onGetNFTOffer, onGetBundleItems, account, needReload, slowRefresh, contractAddress, tokenId, chainId])
+    }, [onGetNFT, onGetNFTAuction, onGetNFTSell, onGetNFTOffer, onGetBundleItems, onGetNFTBalance, account, needReload, slowRefresh, contractAddress, tokenId, chainId])
 
     const reloadSaleInfo = async () => {
         if (!nft) {

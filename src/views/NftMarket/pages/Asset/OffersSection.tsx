@@ -224,7 +224,7 @@ const DataRow: React.FC<{
       return listing.useEth || approval === ApprovalState.APPROVED ? (
         <Button
           scale="sm" variant="primary"
-          disabled={isPurchaser || listing.isSold || pendingTx || listing.amount.toNumber() > myBalance}
+          disabled={isPurchaser || listing.isSold || pendingTx || !myBalance || listing.amount.toNumber() > myBalance}
           onClick={handleAccept}
         >
           {pendingTx ? (
