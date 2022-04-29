@@ -75,14 +75,6 @@
       "logoURI": "https://crowfi.app/images/tokens/0x9d5ade1e4dd84e3e0818542bf37f24f22648d946.svg"
     },
     {
-      "name": "CULTCRO",
-      "symbol": "CULT",
-      "address": "0x5430FFebB5fA7C7f54414De435a010898118Bc19",
-      "chainId": 25,
-      "decimals": 9,
-      "logoURI": "https://crowfi.app/images/tokens/0x5430FFebB5fA7C7f54414De435a010898118Bc19.svg"
-    },
-    {
       "name": "WCRO Token",
       "symbol": "WCRO",
       "address": "0xDd7FBd7e655DE4B8eccb2B3254F6B69B569F0A9a",
