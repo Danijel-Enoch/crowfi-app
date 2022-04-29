@@ -85,7 +85,7 @@ const AssetMedia: React.FC<AssetMediaProps> = ({metadata, likes, liked, onMediaC
         if (!metadata) {
             return undefined
         }
-        if (metadata?.properties?.type === NFTAssetType.Image) {
+        if (!metadata?.animation_url || metadata?.properties?.type === NFTAssetType.Image) {
             return metadata.image
         }
 
