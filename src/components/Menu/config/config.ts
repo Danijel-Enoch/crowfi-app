@@ -93,6 +93,11 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         href: 'https://cronos.crypto.org/docs/bridge/cdcex.html',
       },
       {
+        type: 1,
+        label: t('XY Finance'),
+        href: 'https://app.xy.finance',
+      },
+      {
         type: DropdownMenuItemType.DIVIDER,
       },
       {
