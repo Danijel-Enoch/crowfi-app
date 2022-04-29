@@ -84,6 +84,11 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
       },
       {
         type: 1,
+        label: t('XY Finance'),
+        href: 'https://app.xy.finance',
+      },
+      {
+        type: 1,
         label: t('EvoDeFi Bridge'),
         href: 'https://bridge.evodefi.com',
       },
@@ -91,11 +96,6 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         type: 1,
         label: t('Cronos Bridge'),
         href: 'https://cronos.crypto.org/docs/bridge/cdcex.html',
-      },
-      {
-        type: 1,
-        label: t('XY Finance'),
-        href: 'https://app.xy.finance',
       },
       {
         type: DropdownMenuItemType.DIVIDER,
