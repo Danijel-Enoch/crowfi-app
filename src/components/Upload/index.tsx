@@ -43,6 +43,7 @@ const Placeholder = styled.div<{width?: string, height?: string}>`
     display: flex;
     justify-content:center;
     align-items:center;
+    overflow: hidden;
 `
 
 const Image = styled.img<{width?: string, height?: string, borderRadius?: string}>`
