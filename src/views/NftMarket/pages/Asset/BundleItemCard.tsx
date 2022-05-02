@@ -28,12 +28,20 @@ const Card = styled(Flex).attrs({flexDirection:"column"})`
     background-color: wite;
 `
 
-const Thumbnail = styled.img`
+const ThumbnailContainer = styled.div`
+    max-width: 100%;
     aspect-ratio: 1;
-    object-fit: cover;
+    height: auto;
     background: ${({ theme }) => theme.colors.backgroundAlt};
     border-top-right-radius: ${({ theme }) => theme.radii.default};
     border-top-left-radius: ${({ theme }) => theme.radii.default};
+    overflow: hidden;
+
+    >img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 `
 
 const TypeWrapper = styled.div`
@@ -73,7 +81,9 @@ const BundleItemCard: React.FC<AssetCardProps> = ({item}) => {
         <LinkWrapper to={`/nft/asset/${item?.asset?.contractAddress}/${item?.asset?.tokenId}`}>
             <Wrapper>
                 <Card>
-                    <Thumbnail alt={item?.meta?.name} src={item?.meta?.image} />
+                    <ThumbnailContainer>
+                        <img alt={item?.meta?.name} src={item?.meta?.image} />
+                    </ThumbnailContainer>
                     <Flex flexDirection="row" margin="16px" position="relative">
                         <TypeWrapper>
                             {mediaType === 'image' && (

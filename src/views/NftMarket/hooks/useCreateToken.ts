@@ -159,6 +159,9 @@ interface CollectionAccessAPIResponse {
 export const useCollectionAccess = () => {
   const [tokenData] = useProfileTokenData()
   const getCollectionAccess = useCallback(async(slug) => {
+    if (!tokenData) {
+      return {minter: false, editor: false}
+    }
     const response = await fetch(`${API_PROFILE}/collections/${slug}/access`, {
         method: 'GET',
         headers: {
