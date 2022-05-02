@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import {useDropzone} from 'react-dropzone'
-import { Button, CloseIcon, LogoIcon, PencilIcon } from '@pancakeswap/uikit'
+import { Button, CloseIcon, LogoIcon, PencilIcon, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 
 const Wrapper = styled.div<{borderRadius?: string}>`
@@ -89,6 +89,7 @@ const Upload: React.FC<UploadProps> = ({onSelect, width, height, borderRadius, a
     const { t } = useTranslation()
 
     const [file, setFile] = useState(null)
+    const { isMobile } = useMatchBreakpoints();
     const {
         getRootProps, 
         getInputProps, 
