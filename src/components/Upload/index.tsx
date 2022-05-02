@@ -76,13 +76,14 @@ interface UploadProps {
     width?: string
     height?: string
     placeholderSize?: string
+    placeholder?: string
     borderRadius?: string
     accept?: string
     showClose?: boolean
-  onSelect: (file: File) => void
+    onSelect: (file: File) => void
 }
 
-const Upload: React.FC<UploadProps> = ({onSelect, width, height, borderRadius, accept, showClose, placeholderSize}) => {
+const Upload: React.FC<UploadProps> = ({onSelect, width, height, borderRadius, accept, showClose, placeholder, placeholderSize}) => {
 
     const { t } = useTranslation()
 
@@ -117,7 +118,11 @@ const Upload: React.FC<UploadProps> = ({onSelect, width, height, borderRadius, a
                 <input {...getInputProps} style={{display:"none"}}/>
                 {!file && (
                     <Placeholder width={width} height={height}>
-                        <LogoIcon width={placeholderSize} opacity="0.3"/>
+                        {placeholder ? (
+                            <img src={placeholder} alt="Logo"/>
+                        ) : (
+                            <LogoIcon width={placeholderSize} opacity="0.3"/>
+                        )}
                     </Placeholder>
                 )}
                 {file && file.type.includes('image') && (

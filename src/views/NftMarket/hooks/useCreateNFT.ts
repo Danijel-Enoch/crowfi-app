@@ -100,25 +100,32 @@ export const useRegisterNFT = () => {
         traits?: NFTTrait[]
     ) => {
 
+        const params = {
+            name,
+            contractAddress,
+            contractType,
+            chainId,
+            tokenId,
+            tokenUri,
+            thumbnail,
+            mediaType,
+            supply,
+            traits
+        }
+
+        if (collectionId > 0) {
+            /* eslint-disable dot-notation */
+            params['collectionId'] = collectionId
+            /* eslint-enable dot-notation */
+        }
+
         const response = await fetch(`${API_PROFILE}/nfts`, {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${tokenData.accessToken}`
             },
-            body: JSON.stringify({
-                collectionId,
-                name,
-                contractAddress,
-                contractType,
-                chainId,
-                tokenId,
-                tokenUri,
-                thumbnail,
-                mediaType,
-                supply,
-                traits
-            }),
+            body: JSON.stringify(params),
         })
 
         if (response.ok) {
