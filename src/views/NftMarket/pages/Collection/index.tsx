@@ -12,6 +12,8 @@ import SiteLinks from './SiteLinks'
 import Assets from './Assets'
 import DescriptionSection from './DescriptionSection'
 import { getNftsWithQueryParams } from '../../hooks/useGetNFT'
+import { useCollectionAccess } from '../../hooks/useCreateToken'
+import HeaderNav from './HeaderNav'
 
 const BlankPage = styled.div`
     position:relative;
@@ -88,10 +90,13 @@ const Collection: React.FC<RouteComponentProps<{slug: string}>> = ({
     const { account } = useWeb3React()
     const { slowRefresh } = useRefresh()
     const [collection, setCollection] = useState<NFTCollection|null>(null)
+    const [isMinter, setMinter] = useState(false)
+    const [isEditor, setEditor] = useState(false)
     const [isValid, setIsValid] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [needReload, setNeedReload] = useState(false)
     const [nfts, setNfts] = useState([])
+    const {onGetCollectionAccess} = useCollectionAccess()
 
     useEffect(() => {
         const fetchCollection = async() => {
@@ -106,6 +111,9 @@ const Collection: React.FC<RouteComponentProps<{slug: string}>> = ({
                     const {rows, count} = await getNftsWithQueryParams({collectionId: collection_.id})
                     setNfts(rows)
                 }
+                const {minter, editor} = await onGetCollectionAccess(slug)
+                setMinter(minter)
+                setEditor(editor)
             } catch (e) {
                 setIsValid(false)
             }
@@ -115,7 +123,7 @@ const Collection: React.FC<RouteComponentProps<{slug: string}>> = ({
             
         fetchCollection()
         
-    }, [slug, needReload, slowRefresh])
+    }, [slug, needReload, slowRefresh, onGetCollectionAccess])
 
     const triggerReload = () =>  {
         if (needReload) {
@@ -129,6 +137,9 @@ const Collection: React.FC<RouteComponentProps<{slug: string}>> = ({
     const renderContent = () =>  {
         return (
             <Flex flexDirection="column" background="white">
+                {(isMinter || isEditor) && (
+                    <HeaderNav editor={isEditor} minter={isMinter} collection={collection}/>
+                )}
                 <Banner>
                     <img alt={collection.name} src={collection.bannerImage}/>
                 </Banner>

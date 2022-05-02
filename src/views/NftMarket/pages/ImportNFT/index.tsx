@@ -78,7 +78,6 @@ interface Trait {
 interface FormErrors {
     contractAddress?: string
     tokenId?: string
-    collection?: string
 }
 
 const ImportNFT: React.FC = () => {
@@ -99,34 +98,11 @@ const ImportNFT: React.FC = () => {
     const [contractAddress, setContractAddress] = useState(paramAddress)
     const [tokenId, setTokenId] = useState(paramTokenId)
     const validAddress = isAddress(contractAddress)
-    const [collection, setCollection] = useState<NFTCollection>(null)
-    const [collectionsLoaded, setCollectionsLoaded] = useState(false)
-    const [noCollectionModalPresented, setNoCollectionModalPresented] = useState(false)
-    const [collectionOptions, setCollectionOptions] = useState([])
     const { slowRefresh } = useRefresh()
 
     const {onGetNFTBalance} = useGetNFTBalance()
     const {onGetNFT} = useGetNFT()
     const {onRegisterNFT} = useRegisterNFT()
-
-    const [onPresentNoCollectionModal] = useModal(
-        <NoCollectionModal 
-        title={t('Import NFT')}
-        onAgree={() => {
-            history.push('/nft/create-collection')
-        }}/>
-    )
-
-    useEffect(() => {
-        if (noCollectionModalPresented || !collectionsLoaded || collectionOptions.length > 0) {
-            return
-        }
-
-        setNoCollectionModalPresented(true)
-
-        onPresentNoCollectionModal()
-
-    }, [onPresentNoCollectionModal, collectionsLoaded, noCollectionModalPresented, collectionOptions])
 
     useEffect(() => {
         const fetchNFTMeta = async() => {
@@ -172,31 +148,6 @@ const ImportNFT: React.FC = () => {
         
     }, [account, slowRefresh, onGetNFTBalance, asset])
 
-    useEffect(() => {
-        const fetchCollections = async() => {
-            try {
-                const collections_ = await getCollectionsWithQueryParams({creator: account.toLowerCase()})
-                const collectionOptions_ = collections_.map((item, index) => {
-                    return {
-                        label: item.name,
-                        value: item
-                    }
-                })
-                setCollectionOptions(collectionOptions_)
-                setCollection(collectionOptions_.length > 0 ? collectionOptions_[0].value : null)
-            } catch {
-                setCollectionOptions([])
-            } finally {
-                setCollectionsLoaded(true)
-            }
-        }
-
-        if (account) {
-            fetchCollections()
-        }
-        
-    }, [account, slowRefresh])
-
 
     const assetLoadingIcon = () => {
         if (assetLoading > 0) {
@@ -235,11 +186,6 @@ const ImportNFT: React.FC = () => {
             error.tokenId = t('Token ID is invalid')
         }
 
-        if (!collection) {
-            error.collection = t('Collection is required')
-            valid = false
-        }
-
         if (balance < 0) {
             valid = false
             error.contractAddress = t('Balance is zero')
@@ -247,7 +193,7 @@ const ImportNFT: React.FC = () => {
 
         setFormError(error)
         return valid;
-    }, [t, tokenId, validAddress, contractAddress,asset, meta, balance, collection])
+    }, [t, tokenId, validAddress, contractAddress,asset, meta, balance])
 
     const handleImport = useCallback(async () => {
         if (!validateInputs()) {
@@ -258,7 +204,7 @@ const ImportNFT: React.FC = () => {
             setPendingTx(true)
             const nft = await onRegisterNFT(
                 meta.name, 
-                collection.id,
+                -1,
                 asset.contractAddress,
                 asset.contractType,
                 asset.tokenId,
@@ -276,7 +222,7 @@ const ImportNFT: React.FC = () => {
         } finally {
             setPendingTx(false)
         }
-    }, [toastError, validateInputs, onRegisterNFT, collection, history, asset, meta, balance])
+    }, [toastError, validateInputs, onRegisterNFT, history, asset, meta, balance])
     
     if (loginStatus !== ProfileLoginStatus.LOGGEDIN) {
         return <AuthGuard/>
@@ -330,23 +276,9 @@ const ImportNFT: React.FC = () => {
                             {formError.tokenId && (<StyledErrorLabel>{formError.tokenId}</StyledErrorLabel>)}
                         </FieldGroup>
 
-                        <FieldGroup>
-                            <Label>{t('Collection')}</Label>
-                            <LabelDesc>
-                                {t("This is the collection where your item will appear. ")}
-                            </LabelDesc>
-                            <Select
-                                width="auto"
-                                options={collectionOptions}
-                                onOptionChange={(option) => setCollection(option.value)}
-                                defaultOptionIndex={0}
-                                />
-                            {formError.collection && (<StyledErrorLabel>{formError.collection}</StyledErrorLabel>)}
-                        </FieldGroup>
-
                         <Flex>
                             <Button
-                                disabled={pendingTx || assetLoading > 0}
+                                disabled={pendingTx || assetLoading > 0 || balance === 0}
                                 onClick={handleImport}
                             >
                                 {pendingTx ? (<Dots>{t('Processing')}</Dots>) : t('Import')}

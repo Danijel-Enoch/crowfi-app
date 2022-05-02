@@ -94,6 +94,7 @@ export interface NFTCollection {
     telegram?: string
     updatedAt?: string
     createdAt?: string
+    external?: boolean
 }
 
 /* eslint-disable camelcase */

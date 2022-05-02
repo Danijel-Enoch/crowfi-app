@@ -43,8 +43,8 @@ export const StyledText = styled.textarea<{hasError?: boolean}>`
   }
 `
 
-export const StyledInput = styled(Input)<{hasError?: boolean}>`
-    border-color: ${({ hasError, theme }) => (hasError ? theme.colors.failure : theme.colors.secondary)};
+export const StyledInput = styled(Input)<{hasError?: boolean, changed?: boolean}>`
+    border-color: ${({ hasError, theme, changed }) => (hasError ? theme.colors.failure : changed ? theme.colors.primary : theme.colors.secondary)};
     font-size: 14px;
     
     color: ${({ theme }) => theme.colors.primary}
@@ -141,11 +141,13 @@ export const StyledTextarea = React.memo(function InnerTextArea({
 } & Omit<React.HTMLProps<HTMLTextAreaElement>, 'ref' | 'onChange' | 'as'>) {
 
   const enforcer = (nextUserInput: string) => {
+    let nextUserInput_ = nextUserInput
     if (maxLength && nextUserInput.length > maxLength) {
-      onUserInput(nextUserInput.substring(0, maxLength))
-      return
+      nextUserInput_ = nextUserInput.substring(0, maxLength)
     }
-    onUserInput(nextUserInput)
+    if (value !== nextUserInput_) {
+      onUserInput(nextUserInput_)
+    }
   }
 
   return (
@@ -168,6 +170,7 @@ export const StyledTextarea = React.memo(function InnerTextArea({
 export const StyledTextInput = React.memo(function InnerInput({
     value,
     onUserInput,
+    changed,
     title,
     placeholder,
     pattern,
@@ -178,6 +181,7 @@ export const StyledTextInput = React.memo(function InnerInput({
     value: string | number
     onUserInput: (input: string) => void
     title?: string
+    changed?: boolean
     error?: boolean
     fontSize?: string
     align?: 'right' | 'left'
@@ -189,7 +193,7 @@ export const StyledTextInput = React.memo(function InnerInput({
     // const validateReg_ = validateReg || RegExp(`^[\\d\\w].*[\\d\\w]*$`)
     const enforcer = (nextUserInput: string) => {
       const text = transform ? transform(nextUserInput) : nextUserInput
-      if (text === '' || !validateReg || validateReg.test(escapeRegExp(text))) {
+      if (text !== value && (!validateReg || validateReg.test(escapeRegExp(text)))) {
         onUserInput(text)
       }
       // if (nextUserInput === '' || validateReg_.test(escapeRegExp(nextUserInput))) {
@@ -202,6 +206,7 @@ export const StyledTextInput = React.memo(function InnerInput({
     return (
       <StyledInput
         {...rest}
+        changed={changed}
         value={value}
         onChange={(event) => {
           enforcer(event.target.value)
@@ -248,7 +253,8 @@ export const StyledURLInput = React.memo(function InnerInput({
     const text = transform ? transform(nextUserInput) : nextUserInput
     if (text === '' || !validateReg || validateReg.test(escapeRegExp(text))) {
       const withoutSpaces = text.replace(/\s+/g, '')
-      onUserInput(withoutSpaces)
+      if (withoutSpaces !== value)
+        onUserInput(withoutSpaces)
     }
     // if (nextUserInput === '' || validateReg_.test(escapeRegExp(nextUserInput))) {
     //   onUserInput(nextUserInput)

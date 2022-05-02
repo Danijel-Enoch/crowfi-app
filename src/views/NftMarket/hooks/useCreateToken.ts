@@ -97,3 +97,80 @@ export const useRegisterCollection = () => {
   return { onRegisterCollection: handleRegisterCollection }
 }
 
+export interface CollectionData {
+  logoFile?: File
+  bannerFile?: File
+  featuredFile?:File
+  name?: string
+  symbol?: string
+  description?: string
+  slug?: string
+  site?: string
+  discord?: string
+  twitter?: string
+  instagram?: string
+  medium?: string
+  telegram?: string
+}
+
+export const useUpdateCollection = () => {
+  const [tokenData] = useProfileTokenData()
+  const handleUpdateCollection = useCallback(async(slug, data: CollectionData) => {
+      const formData = new FormData()
+      if (data.name) formData.append('name', data.name)
+      if (data.symbol) formData.append('symbol', data.symbol)
+      if (data.slug) formData.append('slug', data.slug)
+      if (data.description) formData.append('description', data.description)
+      if (data.site) formData.append('site', data.site)
+      if (data.discord) formData.append('discord', `https://discord.gg/${data.discord}`)
+      if (data.instagram) formData.append('instagram', `https://instagram.com/${data.instagram}`)
+      if (data.medium) formData.append('medium', data.medium)
+      if (data.twitter) formData.append('twitter', `https://twitter.com/${data.twitter}`)
+      if (data.telegram) formData.append('telegram', `https://t.me/${data.telegram}`)
+      if (data.logoFile) formData.append('logo', data.logoFile, data.logoFile.name)
+      if (data.featuredFile) formData.append('featuredImage', data.featuredFile, data.featuredFile.name)
+      if (data.bannerFile) formData.append('bannerImage', data.bannerFile, data.bannerFile.name)
+      const response = await fetch(`${API_PROFILE}/collections/${slug}/update`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tokenData.accessToken}`
+        },
+        body: formData,
+      })
+
+      if (response.ok) {
+          const json = await response.json()
+          return json?.collection
+      }
+
+      const error = await response.json()
+      throw new Error(error?.message)
+      
+  }, [tokenData])
+
+  return { onUpdateCollection: handleUpdateCollection }
+}
+
+interface CollectionAccessAPIResponse {
+  minter: boolean
+  editor: boolean
+}
+
+export const useCollectionAccess = () => {
+  const [tokenData] = useProfileTokenData()
+  const getCollectionAccess = useCallback(async(slug) => {
+    const response = await fetch(`${API_PROFILE}/collections/${slug}/access`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${tokenData.accessToken}`
+        }
+    })
+    if (response.ok) {
+      const res: CollectionAccessAPIResponse = await response.json()
+      return res
+    }
+    return {minter:false, editor: false}
+  }, [tokenData])
+
+  return {onGetCollectionAccess: getCollectionAccess}
+}
