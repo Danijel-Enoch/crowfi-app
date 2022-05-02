@@ -52,7 +52,7 @@ const Assets: React.FC<AssetsProps> = ({items}) => {
             <ItemsContainer flexWrap="wrap" itemSize={itemSize}>
                 {items && items.map((item) => {
                     return (
-                    <Flex padding="8px" flexDirection="column">
+                    <Flex padding="8px" flexDirection="column" key={item.id}>
                         <AssetCard asset={item}/>
                     </Flex>
                     )
