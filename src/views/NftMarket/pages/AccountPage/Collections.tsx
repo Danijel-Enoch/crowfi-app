@@ -76,7 +76,7 @@ const Collections: React.FC<CollectionsProps> = ({account}) => {
                 <ItemsContainer flexWrap="wrap">
                     {collections.map((item) => {
                         return (
-                        <Flex padding="8px" flexDirection="column">
+                        <Flex padding="8px" flexDirection="column" key={item.id}>
                             <CollectionCard collection={item}/>
                         </Flex>
                         )
