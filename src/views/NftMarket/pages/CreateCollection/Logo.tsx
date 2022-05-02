@@ -74,7 +74,7 @@ const Banner: React.FC<BannerProps> = ({onSelect, image}) => {
         <>
         <Wrapper >
             <Dropzone {...getRootProps()}>
-                <input {...getInputProps} style={{display:"none"}}/>
+                <input {...getInputProps()}/>
                 {!image && (
                     <Placeholder/>
                 )}

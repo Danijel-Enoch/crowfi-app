@@ -118,7 +118,7 @@ const Portrait: React.FC<PortraitProps> = ({onSelect, image, enabled}) => {
         <Wrapper >
             { enabled ? (
             <Dropzone {...getRootProps()}>
-                <input {...getInputProps} style={{display:"none"}}/>
+                <input {...getInputProps()}/>
                 {!image && (
                     <Placeholder>
                         <LogoIcon width="120px" opacity="0.3"/>
