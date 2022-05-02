@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { NFTCollection } from '../../hooks/types'
 
 
-const StyledIconButton = styled(IconButton)`
+const StyledIconButton = styled(IconButton).attrs({target:'_blank'})`
     display: flex;
     justify-content: center;
     align-items: center;

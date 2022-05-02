@@ -6,6 +6,8 @@ import { useWeb3React } from '@web3-react/core'
 import { Box, Button, Flex, Heading, LanguageIcon, LogoIcon, Spinner, Text } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import useRefresh from 'hooks/useRefresh'
+import { useProfileLoggedIn } from 'state/profile/hooks'
+import { ProfileLoginStatus } from 'state/types'
 import { NFTCollection } from '../../hooks/types'
 import { getCollectionWithSlug } from '../../hooks/useCollections'
 import SiteLinks from './SiteLinks'
@@ -14,6 +16,7 @@ import DescriptionSection from './DescriptionSection'
 import { getNftsWithQueryParams } from '../../hooks/useGetNFT'
 import { useCollectionAccess } from '../../hooks/useCreateToken'
 import HeaderNav from './HeaderNav'
+import LoginNav from './LoginNav'
 
 const BlankPage = styled.div`
     position:relative;
@@ -97,6 +100,7 @@ const Collection: React.FC<RouteComponentProps<{slug: string}>> = ({
     const [needReload, setNeedReload] = useState(false)
     const [nfts, setNfts] = useState([])
     const {onGetCollectionAccess} = useCollectionAccess()
+    const {loginStatus} = useProfileLoggedIn()
 
     useEffect(() => {
         const fetchCollection = async() => {
@@ -111,10 +115,8 @@ const Collection: React.FC<RouteComponentProps<{slug: string}>> = ({
                     const {rows, count} = await getNftsWithQueryParams({collectionId: collection_.id})
                     setNfts(rows)
                 }
-                const {minter, editor} = await onGetCollectionAccess(slug)
-                setMinter(minter)
-                setEditor(editor)
             } catch (e) {
+                console.log(e)
                 setIsValid(false)
             }
             setLoaded(true)
@@ -123,7 +125,26 @@ const Collection: React.FC<RouteComponentProps<{slug: string}>> = ({
             
         fetchCollection()
         
-    }, [slug, needReload, slowRefresh, onGetCollectionAccess])
+    }, [slug, needReload, slowRefresh])
+
+    useEffect(() => {
+        const fetchCollectionAccess = async() => {
+            try {
+                const {minter, editor} = await onGetCollectionAccess(slug)
+                setMinter(minter)
+                setEditor(editor)
+            } catch (e) {
+                console.log(e)
+            }
+        }
+        if (loginStatus === ProfileLoginStatus.LOGGEDIN) {
+            fetchCollectionAccess()
+        } else {
+            setMinter(false)
+            setEditor(false)
+        }
+
+    }, [loginStatus, account, slug, slowRefresh, onGetCollectionAccess])
 
     const triggerReload = () =>  {
         if (needReload) {
@@ -137,8 +158,14 @@ const Collection: React.FC<RouteComponentProps<{slug: string}>> = ({
     const renderContent = () =>  {
         return (
             <Flex flexDirection="column" background="white">
-                {(isMinter || isEditor) && (
-                    <HeaderNav editor={isEditor} minter={isMinter} collection={collection}/>
+                {loginStatus === ProfileLoginStatus.LOGGEDIN ? (
+                    <>
+                    {(isMinter || isEditor) && (
+                        <HeaderNav editor={isEditor} minter={isMinter} collection={collection}/>
+                    )}
+                    </>
+                ) : (
+                    <LoginNav account={account} loginStatus={loginStatus}/>
                 )}
                 <Banner>
                     <img alt={collection.name} src={collection.bannerImage}/>
