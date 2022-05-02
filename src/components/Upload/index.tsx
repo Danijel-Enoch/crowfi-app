@@ -117,7 +117,7 @@ const Upload: React.FC<UploadProps> = ({onSelect, width, height, borderRadius, a
                 <audio controls src={file.preview}/>
             )}
             <Dropzone {...getRootProps()}>
-                <input {...getInputProps} style={{display:"none"}}/>
+                <input {...getInputProps()}/>
                 {!file && (
                     <Placeholder width={width} height={height}>
                         {placeholder ? (
