@@ -285,7 +285,7 @@ const CreateCollection: React.FC = () => {
             setPendingTx(true)
 
             const data: CollectionData = {}
-            if (fieldsState.name) data.name = state.name
+            data.name = state.name ?? ''
             if (fieldsState.description) data.description = state.description
             if (fieldsState.site) data.site = state.site
             if (fieldsState.slug) data.slug = state.slug
