@@ -454,7 +454,7 @@ const CreateCollection: React.FC = () => {
                         </LabelDesc>
                         <Flex>
                             <Upload 
-                                width="700px"  
+                                width="calc(min(700px,100vw - 52px))"  
                                 accept="image/*"
                                 showClose={false}
                                 placeholder={collection?.bannerImage}
