@@ -29,7 +29,9 @@ const NFTMarket: React.FC = () => {
         <Route path={`${nftsBaseUrl}/collections/:collectionType`}>
           <Collections />
         </Route>
-        <Route path={`${nftsBaseUrl}/collection/:slug`} component={Collection} />
+        <Route exact path={`${nftsBaseUrl}/collection/:slug`} component={Collection} />
+        <Route exact path={`${nftsBaseUrl}/collection/:slug/edit`} component={CreateCollection} />
+        <Route exact path={`${nftsBaseUrl}/collection/:slug/assets/create`} component={CreateNFT} />
         <Route path={`${nftsBaseUrl}/assets`}>
           <Assets />
         </Route>

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { Heading, Flex, Text, Button, AddIcon, useModal } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import { escapeRegExp } from 'lodash'
@@ -85,6 +85,7 @@ interface FormErrors {
 
 const CreateNFT: React.FC = () => {
     const urlReg = RegExp('^(http|https)\\://(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{1,256}.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$')
+    const { slug: collectionSlug } = useParams<{ slug?: string }>()
     const history = useHistory()
     const { t } = useTranslation()
     const { account } = useWeb3React()
@@ -101,6 +102,7 @@ const CreateNFT: React.FC = () => {
     const [description, setDescription] = useState('')
     const [collection, setCollection] = useState<NFTCollection>(null)
     const [collectionOptions, setCollectionOptions] = useState([])
+    const [defCollectionIndex, setDefCollectionIndex] = useState(0)
     const [collectionsLoaded, setCollectionsLoaded] = useState(false)
     const [noCollectionModalPresented, setNoCollectionModalPresented] = useState(false)
     const [textTraits, setTextTraits] = useState<NFTAttribute[]>([])
@@ -131,12 +133,18 @@ const CreateNFT: React.FC = () => {
         const fetchCollections = async() => {
             try {
                 const collections_ = await getCollectionsWithQueryParams({creator: account.toLowerCase()})
-                const collectionOptions_ = collections_.filter((item) => !!item.contract).map((item, index) => {
+                const collectionOptions_ = collections_.filter((item) => !!item.contract && !item.external).map((item, index) => {
                     return {
                         label: item.name,
                         value: item
                     }
                 })
+                if (collectionSlug) {
+                    const index = collectionOptions_.findIndex((option) => option.value.slug === collectionSlug)
+                    if (index > 0) {
+                        setDefCollectionIndex(index)
+                    }
+                }
                 setCollectionOptions(collectionOptions_)
                 setCollection(collectionOptions_.length > 0 ? collectionOptions_[0].value : null)
             } catch {
@@ -150,7 +158,7 @@ const CreateNFT: React.FC = () => {
             fetchCollections()
         }
         
-    }, [account, slowRefresh])
+    }, [account, slowRefresh, collectionSlug])
 
     const handleChangeMedia = useCallback(async (file: File) => {
         setAssetFile(file)
@@ -369,6 +377,8 @@ const CreateNFT: React.FC = () => {
                         />
                     </FieldGroup>
 
+                    {collectionOptions.length > 0 && (
+
                     <FieldGroup>
                         <Label>{t('Collection')}</Label>
                         <LabelDesc>
@@ -378,10 +388,11 @@ const CreateNFT: React.FC = () => {
                             width="auto"
                             options={collectionOptions}
                             onOptionChange={(option) => setCollection(option.value)}
-                            defaultOptionIndex={0}
+                            defaultOptionIndex={defCollectionIndex}
                             />
                         {formError.collection && (<StyledErrorLabel>{formError.collection}</StyledErrorLabel>)}
                     </FieldGroup>
+                    )}
 
                     <FieldGroup>
                         <Label>{t('Supply')}</Label>
