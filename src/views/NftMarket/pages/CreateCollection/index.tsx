@@ -192,7 +192,7 @@ const CreateCollection: React.FC = () => {
     }
 
     const hasChanges = useMemo(() => {
-        return !isEditing || fieldsState.name || fieldsState.description || fieldsState.site || fieldsState.site 
+        return !isEditing || fieldsState.name || fieldsState.slug || fieldsState.description || fieldsState.site || fieldsState.site 
         || fieldsState.discord || fieldsState.instagram || fieldsState.twitter || fieldsState.telegram || fieldsState.logoFile || fieldsState.bannerFile || fieldsState.featuredFile
     }, [isEditing, fieldsState])
 
@@ -244,6 +244,11 @@ const CreateCollection: React.FC = () => {
     }, [collectionSlug])
 
     const slugAvailabilityIcon = () => {
+        if (isEditing && !fieldsState.slug) {
+            return (
+                <CheckmarkIcon width="18x" height="18px" color="primary"/>
+            )
+        }
         if (slug && slug.length > 0 && slugReg.test(slug)) {
             
             if (slugAvailability === SlugAvailability.UNKNOWN) {
