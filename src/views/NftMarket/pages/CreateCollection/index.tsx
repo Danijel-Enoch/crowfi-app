@@ -389,7 +389,7 @@ const CreateCollection: React.FC = () => {
         <PageBGWrapper/>
         <PageHeader>
             <Heading as="h1" scale="xl" color="white" style={{textShadow:"2px 3px rgba(255,255,255,0.2)"}}>
-                {isEditing ? t('Edit My Colelction') : t('Create New Collection')}
+                {isEditing ? t('Edit My Collection') : t('Create New Collection')}
             </Heading>
         </PageHeader>
         <StyledPageBody flexDirection="column" flex="1">
