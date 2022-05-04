@@ -39,6 +39,10 @@ import {
   getLockerContract,
   getCrowpadSaleFactoryContract,
   getCrowpadSaleContract,
+  getNFTFactoryContract,
+  getNFT1155FactoryContract,
+  getERC721TokenContract,
+  getBaseNFTContract,
 } from 'utils/contractHelpers'
 import { getMulticallAddress } from 'utils/addressHelpers'
 
@@ -58,6 +62,21 @@ import { getContract } from '../utils'
 /**
  * Helper hooks to get specific contracts (by ABI)
  */
+
+export const useNFTFactoryContract = () => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getNFTFactoryContract(library.getSigner()), [library])
+}
+
+export const useNFT1155FactoryContract = () => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getNFT1155FactoryContract(library.getSigner()), [library])
+}
+
+export const useERC721TokenContract = (address: string) => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getERC721TokenContract(address, library.getSigner()), [address, library])
+}
 
 export const useCrowpadSaleContract = (address: string) => {
   const { library } = useActiveWeb3React()
@@ -124,6 +143,11 @@ export const useERC20 = (address: string) => {
 export const useERC721 = (address: string) => {
   const { library } = useActiveWeb3React()
   return useMemo(() => getErc721Contract(address, library.getSigner()), [address, library])
+}
+
+export const useBaseNFTContract = (address?: string) => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => !address ? undefined : getBaseNFTContract(address, library.getSigner()), [address, library])
 }
 
 export const useCake = () => {

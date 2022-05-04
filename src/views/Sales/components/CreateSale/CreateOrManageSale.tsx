@@ -31,7 +31,6 @@ const CreateOrManageSale: React.FC<RouteComponentProps<{address?: string}>> = ({
     }
 
     const renderContent = () => {
-        console.log('here', routeAddress)
         if (viewMode === ViewMode.CREATE) {
             return <CreateSale onDisagree={onDisagree} routeAddress={routeAddress}/>
         }

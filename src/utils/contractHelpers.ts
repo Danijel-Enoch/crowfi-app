@@ -35,6 +35,8 @@ import {
   getAirdropperAddress,
   getLockerAddress,
   getCrowpadSaleFactoryAddress,
+  getNFTFactoryAddress,
+  getNFT1155FactoryAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -81,11 +83,43 @@ import crowLockABI from 'config/abi/crowLock.json'
 import crowpadSaleFactoryABI from 'config/abi/crowpadSaleFactory.json'
 import crowpadSaleABI from 'config/abi/crowpadSale.json'
 import { ERC20_ABI } from 'config/abi/erc20'
+import nftFactoryAbi from 'config/abi/nftFactory.json'
+import nft1155FactoryAbi from 'config/abi/nft1155Factory.json'
+import erc165Abi from 'config/abi/erc165.json'
+import erc721TokenAbi from 'config/abi/erc721Token.json'
+import erc1155TokenAbi from 'config/abi/erc1155Token.json'
+import nftBundleAbi from 'config/abi/nftbundle.json'
+import baseNftAbi from 'config/abi/baseNft.json'
 import { ChainLinkOracleContract, FarmAuctionContract, PancakeProfileContract } from './types'
 
 const getContract = (abi: any, address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
   const signerOrProvider = signer ?? simpleRpcProvider
   return new ethers.Contract(address, abi, signerOrProvider)
+}
+
+
+export const getNFTFactoryContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(nftFactoryAbi, getNFTFactoryAddress(), signer)
+}
+
+export const getNFT1155FactoryContract = (signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(nft1155FactoryAbi, getNFT1155FactoryAddress(), signer)
+}
+
+export const getERC721TokenContract = (address:string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(erc721TokenAbi, address, signer)
+}
+
+export const getERC1155TokenContract = (address:string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(erc1155TokenAbi, address, signer)
+}
+
+export const getNFTBundleContract = (address:string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(nftBundleAbi, address, signer)
+}
+
+export const getERC165Contract = (address:string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(erc165Abi, address, signer)
 }
 
 export const getCrowpadSaleContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
@@ -132,6 +166,9 @@ export const getErc20Contract = (address: string, signer?: ethers.Signer | ether
 }
 export const getErc721Contract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
   return getContract(erc721Abi, address, signer)
+}
+export const getBaseNFTContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
+  return getContract(baseNftAbi, address, signer)
 }
 export const getLpContract = (address: string, signer?: ethers.Signer | ethers.providers.Provider) => {
   return getContract(lpTokenAbi, address, signer)

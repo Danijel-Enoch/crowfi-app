@@ -50,6 +50,8 @@ const Airdropper = lazy(() => import('./views/Airdropper/Airdropper'))
 const SalePage = lazy(() => import('./views/Sales/components/SalePage/SalePage'))
 const Ape = lazy(() => import('./views/Ape/Ape'))
 
+const NftMarket = lazy(() => import('./views/NftMarket'))
+const Profile = lazy(() => import('./views/NftMarket/pages/Profile'))
 
 // This config is required for number formatting
 BigNumber.config({
@@ -121,6 +123,12 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/ape">
               <Ape />
+            </Route>
+            <Route path="/nft">
+              <NftMarket />
+            </Route>
+            <Route path="/profile">
+              <Profile/>
             </Route>
             {/* Using this format because these components use routes injected props. We need to rework them with hooks */}
             <Route exact strict path="/swap" component={Swap} />

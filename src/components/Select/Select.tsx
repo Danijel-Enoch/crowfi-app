@@ -146,7 +146,7 @@ const Select: React.FunctionComponent<SelectProps> = ({
   return (
     <DropDownContainer isOpen={isOpen} {...props}>
       <DropDownHeader onClick={toggling}>
-        <Text color={textColor}>{options[selectedOptionIndex].label}</Text>
+        <Text color={textColor}>{options.length > 0 ? options[selectedOptionIndex].label : ''}</Text>
       </DropDownHeader>
       <ArrowDropDownIcon color="text" onClick={toggling} />
       <DropDownListContainer>

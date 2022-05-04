@@ -11,6 +11,7 @@ import blockReducer from './block'
 import votingReducer from './voting'
 import { updateVersion } from './global/actions'
 import user from './user/reducer'
+import profile from './profile/reducer'
 import transactions from './transactions/reducer'
 import swap from './swap/reducer'
 import mint from './mint/reducer'
@@ -33,6 +34,8 @@ const store = configureStore({
     tokenFactory: tokenFactoryReducer,
     locker: lockerReducer,
     launchpad: launchpadReducer,
+
+    profile,
 
     // Exchange
     user,
