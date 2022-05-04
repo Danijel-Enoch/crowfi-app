@@ -48,7 +48,7 @@ const MarketSection: React.FC<MarketSectionProps> = ({ nft, account, available, 
   const { onListMarket } = useListNFTMarket()
 
   const isInputValid = useMemo(() => {
-    return priceNumber && priceNumber.isFinite() && priceNumber.gt(BIG_ZERO) && parseInt(amount) > 0 && parseInt(amount) < available
+    return priceNumber && priceNumber.isFinite() && priceNumber.gt(BIG_ZERO) && parseInt(amount) > 0 && parseInt(amount) <= available
   }, [priceNumber, amount, available])
 
   const handleChangePrice = useCallback(
