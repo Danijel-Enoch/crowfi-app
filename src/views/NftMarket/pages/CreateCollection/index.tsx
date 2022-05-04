@@ -477,7 +477,7 @@ const CreateCollection: React.FC = () => {
                         />
                         {formError.name && (<StyledErrorLabel>{formError.name}</StyledErrorLabel>)}
                     </FieldGroup>
-                    { !isEditing && (
+                    {/* { !isEditing && (
                     <FieldGroup>
                         <Label required>{t('Mintable')}</Label>
                         <LabelDesc>
@@ -494,7 +494,7 @@ const CreateCollection: React.FC = () => {
                             onClick={() => updateValue('mintable',false)}
                             />
                     </FieldGroup>
-                    )}
+                    )} */}
                     {!isEditing && mintable && (
                     <FieldGroup>
                         <Label required>{t('Symbol')}</Label>
