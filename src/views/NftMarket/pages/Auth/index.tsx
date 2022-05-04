@@ -81,7 +81,7 @@ const AuthGuard: React.FC = () => {
                         {t('Login with your wallet to continue')}
                     </Text>
                     <Button onClick={handleLogin} disabled={pending || !account}>
-                        {pending ? (<Dots>{t('Pleaes wait')}</Dots>) :  t('Login with my wallet')}
+                        {pending ? (<Dots>{t('Please wait')}</Dots>) :  t('Login with my wallet')}
                     </Button>
                 </Flex>
             </Wrapper>
