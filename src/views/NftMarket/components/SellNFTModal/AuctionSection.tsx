@@ -166,7 +166,7 @@ const AuctionSection: React.FC<AuctionSectionProps> = ({ nft, account, available
       </Flex>
       <Flex  margin="8px 0px" flexDirection="column">
         <Text fontSize='14px'>
-          {t('Druation:')}
+          {t('Duration:')}
         </Text>
       <Select
           options={durationOptions}
