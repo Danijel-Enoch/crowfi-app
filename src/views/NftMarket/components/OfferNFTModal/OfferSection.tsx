@@ -165,7 +165,7 @@ const OfferSection: React.FC<OfferSectionProps> = ({ nft, account, available, on
       </Flex>
       {/* <Flex  margin="8px 0px" flexDirection="column">
         <Text fontSize='14px'>
-          {t('Druation:')}
+          {t('Duration:')}
         </Text>
       <Select
           options={durationOptions}
