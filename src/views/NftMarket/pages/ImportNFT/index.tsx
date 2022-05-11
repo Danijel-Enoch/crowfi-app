@@ -209,7 +209,7 @@ const ImportNFT: React.FC = () => {
                 asset.contractType,
                 asset.tokenId,
                 asset.tokenUri,
-                meta.image,
+                meta.image?.replace('ipfs://', 'https://ipfs.infura.io/ipfs/'),
                 meta.properties?.type ?? NFTAssetType.Image,
                 balance,
                 meta.attributes
