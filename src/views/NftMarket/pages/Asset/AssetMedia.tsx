@@ -86,10 +86,10 @@ const AssetMedia: React.FC<AssetMediaProps> = ({metadata, likes, liked, onMediaC
             return undefined
         }
         if (!metadata?.animation_url || metadata?.properties?.type === NFTAssetType.Image) {
-            return metadata.image
+            return metadata.image.replace('ipfs://', 'https://ipfs.infura.io/ipfs/')
         }
 
-        return metadata?.animation_url
+        return metadata?.animation_url?.replace('ipfs://', 'https://ipfs.infura.io/ipfs/')
 
     }, [metadata])
 
