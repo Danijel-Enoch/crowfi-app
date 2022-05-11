@@ -112,7 +112,7 @@ const NFTMetaPreview: React.FC<NFTPreviewProps> = ({meta}) => {
                     <Placeholder >
                         <LogoIcon width="80" opacity="0.3"/>
                     </Placeholder>
-                    <Image src={meta?.image}/>
+                    <Image src={meta?.image?.replace('ipfs://', 'https://ipfs.infura.io/ipfs/')}/>
                 </ImageWrapper>
 
                 <Flex flexDirection="column" ml="12px">
