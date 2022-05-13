@@ -9,4 +9,4 @@ export const LAUNCHPAD_CLIENT = 'https://graph.crowfi.app/subgraphs/name/crowfi/
 export const BITQUERY_API = 'https://graphql.bitquery.io'
 
 export const INFO_CLIENT = 'https://graph.crowfi.app/subgraphs/name/crowfi/exchange'
-export const BLOCKS_CLIENT = 'https://graph.cronaswap.org/subgraphs/name/cronaswap/blocks'
+export const BLOCKS_CLIENT = 'https://graph.crowfi.app/subgraphs/name/crowfi/blocks'
