@@ -15,11 +15,23 @@ interface TopPoolsResponse {
  */
 const fetchTopPools = async (timestamp24hAgo: number): Promise<string[]> => {
   try {
+    // const query = gql`
+    //   query topPools($blacklist: [String!], $timestamp24hAgo: Int) {
+    //     pairDayDatas(
+    //       first: 30
+    //       where: { dailyTxns_gt: 300, token0_not_in: $blacklist, token1_not_in: $blacklist, date_gt: $timestamp24hAgo }
+    //       orderBy: dailyVolumeUSD
+    //       orderDirection: desc
+    //     ) {
+    //       id
+    //     }
+    //   }
+    // `
     const query = gql`
-      query topPools($blacklist: [String!], $timestamp24hAgo: Int) {
+      query topPools($blacklist: [String!]) {
         pairDayDatas(
           first: 30
-          where: { dailyTxns_gt: 300, token0_not_in: $blacklist, token1_not_in: $blacklist, date_gt: $timestamp24hAgo }
+          where: { dailyTxns_gt: 300, token0_not_in: $blacklist, token1_not_in: $blacklist }
           orderBy: dailyVolumeUSD
           orderDirection: desc
         ) {

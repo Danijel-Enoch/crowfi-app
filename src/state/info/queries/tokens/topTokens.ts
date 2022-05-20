@@ -18,11 +18,23 @@ interface TopTokensResponse {
  */
 const fetchTopTokens = async (timestamp24hAgo: number): Promise<string[]> => {
   try {
+    // const query = gql`
+    //   query topTokens($blacklist: [String!], $timestamp24hAgo: Int) {
+    //     tokenDayDatas(
+    //       first: 30
+    //       where: { dailyTxns_gt: 300, id_not_in: $blacklist, date_gt: $timestamp24hAgo }
+    //       orderBy: dailyVolumeUSD
+    //       orderDirection: desc
+    //     ) {
+    //       id
+    //     }
+    //   }
+    // `
     const query = gql`
-      query topTokens($blacklist: [String!], $timestamp24hAgo: Int) {
+      query topTokens($blacklist: [String!]) {
         tokenDayDatas(
           first: 30
-          where: { dailyTxns_gt: 300, id_not_in: $blacklist, date_gt: $timestamp24hAgo }
+          where: { dailyTxns_gt: 300, id_not_in: $blacklist }
           orderBy: dailyVolumeUSD
           orderDirection: desc
         ) {

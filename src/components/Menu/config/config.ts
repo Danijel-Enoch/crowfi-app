@@ -65,6 +65,10 @@ const config: (t: ContextApi['t']) => ConfigMenuItemsType[] = (t) => [
         label: t('New Pairs'),
         href: '/ape',
       },
+      {
+        label: t('Info'),
+        href: '/info',
+      },
     ]
   },
   {
