@@ -2,7 +2,12 @@ import { ChainId, Token } from '@pancakeswap/sdk'
 import { serializeToken } from 'state/user/hooks/helpers'
 import { SerializedToken } from './types'
 
-const { MAINNET, TESTNET, CRONOS, CRONOSTESTNET } = ChainId
+const { MAINNET, TESTNET, CRONOS, CRONOSTESTNET } ={
+  MAINNET : 1115,
+  TESTNET : 1115,
+  CRONOSTESTNET :1115,
+  CRONOS : 1115
+}
 
 interface TokenList {
   [symbol: string]: Token
@@ -14,11 +19,11 @@ interface SerializedTokenList {
 
 export const mainnetTokens = {
   
-  wbnb: new Token(MAINNET, '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', 18, 'WBNB', 'Wrapped BNB', 'https://www.binance.com/'),
+  wbnb: new Token(MAINNET, '0x0fEF6aA6363bA525C2eCf6331CB783A439B6e6e7', 18, 'WBNB', 'Wrapped BNB', 'https://www.binance.com/'),
   
   // bnb here points to the wbnb contract. Wherever the currency BNB is required, conditional checks for the symbol 'BNB' can be used
-  bnb: new Token(MAINNET, '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', 18, 'BNB', 'BNB', 'https://www.binance.com/'),
-  cake: new Token(MAINNET, '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82', 18, 'CAKE', 'CrowFi Token', ''),
+    bnb: new Token(MAINNET, '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', 18, 'BNB', 'BNB', 'https://www.binance.com/'),
+  cake: new Token(MAINNET, '0x0fEF6aA6363bA525C2eCf6331CB783A439B6e6e7', 18, 'CAKE', 'CrowFi Token', ''),
   nft: new Token(MAINNET, '0x1fC9004eC7E5722891f5f38baE7678efCB11d34D', 6, 'NFT', 'APENFT', 'https://apenft.org'),
   dai: new Token(
     MAINNET,
@@ -36,7 +41,7 @@ export const mainnetTokens = {
     'Wrapped UST Token',
     'https://mirror.finance/',
   ),
-  busd: new Token(MAINNET, '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', 18, 'BUSD', 'Binance USD', 'https://www.paxos.com/busd/'),
+   busd: new Token(MAINNET, '0x0fEF6aA6363bA525C2eCf6331CB783A439B6e6e7', 18, 'BUSD', 'Binance USD', 'https://www.paxos.com/busd/'),
   usdt: new Token(MAINNET, '0x55d398326f99059fF775485246999027B3197955', 18, 'USDT', 'Tether USD', 'https://tether.to/'),
   btcb: new Token(MAINNET, '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c', 18, 'BTCB', 'Binance BTC', 'https://bitcoin.org/'),
   eth: new Token(MAINNET, '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', 18, 'ETH', 'Binance-Peg Ethereum Token', 'https://ethereum.org/en/'),
@@ -47,8 +52,8 @@ export const mainnetTokens = {
   crow: new Token(MAINNET, '0x85529Febc78834e84a2055204BB802a6a4E2b0bf', 18, 'CROW', 'Crow Token', 'https://crowfi.com/'),
 }
 export const testnetTokens = {
-  wbnb: new Token(TESTNET, '0xf9a7A2b01Bf758776703677719F8aCf018600070', 18, 'WBNB', 'Wrapped BNB', 'https://www.binance.com/'),
-  cake: new Token(TESTNET, '0x85529Febc78834e84a2055204BB802a6a4E2b0bf', 0, 'CAKE', 'CrowFi Token', 'https://crowfi.com'),
+  wbnb: new Token(TESTNET, '0x0fEF6aA6363bA525C2eCf6331CB783A439B6e6e7', 18, 'WBNB', 'Wrapped BNB', 'https://www.binance.com/'),
+   cake: new Token(TESTNET, '0x0fEF6aA6363bA525C2eCf6331CB783A439B6e6e7', 0, 'CAKE', 'CrowFi Token', 'https://crowfi.com'),
   busd: new Token(TESTNET, '0x2aFD1d7DADEfb7fE31364A4f57f704c1558C8Edc', 18, 'BUSD', 'Binance USD', 'https://www.paxos.com/busd/'),
   usdc: new Token(TESTNET, '0x9e91D184a3ff79b9A7F666809769BF2E06a4fd7a', 6, 'USDC', 'Binance-Peg USD Coin', 'https://www.centre.io/usdc'),
   pcrow: new Token(TESTNET, '0x6ac901eDA879Df9317BB18dF83c4440043D6bBbF', 18, 'PCROW', 'Crow Presale Token', 'https://crowfi.com/'),
@@ -58,7 +63,7 @@ export const testnetTokens = {
 export const cronosTestTokens = {
   wbnb: new Token(
     CRONOSTESTNET,
-    '0xf9a7A2b01Bf758776703677719F8aCf018600070',
+    '0x61e6E51FD1c1E1ED13A8C51C39e9f746c2FD5d15',
     18,
     'WBNB',
     'Wrapped BNB',
@@ -66,7 +71,7 @@ export const cronosTestTokens = {
   ),
   cake: new Token(
     CRONOSTESTNET,
-    '0x852c75bd104b928BBF54e6Ab94F274B9F8Fa6536',
+    '0x61e6E51FD1c1E1ED13A8C51C39e9f746c2FD5d15',
     18,
     'CROW',
     'Crow Token (fake Cake)',
@@ -136,7 +141,7 @@ export const cronosTestTokens = {
 export const cronosTokens = {
   wbnb: new Token(
     CRONOS,
-    '0xf9a7A2b01Bf758776703677719F8aCf018600070',
+    '0x61e6E51FD1c1E1ED13A8C51C39e9f746c2FD5d15',
     18,
     'WBNB',
     'Wrapped BNB',
@@ -144,71 +149,71 @@ export const cronosTokens = {
   ),
   weth: new Token(
     CRONOS, 
-    '0xe44Fd7fCb2b1581822D0c862B68222998a0c299a', 
+    '0x61e6E51FD1c1E1ED13A8C51C39e9f746c2FD5d15', 
     18, 
     'ETH', 
     'Cronos-Peg Ethereum Token', 
     'https://ethereum.org/en/'
   ),
-  wbtc: new Token(
-    CRONOS,
-    '0x062E66477Faf219F25D27dCED647BF57C3107d52',
-    8,
-    'WBTC',
-    'Cronos-Peg BTC',
-    'https://bitcoin.org/en/',
-  ),
-  usdt: new Token(
-    CRONOS, 
-    '0x66e428c3f67a68878562e79A0234c1F83c208770', 
-    6, 
-    'USDT', 
-    'Tether USD', 
-    'https://tether.to/'
-  ),
-  cake: new Token(
-    CRONOS,
-    '0x285c3329930a3fd3C7c14bC041d3E50e165b1517',
-    18,
-    'Crow',
-    'Crow Token',
-    'https://crowfi.app',
-  ),
-  wcro: new Token(
-    CRONOS,
-    '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23',
-    18,
-    'WCRO',
-    'Wrapped CRO',
-    'https://cronos.crypto.org',
-  ),
+  // wbtc: new Token(
+  //   CRONOS,
+  //   '0x062E66477Faf219F25D27dCED647BF57C3107d52',
+  //   8,
+  //   'WBTC',
+  //   'Cronos-Peg BTC',
+  //   'https://bitcoin.org/en/',
+  // ),
+  // usdt: new Token(
+  //   CRONOS, 
+  //   '0x66e428c3f67a68878562e79A0234c1F83c208770', 
+  //   6, 
+  //   'USDT', 
+  //   'Tether USD', 
+  //   'https://tether.to/'
+  // ),
+  // cake: new Token(
+  //   CRONOS,
+  //   '0x285c3329930a3fd3C7c14bC041d3E50e165b1517',
+  //   18,
+  //   'Crow',
+  //   'Crow Token',
+  //   'https://crowfi.app',
+  // ),
+  // wcro: new Token(
+  //   CRONOS,
+  //   '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23',
+  //   18,
+  //   'WCRO',
+  //   'Wrapped CRO',
+  //   'https://cronos.crypto.org',
+  // ),
   crow: new Token(
     CRONOS,
-    '0x285c3329930a3fd3C7c14bC041d3E50e165b1517',
+    '0x61e6E51FD1c1E1ED13A8C51C39e9f746c2FD5d15',
     18,
     'Crow',
     'Crow Token',
     'https://crowfi.app',
   ),
-  pcrow: new Token(CRONOS, '0x6AA7C188E9b9C8006B4DAe6b7Dc72C2790789bC6', 18, 'PCROW', 'Crow Presale Token', 'https://crowfi.app/'),
-  busd: new Token(
-    CRONOS,
-    '0x6A21673bB781C00ae176c640fb8AC8cab1019b60',
-    18,
-    'BUSD',
-    'Binance USD',
-    'https://www.paxos.com/busd/',
-  ),
-  usdc: new Token(
-    CRONOS,
-    '0xc21223249CA28397B4B6541dfFaEcC539BfF0c59',
-    6,
-    'USDC',
-    'USD Coin',
-    'https://www.centre.io/usdc',
-  ),
-  crow1: new Token(CRONOS, '0xCcCE31b23B522b82ede8f8d30a975188891364b4', 0, 'CROW1', 'CROW Token1', 'https://crowfi.com'),
-  crow2: new Token(CRONOS, '0x24169D27C7b2d5E19a8D1FB23E5eC1C2865E8432', 0, 'CROW2', 'CROW Token2', 'https://crowfi.com'),
+  // pcrow: new Token(CRONOS, '0x6AA7C188E9b9C8006B4DAe6b7Dc72C2790789bC6', 18, 'PCROW', 'Crow Presale Token', 'https://crowfi.app/'),
+  // busd: new Token(
+  //   CRONOS,
+  //   '0x6A21673bB781C00ae176c640fb8AC8cab1019b60',
+  //   18,
+  //   'BUSD',
+  //   'Binance USD',
+  //   'https://www.paxos.com/busd/',
+  // ),
+  // usdc: new Token(
+  //   CRONOS,
+  //   '0xc21223249CA28397B4B6541dfFaEcC539BfF0c59',
+  //   6,
+  //   'USDC',
+  //   'USD Coin',
+  //   'https://www.centre.io/usdc',
+  // ),
+  // crow1: new Token(CRONOS, '0xCcCE31b23B522b82ede8f8d30a975188891364b4', 0, 'CROW1', 'CROW Token1', 'https://crowfi.com'),
+  // crow2: new Token(CRONOS, '0x24169D27C7b2d5E19a8D1FB23E5eC1C2865E8432', 0, 'CROW2', 'CROW Token2', 'https://crowfi.com'),
 }
 
 const tokens = (): TokenList => {

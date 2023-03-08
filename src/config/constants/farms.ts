@@ -19,30 +19,30 @@ const farms: SerializedFarmConfig[] = [
     token: serializedTokens.crow,
     quoteToken: serializedTokens.usdc,
   },
-  {
-    pid: 2,
-    lpSymbol: 'CROW-CRO LP',
-    lpAddresses: {
-      97: '0xe890519b297700BB69a62F18AaA50cAc201A300C',
-      56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
-      338: '0xEf5b46555a8548b3E7CaCcB8511926643c8e7Ba2',
-      25: '0xCd693F158865D071f100444c7F3b96e7463bAe8d'
-    },
-    token: serializedTokens.wcro,
-    quoteToken: serializedTokens.crow,
-  },
-  {
-    pid: 3,
-    lpSymbol: 'USDC-CRO LP',
-    lpAddresses: {
-      97: '',
-      56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
-      338: '0xed55E937966d1B2190Ce9A8D7B27619c1996EFAb',
-      25: '0xfC84f7b512BF2A590ED48797aA42CcC817F918a0',
-    },
-    token: serializedTokens.wcro,
-    quoteToken: serializedTokens.usdc,
-  }
+  // {
+  //   pid: 2,
+  //   lpSymbol: 'CROW-CRO LP',
+  //   lpAddresses: {
+  //     97: '0xe890519b297700BB69a62F18AaA50cAc201A300C',
+  //     56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
+  //     338: '0xEf5b46555a8548b3E7CaCcB8511926643c8e7Ba2',
+  //     25: '0xCd693F158865D071f100444c7F3b96e7463bAe8d'
+  //   },
+  //   token: serializedTokens.wcro,
+  //   quoteToken: serializedTokens.crow,
+  // },
+  // {
+  //   pid: 3,
+  //   lpSymbol: 'USDC-CRO LP',
+  //   lpAddresses: {
+  //     97: '',
+  //     56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
+  //     338: '0xed55E937966d1B2190Ce9A8D7B27619c1996EFAb',
+  //     25: '0xfC84f7b512BF2A590ED48797aA42CcC817F918a0',
+  //   },
+  //   token: serializedTokens.wcro,
+  //   quoteToken: serializedTokens.usdc,
+  // }
 ]
 
 export default farms

@@ -13,90 +13,18 @@
     {
       "name": "WCRO Token",
       "symbol": "WCRO",
-      "address": "0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23",
-      "chainId": 25,
+      "address": "0x0fEF6aA6363bA525C2eCf6331CB783A439B6e6e7",
+      "chainId": 1115,
       "decimals": 18,
       "logoURI": "https://crowfi.app/images/tokens/0x5c7f8a570d578ed84e63fdfa7b1ee72deae1ae23.svg"
     },
     {
       "name": "Wrapped ETH",
       "symbol": "WETH",
-      "address": "0xe44Fd7fCb2b1581822D0c862B68222998a0c299a",
-      "chainId": 25,
+      "address": "0xf5a60E1A21677433301B3cF554936A0EE91Cbf71",
+      "chainId": 1115,
       "decimals": 18,
       "logoURI": "https://crowfi.app/images/tokens/0xe44Fd7fCb2b1581822D0c862B68222998a0c299a.svg"
-    },
-    {
-      "name": "Wrapped BTC",
-      "symbol": "WBTC",
-      "address": "0x062E66477Faf219F25D27dCED647BF57C3107d52",
-      "chainId": 25,
-      "decimals": 8,
-      "logoURI": "https://crowfi.app/images/tokens/0x062E66477Faf219F25D27dCED647BF57C3107d52.svg"
-    },
-    {
-      "name": "Tether USD",
-      "symbol": "USDT",
-      "address": "0x66e428c3f67a68878562e79A0234c1F83c208770",
-      "chainId": 25,
-      "decimals": 6,
-      "logoURI": "https://crowfi.app/images/tokens/0x66e428c3f67a68878562e79A0234c1F83c208770.svg"
-    },
-    {
-      "name": "USD Coin",
-      "symbol": "USDC",
-      "address": "0xc21223249CA28397B4B6541dfFaEcC539BfF0c59",
-      "chainId": 25,
-      "decimals": 6,
-      "logoURI": "https://crowfi.app/images/tokens/0xdba521ad7b3d84c417a224f2830b9399d7180076.svg"
-    },
-    {
-      "name": "Crow Token",
-      "symbol": "CROW",
-      "address": "0x285c3329930a3fd3C7c14bC041d3E50e165b1517",
-      "chainId": 25,
-      "decimals": 18,
-      "logoURI": "https://crowfi.app/images/tokens/0xf9872a4ea77278f06613a817d563012bfc7761b3.svg"
-    },
-    {
-      "name": "CroVision",
-      "symbol": "CROVIS",
-      "address": "0xe10a51c2ddbbac2732707a9fd389c3c8cf894367",
-      "chainId": 25,
-      "decimals": 9,
-      "logoURI": "https://crowfi.app/images/tokens/0xe10a51c2ddbbac2732707a9fd389c3c8cf894367.svg"
-    },
-    {
-      "name": "PadloMoon",
-      "symbol": "PDM",
-      "address": "0x9d5ade1e4dd84e3e0818542bf37f24f22648d946",
-      "chainId": 25,
-      "decimals": 12,
-      "logoURI": "https://crowfi.app/images/tokens/0x9d5ade1e4dd84e3e0818542bf37f24f22648d946.svg"
-    },
-    {
-      "name": "WCRO Token",
-      "symbol": "WCRO",
-      "address": "0xDd7FBd7e655DE4B8eccb2B3254F6B69B569F0A9a",
-      "chainId": 338,
-      "decimals": 18,
-      "logoURI": "https://crowfi.app/images/tokens/0xDd7FBd7e655DE4B8eccb2B3254F6B69B569F0A9a.svg"
-    },
-    {
-      "name": "USD Coin",
-      "symbol": "USDC",
-      "address": "0xDba521aD7B3d84c417a224f2830B9399d7180076",
-      "chainId": 338,
-      "decimals": 6,
-      "logoURI": "https://crowfi.app/images/tokens/0xDba521aD7B3d84c417a224f2830B9399d7180076.svg"
-    },
-    {
-      "name": "Crow Token",
-      "symbol": "CROW",
-      "address": "0x852c75bd104b928BBF54e6Ab94F274B9F8Fa6536",
-      "chainId": 338,
-      "decimals": 18,
-      "logoURI": "https://crowfi.app/images/tokens/0xf9872a4Ea77278F06613A817D563012bfc7761B3.svg"
     }
   ]
 }

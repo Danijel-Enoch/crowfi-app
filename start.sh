@@ -1,0 +1,1 @@
+nvm install 14.18.0 && nvm use 14.18.0 && yarn install

@@ -1,4 +1,4 @@
-import { Currency, ETHER, Token } from '@pancakeswap/sdk'
+import { Currency, ETHER, Token } from '@enoch-danijel/sdk'
 import { CroIcon } from '@pancakeswap/uikit'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'

@@ -26,9 +26,15 @@ function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean):
   const userAddedTokens = useUserAddedTokens()
 
   return useMemo(() => {
-    if (!chainId) return {}
+    if (!chainId) {
+
+      
+      return {
+      
+    }}
 
     // reduce to just tokens
+    console.log(chainId,"error:chain iss",tokenMap)
     const mapWithoutUrls = Object.keys(tokenMap[chainId]).reduce<{ [address: string]: Token }>((newMap, address) => {
       newMap[address] = tokenMap[chainId][address].token
       return newMap
@@ -56,6 +62,7 @@ function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean):
 
 export function useDefaultTokens(): { [address: string]: Token } {
   const defaultList = useDefaultTokenList()
+  console.log({defaultList})
   return useTokensFromMap(defaultList, false)
 }
 

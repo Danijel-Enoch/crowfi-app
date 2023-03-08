@@ -1746,6 +1746,18 @@
     "@web3-react/types" "^6.0.7"
     tiny-warning "^1.0.3"
 
+"@cheetahswap/sdk@https://github.com/Danijel-Enoch/crow-swap-sdk":
+  version "2.4.0"
+  resolved "https://github.com/Danijel-Enoch/crow-swap-sdk#dac4d703b707d78583dd365d5589a39de8ca3784"
+  dependencies:
+    "@pancakeswap-libs/pancake-swap-core" "^0.1.0"
+    big.js "^5.2.2"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.1"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -1964,6 +1976,19 @@
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/@emotion/unitless/-/unitless-0.7.5.tgz#77211291c1900a700b8a78cfafda3160d76949ed"
   integrity sha512-OWORNpfjMsSSUBVrRBVGECkhWcULOAJz9ZW8uK9qgxD+87M7jHRcvh/A96XXNhXTLmKcoYSQtBEX7lHMO7YRwg==
+
+"@enoch-danijel/sdk@^2.4.2":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@enoch-danijel/sdk/-/sdk-2.4.2.tgz#ea0fcc74895d7cc6501ccafe0262501ff66ea62a"
+  integrity sha512-Z0klWx+4CLwLPTDqYM+oC1L3TfwddyK2tsZC2aD5hAfmyI5FxGr9GPkRXxLkaHgtcnYqlG0c8ffc9VmD2Jg7pQ==
+  dependencies:
+    "@pancakeswap-libs/pancake-swap-core" "^0.1.0"
+    big.js "^5.2.2"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.1"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
 
 "@ensdomains/address-encoder@^0.1.7":
   version "0.1.9"
@@ -3478,9 +3503,9 @@
     eslint-plugin-react "^7.21.5"
     eslint-plugin-react-hooks "^4.0.0"
 
-"@pancakeswap/sdk@https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?668b5bc8663e694d4ee6b242badc0ed55160d7f2":
+"@pancakeswap/sdk@https://github.com/Danijel-Enoch/crow-swap-sdk":
   version "2.4.0"
-  resolved "https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?668b5bc8663e694d4ee6b242badc0ed55160d7f2#4cd3c1274c231b95c505d9458c4c27a1cbbd7231"
+  resolved "https://github.com/Danijel-Enoch/crow-swap-sdk#8dc8773a7b31c21a6c90a1b8609c25914b730faa"
   dependencies:
     "@pancakeswap-libs/pancake-swap-core" "^0.1.0"
     big.js "^5.2.2"
@@ -4798,9 +4823,9 @@
     "@types/node" "*"
 
 "@types/lodash@^4.14.168":
-  version "4.14.177"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.177.tgz#f70c0d19c30fab101cad46b52be60363c43c4578"
-  integrity sha512-0fDwydE2clKe9MNfvXHBHF9WEahRuj+msTuQqOmAApNORFvhMYZKNGGJdCzuhheVjMps/ti0Ak/iJPACMaevvw==
+  version "4.14.191"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.191.tgz#09511e7f7cba275acd8b419ddac8da9a6a79e2fa"
+  integrity sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==
 
 "@types/long@^4.0.0", "@types/long@^4.0.1":
   version "4.0.1"
@@ -5056,9 +5081,9 @@
     csstype "^3.0.2"
 
 "@types/styled-system@^5.1.10":
-  version "5.1.13"
-  resolved "https://registry.yarnpkg.com/@types/styled-system/-/styled-system-5.1.13.tgz#9ad667534d3bd75720dd7778c94c783449cb5c14"
-  integrity sha512-RtpV6zXnnMQNcxKjC06BUM4MUER5o9uZ6b7xAc2OzhWxSsmQ3jXyW8ohuXdEJRKypEe0EqAzbSGx2Im0NXfdKA==
+  version "5.1.16"
+  resolved "https://registry.yarnpkg.com/@types/styled-system/-/styled-system-5.1.16.tgz#c6fa6f751f051de3c7c5fe1d5dc7562d95a80a9e"
+  integrity sha512-+dyGs2n2o6QStsexh87NeaRmXYnKOnEe7iOEkcYOwKwI5a1gFL0+Mt/hZKi+4KD1qDMkLkGb0lpDrffb/vSkDQ==
   dependencies:
     csstype "^3.0.2"
 

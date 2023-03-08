@@ -1,7 +1,7 @@
 import { ChainId, JSBI, Percent, Token } from '@pancakeswap/sdk'
 import { mainnetTokens, testnetTokens,cronosTokens,cronosTestTokens } from './tokens'
 
-export const ROUTER_ADDRESS = '0xd30d3aC04E2325E19A2227cfE6Bc860376Ba20b1'
+export const ROUTER_ADDRESS = '0xaC884abd83cf05E94ecd8431065aCAf89E8033cF'
 
 // a list of tokens by chain
 type ChainTokenList = {
@@ -12,17 +12,17 @@ type ChainTokenList = {
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.MAINNET]: [
     mainnetTokens.wbnb,
-    mainnetTokens.cake,
-    mainnetTokens.busd,
-    mainnetTokens.usdt,
-    mainnetTokens.btcb,
-    mainnetTokens.ust,
-    mainnetTokens.eth,
-    mainnetTokens.usdc,
+    // mainnetTokens.cake,
+    // mainnetTokens.busd,
+    // mainnetTokens.usdt,
+    // mainnetTokens.btcb,
+    // mainnetTokens.ust,
+    // mainnetTokens.eth,
+    // mainnetTokens.usdc,
   ],
-  [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, testnetTokens.busd],
-  [ChainId.CRONOS]: [cronosTokens.wcro, cronosTokens.crow, cronosTokens.usdc],
-  [ChainId.CRONOSTESTNET]: [cronosTestTokens.wcro, cronosTestTokens.crow, cronosTestTokens.usdc]
+  [ChainId.TESTNET]: [testnetTokens.wbnb],
+  [ChainId.CRONOS]: [],
+  [ChainId.CRONOSTESTNET]: []
 }
 
 /**
@@ -44,49 +44,49 @@ export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: To
 
 // used for display in the default list when adding liquidity
 export const SUGGESTED_BASES: ChainTokenList = {
-  [ChainId.MAINNET]: [mainnetTokens.busd, mainnetTokens.cake, mainnetTokens.btcb],
-  [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, testnetTokens.busd],
-  [ChainId.CRONOS]: [cronosTokens.wcro, cronosTokens.crow, cronosTokens.usdc],
-  [ChainId.CRONOSTESTNET]: [cronosTestTokens.wcro, cronosTestTokens.crow, cronosTestTokens.usdc]
+  [ChainId.MAINNET]: [],
+  [ChainId.TESTNET]: [testnetTokens.wbnb],
+  [ChainId.CRONOS]: [],
+  [ChainId.CRONOSTESTNET]: []
 }
 
 export const SUGGESTED_PIARS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
   [ChainId.MAINNET]: [
     [mainnetTokens.cake, mainnetTokens.wbnb],
-    [mainnetTokens.busd, mainnetTokens.usdt],
-    [mainnetTokens.dai, mainnetTokens.usdt],
+    // [mainnetTokens.busd, mainnetTokens.usdt],
+    // [mainnetTokens.dai, mainnetTokens.usdt],
   ],
   [ChainId.CRONOS]: [
-    [cronosTokens.wcro, cronosTokens.crow],
-    [cronosTokens.usdc, cronosTokens.crow],
-    [cronosTokens.usdc, cronosTokens.wcro],
+    [cronosTokens.wbnb, cronosTokens.crow],
+    // [cronosTokens.usdc, cronosTokens.crow],
+    // [cronosTokens.usdc, cronosTokens.wcro],
   ],
   [ChainId.CRONOSTESTNET]: [
-    [cronosTestTokens.wcro, cronosTestTokens.crow],
-    [cronosTestTokens.usdc, cronosTestTokens.crow],
-    [cronosTestTokens.usdc, cronosTestTokens.wcro],
+    [cronosTestTokens.cake, cronosTestTokens.wbnb],
+    // [cronosTestTokens.usdc, cronosTestTokens.crow],
+    // [cronosTestTokens.usdc, cronosTestTokens.wcro],
   ]
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
-  [ChainId.MAINNET]: [mainnetTokens.wbnb, mainnetTokens.dai, mainnetTokens.busd, mainnetTokens.usdt],
-  [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, testnetTokens.busd],
-  [ChainId.CRONOS]: [cronosTokens.wcro, cronosTokens.crow, cronosTokens.usdc],
-  [ChainId.CRONOSTESTNET]: [cronosTestTokens.wcro, cronosTestTokens.crow, cronosTestTokens.usdc]
+  [ChainId.MAINNET]: [mainnetTokens.wbnb, mainnetTokens.cake],
+   [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, ],
+   [ChainId.CRONOS]: [cronosTokens.wbnb, cronosTokens.weth],
+   [ChainId.CRONOSTESTNET]: [cronosTestTokens.cake, cronosTestTokens.wbnb],
 }
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
   [ChainId.MAINNET]: [
-    [mainnetTokens.cake, mainnetTokens.wbnb],
-    [mainnetTokens.busd, mainnetTokens.usdt],
-    [mainnetTokens.dai, mainnetTokens.usdt],
+    // [mainnetTokens.cake, mainnetTokens.wbnb],
+    // [mainnetTokens.busd, mainnetTokens.usdt],
+    // [mainnetTokens.dai, mainnetTokens.usdt],
   ],
   [ChainId.CRONOS]: [
-    [cronosTokens.crow, cronosTokens.wcro],
+   // [cronosTokens.crow, cronosTokens.wcro],
   ],
   [ChainId.CRONOSTESTNET]: [
-    [cronosTestTokens.crow, cronosTestTokens.wcro],
+    // [cronosTestTokens.crow, cronosTestTokens.wcro],
   ]
 }
 

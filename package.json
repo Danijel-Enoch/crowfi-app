@@ -38,8 +38,10 @@
   },
   "dependencies": {
     "@binance-chain/bsc-connector": "^1.0.0",
+    "@cheetahswap/sdk": "https://github.com/Danijel-Enoch/crow-swap-sdk",
+    "@enoch-danijel/sdk": "^2.4.2",
     "@ethersproject/experimental": "^5.0.1",
-    "@pancakeswap/sdk": "https://gitpkg.now.sh/coderighter2/pancake-swap-sdk?668b5bc8663e694d4ee6b242badc0ed55160d7f2",
+    "@pancakeswap/sdk": "https://github.com/Danijel-Enoch/crow-swap-sdk",
     "@pancakeswap/uikit": "https://gitpkg.now.sh/coderighter2/pancake-toolkit/packages/pancake-uikit?12df8760e4cf2f9e9d955d726f6fd3f3275c995a",
     "@reduxjs/toolkit": "^1.5.0",
     "@types/multicodec": "^1.0.0",
